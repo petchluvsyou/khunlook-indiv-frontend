@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
 
 export default function Login() {
 
@@ -17,26 +18,23 @@ export default function Login() {
           e.preventDefault();
           setServerMessage('');
 
-          const res = await fetch('http://localhost:4000/auth', {
-               method: 'POST',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({
-                    'USERNAME': username,
-                    'PASSWORD': password
-               }),
-          });
+          try {
+            const res = await axios.post('http://localhost:4000/auth', {
+                 USERNAME: username,
+                 PASSWORD: password
+            });
 
-          if (res.ok) {
-               const data = await res.json();
-               console.log('Authentication successful:', data);
-               router.push('/'); //redirect to home page if authentication success
-          } else {
-               const errorData = await res.json();
-               console.error('Authentication failed:', errorData.message);
-               setServerMessage(errorData.message);
-          }
+            console.log('Authentication successful:', res.data);
+            router.push('/'); //redirect to home page if authentication is successful
+       } catch (error: any) {
+            if (error.response) {
+                 console.error('Authentication failed:', error.response.data.message);
+                 setServerMessage(error.response.data.message);
+            } else {
+                 console.error('Error:', error.message);
+                 setServerMessage('An unexpected error occurred.');
+            }
+       }
      };
 
      return (
