@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
 
 export default function Register() {
   const router = useRouter();
@@ -19,7 +20,6 @@ export default function Register() {
 
   // State for handling server error
   const [serverMessage, setServerMessage] = useState<string>('');
-  const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
 
   const validateFields = () => {
     let isValid = true;
@@ -68,31 +68,25 @@ export default function Register() {
     e.preventDefault();
 
     if (!validateFields()) {
-      return; // Stop form submission if any field is invalid
+      return; 
     }
 
-    const res = await fetch('http://localhost:4000/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'NAME': name,
-        'USERNAME': username,
-        'PASSWORD': password,
-        'EMAIL': email,
-      }),
-    });
+    try {
+      const res = await axios.post('http://localhost:4000/user', {
+        NAME: name,
+        USERNAME: username,
+        PASSWORD: password,
+        EMAIL: email,
+      });
 
-    if (res.ok) {
-      const data = await res.json();
-      setServerMessage(data.message);
-      setMessageType('success');
+      setServerMessage(res.data.message);
       router.push('/login'); // Redirect to login after successful registration
-    } else {
-      const errorData = await res.json();
-      setServerMessage(errorData.message);
-      setMessageType('error');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        setServerMessage(error.response.data.message);
+      } else {
+        setServerMessage('An unexpected error occurred.');
+      }
     }
   };
 
@@ -154,7 +148,7 @@ export default function Register() {
             </div>
 
             {serverMessage && (
-              <p className={`${messageType === 'success' ? 'text-green-500' : 'text-red-500'} text-center`}>
+              <p className="text-red-500 text-center">
                 {serverMessage}
               </p>
             )}
