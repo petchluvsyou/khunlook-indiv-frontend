@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import userLogin from '@/libs/userLogin';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
 
@@ -18,19 +18,16 @@ export default function Login() {
     e.preventDefault();
     setServerMessage('');
 
-    try {
-      const res = await userLogin(username, password);
-      console.log('Authentication successful:', res);
+    const res = await signIn('credentials', {
+      redirect: false,
+      username,
+      password,
+    });
 
-      router.push('/'); //redirect to home page if authentication is successful
-    } catch (error: any) {
-      if (error.response) {
-        console.error('Authentication failed:', error.response.data.message);
-        setServerMessage(error.response.data.message);
-      } else {
-        console.error('Error:', error.message);
-        setServerMessage('An unexpected error occurred.');
-      }
+    if (res?.error) {
+      setServerMessage('Invalid username or password');
+    } else {
+      router.push('/'); 
     }
   };
 

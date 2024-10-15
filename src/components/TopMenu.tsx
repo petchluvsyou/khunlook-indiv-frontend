@@ -11,11 +11,15 @@ import { useSession, signOut } from "next-auth/react";
 export default function TopMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const { data: session ,status} = useSession();
-    console.log(session);
+
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
         console.log("toggle");
     };
+
+    const handleSignOut = async () => {
+        await signOut({ redirect: true, callbackUrl: '/' }); // Redirects to homepage after sign out
+      };
 
     return (
         <div className='fixed z-40 w-full h-[64px] sm:h-[92px] py-[16px] sm:py-[29px] px-[20px] sm:px-[48px] gap-[12px] bg-[#F8F8F8] flex item-center shadow-lg justify-between'>
@@ -39,9 +43,9 @@ export default function TopMenu() {
                     <div className="flex items-center gap-4">
                         <span>Welcome</span>
                         <button
-                            onClick={() => signOut({ callbackUrl: '/' })}
+                            onClick={handleSignOut}
                             className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                            SignOut
+                            Sign Out
                         </button>
                     </div>
                     :
