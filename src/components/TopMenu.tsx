@@ -30,6 +30,12 @@ export default function TopMenu() {
                     <TopMenuItem title="บทความ" pageRef='/' hasDropdown={true}>
                         <TopMenuItem title="อาหารของคุณลูก" pageRef='/article/foodinfo' hasDropdown={false}> </TopMenuItem>
                         <TopMenuItem title="พัฒนาการ" pageRef='/article/growth' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="ช่องปากและฟัน" pageRef='/article/mouth' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="วัคซีน" pageRef='/article/vaccine' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="อุปกรณ์ ของเล่น และการป้องกันอุบัติเหตุ" pageRef='/article/tools' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="สุขภาพครรภ์" pageRef='/article/pregHealth' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="ดูแลกัน" pageRef='/article/takecare' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="ช่วงตรวจคัดกรอง" pageRef='/article/filter' hasDropdown={false}> </TopMenuItem>
                     </TopMenuItem>
                     <TopMenuItem title="การเจริญเติบโต" pageRef='/' hasDropdown={false}> </TopMenuItem>
                     <TopMenuItem title="พัฒนาการ" pageRef='/' hasDropdown={false}> </TopMenuItem>
