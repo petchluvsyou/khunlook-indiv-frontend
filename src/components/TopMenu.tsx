@@ -28,8 +28,8 @@ export default function TopMenu() {
                 <div className="hidden sm:flex items-center gap-[12px]">
                     <TopMenuItem title="หน้าแรก" pageRef='/' hasDropdown={false}> </TopMenuItem>
                     <TopMenuItem title="บทความ" pageRef='/' hasDropdown={true}>
-                        <TopMenuItem title="บทความ1" pageRef='/' hasDropdown={false}> </TopMenuItem>
-                        <TopMenuItem title="บทความ2" pageRef='/' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="อาหารของคุณลูก" pageRef='/article/foodinfo' hasDropdown={false}> </TopMenuItem>
+                        <TopMenuItem title="พัฒนาการ" pageRef='/article/growth' hasDropdown={false}> </TopMenuItem>
                     </TopMenuItem>
                     <TopMenuItem title="การเจริญเติบโต" pageRef='/' hasDropdown={false}> </TopMenuItem>
                     <TopMenuItem title="พัฒนาการ" pageRef='/' hasDropdown={false}> </TopMenuItem>
