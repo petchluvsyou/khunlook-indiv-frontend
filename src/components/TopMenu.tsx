@@ -32,7 +32,7 @@ export default function TopMenu() {
                         <TopMenuItem title="บทความ2" pageRef='/' hasDropdown={false}> </TopMenuItem>
                     </TopMenuItem>
                     <TopMenuItem title="การเจริญเติบโต" pageRef='/' hasDropdown={false}> </TopMenuItem>
-                    <TopMenuItem title="พัฒนาการ" pageRef='/' hasDropdown={false}> </TopMenuItem>
+                    <TopMenuItem title="พัฒนาการ" pageRef='/development' hasDropdown={false}> </TopMenuItem>
                     <TopMenuItem title="วัคซีน" pageRef='/' hasDropdown={false}> </TopMenuItem>
                     <TopMenuItem title="สิ่งเล็กๆที่สร้างลูก" pageRef='/' hasDropdown={true}> </TopMenuItem>
                     <TopMenuItem title="เกี่ยวกับเรา" pageRef='/' hasDropdown={true}> </TopMenuItem>
