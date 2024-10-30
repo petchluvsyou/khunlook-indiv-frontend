@@ -8,12 +8,12 @@ export default function page() {
      const [currentData, setCurrentData] = useState<any>();
 
      const getDefaultAgeRange = (option: 'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง'): string => {
-          return option === 'เด็กปฐมวัย' ? '0-1 เดือน' : 'แรกเกิด'; 
+          return option === 'เด็กปฐมวัย' ? '0-1 เดือน' : 'แรกเกิด';
      };
 
      const toggleOption = (option: 'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง') => {
           setSelectedOption(option);
-          setAgeRange(getDefaultAgeRange(option)); 
+          setAgeRange(getDefaultAgeRange(option));
      };
 
      const handleAgeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,7 +29,7 @@ export default function page() {
           <div className="flex justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
                <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">พัฒนาการของ</h1>
                <p className="text-[48px] sm:text-6xl font-bold text-[#D49D44] mb-6">คุณลูก</p>
-               <p className="text-gray-500 text-sm sm:text-base mb-16 px-64 sm:px-96">
+               <p className="text-gray-500 text-sm sm:text-base mb-16 w-[50%]">
                     เกณฑ์นี้เป็นเกณฑ์อ้างอิงเบื้องต้นสำหรับเด็กทั่วไปว่าสามารถทำอะไรได้ในเเต่ละช่วงวัย ซึ่งอาจมีทักษะบางอย่างที่เด็กปกติ จำนวนหนี่งทำได้เร็วหรือช้ากว่าเกณฑ์นี้เล็กน้อย ควรกระตึ้นตามคำแนะนำ
                     หากมีความกังวลเรื่องพัฒนาการของลูกควรปรึกษาแพทย์หรือบุคลากรทางสาธารณสุข
                </p>
@@ -71,19 +71,22 @@ export default function page() {
                     </select>
                </div>
 
-               <div className="grid grid-cols-2 gap-1 w-full px-8 sm:px-16">
+               <div className="grid grid-cols-2 gap-1 w-full h-full px-8 sm:px-16">
                     <div className="col-span-2 flex items-center justify-center text-center item-center h-20 font-semibold bg-[#D49D44] rounded-md">พัฒนาการของเด็กช่วงอายุ {ageRange}</div>
-                    <div className="flex items-center justify-center text-center item-center h-12 font-semibold bg-[#D49D44] rounded-md">พัฒนาการตามวัย</div>
-                    <div className="flex items-center justify-center text-center item-center h-12 font-semibold bg-[#D49D44] rounded-md">วิธีส่งเสริมให้ลูกทำได้</div>
+                    <div className="flex items-center justify-center text-center  h-12 font-semibold bg-[#D49D44] rounded-md">พัฒนาการตามวัย</div>
+                    <div className="flex items-center justify-center text-center  h-12 font-semibold bg-[#D49D44] rounded-md">วิธีส่งเสริมให้ลูกทำได้</div>
                     {currentData?.rows.map((row: { skill: string, description: string }, index: number) => (
                          <>
+                              {/*md*/}
                               <div className="grid grid-cols-2 gap-1 w-full">
-                                   <div className="h-40 bg-gray-100 rounded-md"></div>
-                                   <div className="h-40 p-3 bg-gray-100 rounded-md text-left">{row.skill}</div>
+                                   <div className="h-40 bg-gray-100 rounded-md hidden sm:block"></div>
+                                   <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">{row.skill}</div>
                               </div>
-                              <div className="h-40 p-3 bg-gray-100 rounded-md text-left">
+                              <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">
                                    {row.description}
                               </div>
+                              {/*sm*/}
+                                   <div className="p-3 col-span-2 flex items-center text-left item-center h-16 bg-white rounded-md sm:hidden mt-2">{row.skill}</div>   
                          </>
                     ))}
                </div>
