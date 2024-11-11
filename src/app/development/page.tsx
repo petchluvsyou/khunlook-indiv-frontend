@@ -1,6 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import developmentData from "./developmentData";
+import Image from "next/image";
+import Link from "next/link";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+
 
 export default function page() {
      const [selectedOption, setSelectedOption] = useState<'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง'>('เด็กปฐมวัย');
@@ -73,20 +78,35 @@ export default function page() {
 
                <div className="grid grid-cols-2 gap-1 w-full h-full px-8 sm:px-16">
                     <div className="col-span-2 flex items-center justify-center text-center item-center h-20 font-semibold bg-[#D49D44] rounded-md">พัฒนาการของเด็กช่วงอายุ {ageRange}</div>
-                    <div className="flex items-center justify-center text-center  h-12 font-semibold bg-[#D49D44] rounded-md">พัฒนาการตามวัย</div>
-                    <div className="flex items-center justify-center text-center  h-12 font-semibold bg-[#D49D44] rounded-md">วิธีส่งเสริมให้ลูกทำได้</div>
-                    {currentData?.rows.map((row: { skill: string, description: string }, index: number) => (
+                    <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">พัฒนาการตามวัย</div>
+                    <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">วิธีส่งเสริมให้ลูกทำได้</div>
+
+                    {currentData?.rows.map((row: { skill: string, description: string, image: string }, index: number) => (
                          <>
                               {/*md*/}
                               <div className="grid grid-cols-2 gap-1 w-full">
-                                   <div className="h-40 bg-gray-100 rounded-md hidden sm:block"></div>
+                                   <div className="relative h-40 w-full bg-gray-100 rounded-md overflow-hidden hidden sm:block">
+                                        <Image
+                                             src={`/img/developmentres/${selectedOption}/${ageRange}/${index}.png`}
+                                             alt="img"
+                                             layout="fill"
+                                             objectFit="contain"
+                                             className="rounded-md"
+                                        />
+                                   </div>
                                    <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">{row.skill}</div>
                               </div>
-                              <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">
+                              <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block overflow-y-auto">
                                    {row.description}
                               </div>
+
                               {/*sm*/}
-                                   <div className="p-3 col-span-2 flex items-center text-left item-center h-16 bg-white rounded-md sm:hidden mt-2">{row.skill}</div>   
+                              <Link href={`/development/${selectedOption}/${ageRange}/${index}`} passHref className="p-3 col-span-2 flex items-center text-left item-center h-16 bg-white rounded-md sm:hidden mt-2">
+                                   <div>
+                                        {row.skill}
+                                        <FontAwesomeIcon icon={faArrowRight} className="text-[#D49D44]  text-xl ml-2" />
+                                   </div>
+                              </Link>
                          </>
                     ))}
                </div>
