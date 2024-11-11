@@ -14,7 +14,6 @@ export default function Filter() {
                 description="การตรวจคัดกรองเป็นก้าวแรกในการป้องกัน เพื่อให้ลูกน้อยเติบโตอย่างแข็งแรง\nการรู้เร็วและป้องกันไว คือของขวัญล้ำค่าสำหรับอนาคตของเขา"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }

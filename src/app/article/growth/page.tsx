@@ -14,7 +14,6 @@ export default function Growth() {
                 description="เด็กนั้นเหมือนกับลูกข่างตัวเล็ก ๆ ที่ไม่หยุดหมุนเลย\nจากของเล่นไปจนถึงกิจกรรมกลางแจ้ง\nรับไอเดียสนุก ๆ ที่จะทำให้พวกเขาไม่เบื่อ\nและเพลิดเพลินโดยไม่ต้องใช้หน้าจอ"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }

@@ -14,7 +14,6 @@ export default function Vaccine() {
                 description="วัคซีนเป็นเกราะป้องกันที่ไม่เพียงแค่รักษาสุขภาพของ\nแต่ยังสร้างความปลอดภัยให้กับลูกคุณ"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }

@@ -14,7 +14,6 @@ export default function Takecare() {
                 description="การดูแลลูกด้วยความใส่ใจและรักอย่างลึกซึ้ง คือการปลูกฝังความแข็งแกร่ง\nและความสุขในจิตใจของเขาตลอดการเติบโต"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }
