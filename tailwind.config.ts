@@ -19,6 +19,7 @@ const config: Config = {
         'Grey': '#818181',
         'Yellow': '#D49D44',
         'Green': '#486708',
+        'DarkRed': '#C36277',
       },
     },
   },
