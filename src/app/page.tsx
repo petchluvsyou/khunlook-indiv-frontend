@@ -9,7 +9,6 @@ export default function Home() {
       <Banner/>
       <FunctionCard/>
       <DownloadCard/>
-      <Footer/>
     </main>
   );
 }
