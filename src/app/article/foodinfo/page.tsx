@@ -17,7 +17,6 @@ export default function Food() {
                 description="เติบโตอย่างแข็งแรง! จากอาหารเด็กธรรมชาติ\nไปจนถึงการหย่านม นี่คือสิ่งที่คุณควรรู้\nเกี่ยวกับการให้อาหารเด็ก"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }

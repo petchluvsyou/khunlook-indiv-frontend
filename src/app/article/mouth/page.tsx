@@ -18,7 +18,6 @@ export default function Mouth() {
                 description="ยอมรับเถอะ! ฟันน้ำนมเด็กนั้นเป็นเรื่องยาก\nแต่เคล็ดลับเหล่านี้จะช่วยให้ลูกน้อยรู้สึกสบายขึ้น และทำให้\nพ่อแม่สบายขึ้น"
                 informationBoxes={informationBoxes}
             />
-            <Footer />
         </div>
     );
 }

@@ -5,7 +5,6 @@ import React from 'react';
 const Age1 = () => {
     return (
         <div className="flex items-center justify-center h-screen">
-            <Footer/>
         </div>
     );
 };
