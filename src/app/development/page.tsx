@@ -81,7 +81,7 @@ export default function page() {
                     <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">พัฒนาการตามวัย</div>
                     <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">วิธีส่งเสริมให้ลูกทำได้</div>
 
-                    {currentData?.rows.map((row: { skill: string, description: string, image: string }, index: number) => (
+                    {currentData?.rows.map((row: { skill: string, description: string }, index: number) => (
                          <>
                               {/*md*/}
                               <div className="grid grid-cols-2 gap-1 w-full">
