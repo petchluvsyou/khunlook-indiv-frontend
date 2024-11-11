@@ -12,6 +12,14 @@ const config: Config = {
       fontFamily: {
         'line-seed-sans': ['"LINE Seed Sans TH"', 'sans-serif'],
       },
+      colors: {
+        'Bg': '#F8F8F8',
+        'White-100': '#FFFFFF',
+        'Dark': '#474554',
+        'Grey': '#818181',
+        'Yellow': '#D49D44',
+        'Green': '#486708',
+      },
     },
   },
   plugins: [
