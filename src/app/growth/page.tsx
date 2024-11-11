@@ -25,7 +25,7 @@ export default function Growth() {
                 <p className="text-2xl text-Dark font-bold mb-6 mt-8">กรอกข้อมูลดูการเจริญเติบโตเลย!</p>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div className='flex flex-col w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 pb-16 lg:pb-24 gap-4'>
+                <div className='flex flex-col w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-4'>
                     <div className='flex flex-row justify-center gap-4'>
                         <p className="self-center">วันที่ปัจจุบัน:</p>
                         <MobileDatePicker
@@ -134,6 +134,9 @@ export default function Growth() {
                     </div>
                 </div>
             </LocalizationProvider>
+            <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 lg:pb-24 bg-Bg w-full'>
+                <p className="text-2xl text-Yellow font-bold mb-6 mt-8">กราฟแสดงการเติบโต</p>
+            </div>
         </div>
     );
 }
