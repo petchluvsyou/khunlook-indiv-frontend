@@ -7,7 +7,9 @@ import MenuItem from '@mui/material/MenuItem';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import React from 'react';
 
-export default function TopMenuItem ({title, pageRef, hasDropdown, children}: {title:string, pageRef:string, hasDropdown: boolean, children:React.ReactNode}){
+export default function TopMenuItem ({title, pageRef, children}: {title:string, pageRef:string, children?:React.ReactNode}){
+    const hasChildren = React.Children.count(children) > 0;
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -22,12 +24,12 @@ export default function TopMenuItem ({title, pageRef, hasDropdown, children}: {t
             <Link className='w-auto text-center' href={pageRef}>
                 {title}
             </Link>
-            {hasDropdown && <Button
+            {hasChildren && <Button
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
-                    className='w-auto h-auto text-black p-0 ml-[12px] gap-0'
+                    className='w-auto h-auto text-black p-0 ml-[8px] gap-0'
                     sx={{
                         minWidth: '0px',
                         padding: '0px',
@@ -37,7 +39,7 @@ export default function TopMenuItem ({title, pageRef, hasDropdown, children}: {t
                 <ExpandMoreIcon fontSize='small'/>    
                 </Button>
             }
-            {hasDropdown && <Menu
+            {hasChildren && <Menu
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}
@@ -47,7 +49,7 @@ export default function TopMenuItem ({title, pageRef, hasDropdown, children}: {t
                 >
                     {React.Children.map(children, (child) => {
                         if (React.isValidElement(child)) {
-                        return <div onClick={handleClose} className=''>
+                        return <div onClick={handleClose} className='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                             {React.cloneElement(child)}
                         </div>}
                         return null;
