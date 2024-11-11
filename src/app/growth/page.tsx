@@ -3,9 +3,12 @@
 import { MobileDatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { MenuItem, Select, TextField } from '@mui/material';
+import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from "react";
 import { Dayjs } from "dayjs";
+import CheckIcon from '@mui/icons-material/Check';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import GrowthChart from "@/components/GrowthChart";
 
 export default function Growth() {
 
@@ -20,12 +23,12 @@ export default function Growth() {
     return (
         <div className="bg-Bg">
             <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 lg:pb-24 bg-Bg gap-1 top-16 lg:top-24 w-full'>
-                <h1 className="font-bold text-2xl lg:text-5xl text-Dark pb-1 mt-5 lg:pb-3">การเจริญเติบโตของ</h1>
-                <p className="text-2xl lg:text-5xl font-bold text-Yellow mb-6">คุณลูก</p>
+                <h1 className="font-bold text-3xl lg:text-5xl text-Dark pb-1 mt-5 lg:pb-3">การเจริญเติบโตของ</h1>
+                <p className="text-3xl lg:text-5xl font-bold text-Yellow mb-6">คุณลูก</p>
                 <p className="text-2xl text-Dark font-bold mb-6 mt-8">กรอกข้อมูลดูการเจริญเติบโตเลย!</p>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div className='flex flex-col w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-4'>
+                <div className='flex flex-col w-5/6 sm:w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-6 text-Grey'>
                     <div className='flex flex-row justify-center gap-4'>
                         <p className="self-center">วันที่ปัจจุบัน:</p>
                         <MobileDatePicker
@@ -94,7 +97,7 @@ export default function Growth() {
                                     },
                                   },
                             }}
-                            className="w-32"
+                            className="w-32 min-w-32"
                         />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center gap-6 items-start lg:items-center'>
@@ -132,10 +135,41 @@ export default function Growth() {
                             <p className="self-center">ซม.</p>
                         </div>
                     </div>
+                    <div className='flex flex-row justify-center gap-6 items-center lg:items-center pt-4 w-full'>
+                        <Button className="rounded-xl bg-Yellow font-line-seed-sans p-1.5 w-24 text-base text-white gap-2"
+                            onClick={()=>{
+                                setCurrentDate(null);
+                                setBirthDate(null);
+                                setGender('');
+                                setMeasureDate(null);
+                                setWeight('');
+                                setHeight('');
+                                setHeadCircum('');
+                            }} 
+                        >
+                            <CheckIcon className="w-5"/>
+                            <p>ยืนยัน</p>
+                        </Button>
+                        <Button className="rounded-xl bg-DarkRed font-line-seed-sans p-1.5 w-24 text-base text-white gap-2"
+                            onClick={()=>{
+                                setCurrentDate(null);
+                                setBirthDate(null);
+                                setGender('');
+                                setMeasureDate(null);
+                                setWeight('');
+                                setHeight('');
+                                setHeadCircum('');
+                            }} 
+                        >
+                            <RefreshIcon className="w-5"/>
+                            <p>ล้างค่า</p>
+                        </Button>
+                    </div>
                 </div>
             </LocalizationProvider>
-            <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 lg:pb-24 bg-Bg w-full'>
-                <p className="text-2xl text-Yellow font-bold mb-6 mt-8">กราฟแสดงการเติบโต</p>
+            <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 pt-4 lg:pb-24 bg-Bg w-full'>
+                <p className="text-3xl text-Yellow font-bold mb-6 mt-8">กราฟแสดงการเติบโต</p>
+                <GrowthChart/>
             </div>
         </div>
     );
