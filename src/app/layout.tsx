@@ -4,6 +4,7 @@ import TopMenu from "@/components/TopMenu";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 import NextAuthProvider from "@/providers/NextAuthProvider";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Khunlook",
@@ -22,6 +23,7 @@ export default async function RootLayout({
         <NextAuthProvider session={nextAuthSession}>
           <TopMenu />
           {children}
+          <Footer/>
         </NextAuthProvider>
       </body>
     </html>

@@ -31,19 +31,19 @@ export default function page() {
      }, [selectedOption, ageRange]);
 
      return (
-          <div className="flex justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
-               <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">พัฒนาการของ</h1>
-               <p className="text-[48px] sm:text-6xl font-bold text-[#D49D44] mb-6">คุณลูก</p>
-               <p className="text-gray-500 text-sm sm:text-base mb-16 w-[50%]">
+          <div className="flex justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] lg:top-[92px] w-full">
+               <h1 className="font-bold text-[24px] lg:text-5xl mb-[4px] mt-5 lg:mb-[12px]">พัฒนาการของ</h1>
+               <p className="text-[48px] lg:text-6xl font-bold text-Yellow mb-6">คุณลูก</p>
+               <p className="text-gray-500 text-sm lg:text-base mb-16 w-[50%]">
                     เกณฑ์นี้เป็นเกณฑ์อ้างอิงเบื้องต้นสำหรับเด็กทั่วไปว่าสามารถทำอะไรได้ในเเต่ละช่วงวัย ซึ่งอาจมีทักษะบางอย่างที่เด็กปกติ จำนวนหนี่งทำได้เร็วหรือช้ากว่าเกณฑ์นี้เล็กน้อย ควรกระตึ้นตามคำแนะนำ
                     หากมีความกังวลเรื่องพัฒนาการของลูกควรปรึกษาแพทย์หรือบุคลากรทางสาธารณสุข
                </p>
 
-               <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-10">พัฒนาการตามช่วงวัย</p>
+               <p className="font-bold text-base lg:text-lg lg:text-xl lg:text-2xl mb-6 lg:mb-10">พัฒนาการตามช่วงวัย</p>
                <hr className=""></hr>
 
 
-               <div className="flex justify-center mb-6 sm:mb-10">
+               <div className="flex justify-center mb-6 lg:mb-10">
                     <button
                          className={`relative px-4 py-2 rounded ${selectedOption === 'เด็กปฐมวัย' ? 'text-black' : 'text-gray-400'}`}
                          onClick={() => toggleOption('เด็กปฐมวัย')}
@@ -97,6 +97,7 @@ export default function page() {
                                    <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">{row.skill}</div>
                               </div>
                               <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block overflow-y-auto">
+
                                    {row.description}
                               </div>
 
@@ -107,6 +108,7 @@ export default function page() {
                                         <FontAwesomeIcon icon={faArrowRight} className="text-[#D49D44]  text-xl ml-2" />
                                    </div>
                               </Link>
+
                          </>
                     ))}
                </div>
