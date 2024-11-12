@@ -57,8 +57,8 @@ export default function Growth() {
                             onChange={(e)=>{setGender(e.target.value);}}
                             className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
                             >
-                            <MenuItem value={'ชาย'}>ชาย</MenuItem>
-                            <MenuItem value={'หญิง'}>หญิง</MenuItem>
+                            <MenuItem value={'male'}>ชาย</MenuItem>
+                            <MenuItem value={'female'}>หญิง</MenuItem>
                         </Select>
                     </div>
                     <div className='flex flex-row justify-center gap-4'>
@@ -139,7 +139,7 @@ export default function Growth() {
             </LocalizationProvider>
             <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 pt-4 lg:pb-24 bg-Bg w-full'>
                 <p className="text-3xl text-Yellow font-bold mb-6 mt-8">กราฟแสดงการเติบโต</p>
-                <GrowthChart/>
+                <GrowthChart gender={gender}/>
             </div>
         </div>
     );

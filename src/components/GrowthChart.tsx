@@ -3,8 +3,26 @@ import { ToggleButton } from "@mui/material";
 import { Select } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { useState } from "react";
+import { LineChart } from '@mui/x-charts/LineChart';
+import {
+  heightForAgeGirl,
+  keyToLabel as keyToLabelHFAG,
+  colors as colorsHFAG,
+} from "@/app/growth/heightForAgeGirl";
 
-export default function GrowthChart(){
+const stackStrategy = {
+    stack: 'total',
+    area: true,
+    stackOffset: 'none', // To stack 0 on top of others
+  } as const;
+  
+const customize = {
+    height: 300,
+    legend: { hidden: false },
+    margin: { top: 5 },
+  };
+
+export default function GrowthChart({gender}:{gender:string}){
 
     const [chartComparison, setChartComparison] = useState('height-age')
 
@@ -58,6 +76,27 @@ export default function GrowthChart(){
                 <MenuItem value="headcircum-age">รอบศรีษะเทียบอายุ</MenuItem>
             </Select>
         </div>
+        {chartComparison=='height-age'&&gender=='female'&&<div className="w-5/6 pt-12">
+        <LineChart
+            xAxis={[
+                {
+                dataKey: 'Month',
+                valueFormatter: (value) => value.toString(),
+                min: 0,
+                max: 228,
+                },
+            ]}
+            series={Object.keys(keyToLabelHFAG).map((key) => ({
+                dataKey: key,
+                label: keyToLabelHFAG[key],
+                color: colorsHFAG[key],
+                showMark: false,
+                ...stackStrategy,
+            }))}
+            dataset={heightForAgeGirl}
+            {...customize}
+        />
+        </div>}
         </>
     );
 }

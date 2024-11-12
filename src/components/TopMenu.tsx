@@ -46,13 +46,8 @@ const MENUITEMS = [
       title: "เกี่ยวกับเรา",
       pageRef: "/about-us",
       subItems: [
-        { title: "อาหารของคุณลูก", pageRef: "/articles/food" },
-        { title: "พัฒนาการ", pageRef: "/articles/development" },
-        { title: "ช่องปากและฟัน", pageRef: "/articles/oral-and-dental" },
-        { title: "อุปกรณ์ ของเล่น และการป้องกันอุบัติเหตุ", pageRef: "/articles/toys-and-safety" },
-        { title: "สุขภาพครรภ์", pageRef: "/articles/pregnancy-health" },
-        { title: "ดูแลกัน", pageRef: "/articles/care" },
-        { title: "ช่วงตรวจคัดกรอง", pageRef: "/articles/screening" },
+        { title: "ติดต่อเรา", pageRef: "/articles/contact-us"},
+        { title: "KhunLook on Mobile", pageRef: "/articles/khunlook-on-mobile"},
       ],
     },
   ];  
