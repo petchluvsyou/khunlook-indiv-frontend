@@ -137,7 +137,7 @@ export default function Growth() {
                     </div>
                 </div>
             </LocalizationProvider>
-            <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 pt-4 lg:pb-24 bg-Bg w-full'>
+            <div className='flex justify-center items-center text-center relative z-0 flex-col p-12 px-0 pb-0 pt-4 lg:pb-24 bg-Bg w-full'>
                 <p className="text-3xl text-Yellow font-bold mb-6 mt-8">กราฟแสดงการเติบโต</p>
                 <GrowthChart gender={gender}/>
             </div>

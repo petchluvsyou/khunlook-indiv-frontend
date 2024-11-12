@@ -3,24 +3,19 @@ import { ToggleButton } from "@mui/material";
 import { Select } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { useState } from "react";
-import { LineChart } from '@mui/x-charts/LineChart';
-import {
-  heightForAgeGirl,
-  keyToLabel as keyToLabelHFAG,
-  colors as colorsHFAG,
-} from "@/app/growth/heightForAgeGirl";
+import CustomLineChart from "./CustomLineChart";
 
-const stackStrategy = {
-    stack: 'total',
-    area: true,
-    stackOffset: 'none', // To stack 0 on top of others
-  } as const;
-  
-const customize = {
-    height: 300,
-    legend: { hidden: false },
-    margin: { top: 5 },
-  };
+import {
+    heightForAgeGirl,
+    keyToLabel as keyToLabelHFAG,
+    colors as colorsHFAG,
+  } from "@/app/growth/heightForAgeGirl";
+
+import {
+    heightForAgeBoy,
+    keyToLabel as keyToLabelHFAB,
+    colors as colorsHFAB,
+  } from "@/app/growth/heightForAgeBoy";
 
 export default function GrowthChart({gender}:{gender:string}){
 
@@ -68,7 +63,18 @@ export default function GrowthChart({gender}:{gender:string}){
                 value={chartComparison}
                 label="gender"
                 onChange={(e)=>{setChartComparison(e.target.value);}}
-                className="w-48 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 rounded-xl border [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiInputBase-input]:p-0 "
+                sx={{
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                    textAlign: "center",
+                    fontFamily: "line-seed-sans",
+                    padding: 1.5,
+                    borderRadius: "0.75rem",
+                    '& .MuiInputBase-input': {
+                      padding: 0,
+                    },
+                  }}
+                className="w-48"
                 >
                 <MenuItem value="height-age">ส่วนสูงเทียบอายุ</MenuItem>
                 <MenuItem value="weight-age">น้ำหนักเทียบอายุ</MenuItem>
@@ -76,27 +82,17 @@ export default function GrowthChart({gender}:{gender:string}){
                 <MenuItem value="headcircum-age">รอบศรีษะเทียบอายุ</MenuItem>
             </Select>
         </div>
-        {chartComparison=='height-age'&&gender=='female'&&<div className="w-5/6 pt-12">
-        <LineChart
-            xAxis={[
-                {
-                dataKey: 'Month',
-                valueFormatter: (value) => value.toString(),
-                min: 0,
-                max: 228,
-                },
-            ]}
-            series={Object.keys(keyToLabelHFAG).map((key) => ({
-                dataKey: key,
-                label: keyToLabelHFAG[key],
-                color: colorsHFAG[key],
-                showMark: false,
-                ...stackStrategy,
-            }))}
-            dataset={heightForAgeGirl}
-            {...customize}
-        />
-        </div>}
+        <div className="w-full sm:w-4/5 lg:w-2/3 pt-12">
+            {gender==''&&<CustomLineChart dataset={[]} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='' xlabel=''/>}
+            {chartComparison=='height-age'&&gender=='female'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='ส่วนสูง (ซม.)' xlabel='อายุ (เดือน)'/>}
+            {chartComparison=='weight-age'&&gender=='female'&&<CustomLineChart dataset={heightForAgeBoy} keyToLabel={keyToLabelHFAB} colors={colorsHFAB} ylabel='น้ำหนัก (กก.)' xlabel='อายุ (เดือน)'/>}
+            {chartComparison=='weight-height'&&gender=='female'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='น้ำหนัก (กก.)' xlabel='ส่วนสูง (ซม.)'/>}
+            {chartComparison=='headcircum-age'&&gender=='female'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='รอบศรีษะ (ซม.)' xlabel='อายุ (เดือน)'/>}
+            {chartComparison=='height-age'&&gender=='male'&&<CustomLineChart dataset={heightForAgeBoy} keyToLabel={keyToLabelHFAB} colors={colorsHFAB} ylabel='ส่วนสูง (ซม.)' xlabel='อายุ (เดือน)'/>}
+            {chartComparison=='weight-age'&&gender=='male'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='น้ำหนัก (กก.)' xlabel='อายุ (เดือน)'/>}
+            {chartComparison=='weight-height'&&gender=='male'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='น้ำหนัก (กก.)' xlabel='ส่วนสูง (ซม.)'/>}
+            {chartComparison=='headcircum-age'&&gender=='male'&&<CustomLineChart dataset={heightForAgeGirl} keyToLabel={keyToLabelHFAG} colors={colorsHFAG} ylabel='รอบศรีษะ (ซม.)' xlabel='อายุ (เดือน)'/>}
+        </div>
         </>
     );
 }

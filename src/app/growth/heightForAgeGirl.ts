@@ -1,9 +1,9 @@
 export const keyToLabel: { [key: string]: string } = {
-    P3: 'เตี้ย',
-    P15: 'ค่อนข้างเตี้ย',
-    P85: 'ตามเกณฑ์',
-    P97: 'ค่อนข้างสูง',
     P99: 'สูงกว่าเกณฑ์',
+    P97: 'ค่อนข้างสูง',
+    P85: 'ตามเกณฑ์',
+    P15: 'ค่อนข้างเตี้ย',
+    P3: 'เตี้ย',
   };
   
 export const colors: { [key: string]: string } = {
