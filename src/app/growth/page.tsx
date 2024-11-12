@@ -35,17 +35,7 @@ export default function Growth() {
                             value={currentDate}
                             onChange={(value)=>{setCurrentDate(value);}}
                             disableOpenPicker
-                            slotProps={{
-                                textField: {
-                                    InputProps: {
-                                      className: 'bg-transparent border rounded-xl p-0 focus:border-gray-500 focus:ring-0 focus:outline-none bg-Bg',
-                                    },
-                                    inputProps: {
-                                      className: 'text-center p-1.5 bg-Bg',
-                                    },
-                                  },
-                            }}
-                            className="w-32"
+                            className="w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
                         />
                     </div>
                     <div className='flex flex-row justify-center gap-4'>
@@ -54,17 +44,7 @@ export default function Growth() {
                             value={birthDate}
                             onChange={(value)=>{setBirthDate(value);}}
                             disableOpenPicker
-                            slotProps={{
-                                textField: {
-                                    InputProps: {
-                                      className: 'bg-transparent border rounded-xl p-0 focus:border-gray-500 focus:ring-0 focus:outline-none bg-Bg',
-                                    },
-                                    inputProps: {
-                                      className: 'text-center p-1.5 bg-Bg',
-                                    },
-                                  },
-                            }}
-                            className="w-32"
+                            className="w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
                         />
                     </div>
                     <div className='flex flex-row justify-center gap-4'>
@@ -75,7 +55,7 @@ export default function Growth() {
                             value={gender}
                             label="gender"
                             onChange={(e)=>{setGender(e.target.value);}}
-                            className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 rounded-xl border [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiInputBase-input]:p-0 "
+                            className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
                             >
                             <MenuItem value={'ชาย'}>ชาย</MenuItem>
                             <MenuItem value={'หญิง'}>หญิง</MenuItem>
@@ -87,17 +67,7 @@ export default function Growth() {
                             value={measureDate}
                             onChange={(value)=>{setMeasureDate(value);}}
                             disableOpenPicker
-                            slotProps={{
-                                textField: {
-                                    InputProps: {
-                                      className: 'bg-transparent border rounded-xl p-0 focus:border-gray-500 focus:ring-0 focus:outline-none bg-Bg',
-                                    },
-                                    inputProps: {
-                                      className: 'text-center p-1.5 bg-Bg',
-                                    },
-                                  },
-                            }}
-                            className="w-32 min-w-32"
+                            className="w-32 min-w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
                         />
                     </div>
                     <div className='flex flex-col lg:flex-row justify-center gap-6 items-start lg:items-center'>
@@ -136,7 +106,7 @@ export default function Growth() {
                         </div>
                     </div>
                     <div className='flex flex-row justify-center gap-6 items-center lg:items-center pt-4 w-full'>
-                        <Button className="rounded-xl bg-Yellow font-line-seed-sans p-1.5 w-24 text-base text-white gap-2"
+                        <button className="rounded-xl bg-Yellow font-line-seed-sans p-1.5 w-24 text-base text-white gap-2 flex flex-row justify-center"
                             onClick={()=>{
                                 setCurrentDate(null);
                                 setBirthDate(null);
@@ -149,8 +119,8 @@ export default function Growth() {
                         >
                             <CheckIcon className="w-5"/>
                             <p>ยืนยัน</p>
-                        </Button>
-                        <Button className="rounded-xl bg-DarkRed font-line-seed-sans p-1.5 w-24 text-base text-white gap-2"
+                        </button>
+                        <button className="rounded-xl bg-DarkRed font-line-seed-sans p-1.5 w-24 text-base text-white gap-2 flex flex-row justify-center"
                             onClick={()=>{
                                 setCurrentDate(null);
                                 setBirthDate(null);
@@ -163,7 +133,7 @@ export default function Growth() {
                         >
                             <RefreshIcon className="w-5"/>
                             <p>ล้างค่า</p>
-                        </Button>
+                        </button>
                     </div>
                 </div>
             </LocalizationProvider>
