@@ -24,20 +24,15 @@ export default function TopMenuItem ({title, pageRef, children}: {title:string, 
             <Link className='w-auto text-center' href={pageRef}>
                 {title}
             </Link>
-            {hasChildren && <Button
+            {hasChildren && <button
                     aria-controls={open ? 'basic-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                     className='w-auto h-auto text-black p-0 ml-[8px] gap-0'
-                    sx={{
-                        minWidth: '0px',
-                        padding: '0px',
-                        margin: '0px',
-                    }}
                 >
                 <ExpandMoreIcon fontSize='small'/>    
-                </Button>
+                </button>
             }
             {hasChildren && <Menu
                     anchorEl={anchorEl}
