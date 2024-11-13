@@ -20,6 +20,7 @@ const config: Config = {
         'Yellow': '#D49D44',
         'Green': '#486708',
         'DarkRed': '#C36277',
+        'Yellow2': '#F3E8D4',
       },
     },
   },
