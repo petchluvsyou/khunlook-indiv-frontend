@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import requiredVaccineData from "./vaccineData/RequiredVaccineData";
+import requiredVaccineData from "./vaccineData/requiredVaccineData";
 import optionalVaccineData from "./vaccineData/optionalVaccineData";
 import vaccineName from "./vaccineData/vaccineName";
 
