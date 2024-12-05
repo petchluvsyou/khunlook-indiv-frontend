@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
+import userRegister from '@/libs/userRegister';
 
 export default function Register() {
   const router = useRouter();
@@ -72,28 +73,19 @@ export default function Register() {
     }
 
     try {
-      const res = await axios.post('http://localhost:4000/user', {
-        NAME: name,
-        USERNAME: username,
-        PASSWORD: password,
-        EMAIL: email,
-      });
-
-      setServerMessage(res.data.message);
-      router.push('/login'); // Redirect to login after successful registration
+      const registerData = {NAME : name, USERNAME : username, PASSWORD: password, EMAIL : email};
+      await userRegister(registerData);
+      console.log("registration successful");
+      router.push('/login')
     } catch (error: any) {
-      if (error.response && error.response.data) {
-        setServerMessage(error.response.data.message);
-      } else {
-        setServerMessage('An unexpected error occurred.');
-      }
+        setServerMessage(error.message);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col items-center justify-center w-full bg-white rounded-lg shadow-md lg:max-w-screen-sm">
-        <div className="p-4 w-full lg:p-6 lg:p-8">
+        <div className="p-4 w-full lg:p-6">
           <h1 className="mb-3 text-2xl font-bold text-gray-900 lg:text-2xl dark:text-white">
             Create your account
           </h1>
