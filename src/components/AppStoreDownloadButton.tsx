@@ -9,7 +9,7 @@ export default function AppStoreDownloadButton() {
                <div className="flex flex-row gap-2 items-center justify-center border-2 border-gray-300 rounded-full px-6 py-2  h-18 hover:bg-gray-100 transition-all">
                     <FontAwesomeIcon icon={faApple} className="text-black text-2xl mr-2 h-10" />
                     <div className="text-left whitespace-nowrap">
-                         <p className="text-xs font-medium text-gray-600 ">Download on the</p>
+                         <p className="text-xs font-medium text-gray-600 ">Download on</p>
                          <p className="text-lg font-semibold text-black">App Store</p>
                     </div>
                </div>
