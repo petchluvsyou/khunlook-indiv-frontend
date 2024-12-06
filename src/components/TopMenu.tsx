@@ -46,8 +46,8 @@ const MENUITEMS = [
     title: "เกี่ยวกับเรา",
     pageRef: "/about-us",
     subItems: [
-      { title: "ติดต่อเรา", pageRef: "/articles/contact-us" },
-      { title: "KhunLook on Mobile", pageRef: "/articles/khunlook-on-mobile" },
+      { title: "ติดต่อเรา", pageRef: "/about-us/contact-us" },
+      { title: "KhunLook on Mobile", pageRef: "/about-us/khunlook-on-mobile" },
     ],
   },
 ];
