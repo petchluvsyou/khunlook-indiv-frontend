@@ -6,7 +6,6 @@ import Link from "next/link";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
-
 export default function page() {
      const [selectedOption, setSelectedOption] = useState<'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง'>('เด็กปฐมวัย');
      const [ageRange, setAgeRange] = useState<string>('0-1 เดือน');
@@ -104,7 +103,7 @@ export default function page() {
                               <Link href={`/development/${selectedOption}/${ageRange}/${index}`} passHref className="p-3 col-span-2 flex items-center text-left item-center h-16 bg-white rounded-md sm:hidden mt-2">
                                    <div>
                                         {row.skill}
-                                        <FontAwesomeIcon icon={faArrowRight} className="text-[#D49D44]  text-xl ml-2" />
+                                        <FontAwesomeIcon icon={faArrowRight} className="text-[#D49D44] text-xl ml-2" />
                                    </div>
                               </Link>
                          </>
