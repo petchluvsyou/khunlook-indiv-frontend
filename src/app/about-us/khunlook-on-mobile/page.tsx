@@ -35,7 +35,7 @@ export default function page() {
                                    />
                               </div>
                               <div className="text-black hover:text-Yellow hover:underline cursor-pointer hover:cursor-grab" onClick={() => { window.location.href = '/pdf/Khunlook_Brochure_front.pdf'; }}>
-                                   download front
+                                   download
                                    <FontAwesomeIcon icon={faDownload} className="text-Yellow text-md ml-2" />
                               </div>
                          </div>
@@ -49,7 +49,7 @@ export default function page() {
                                    />
                               </div>
                               <div className="text-black hover:text-Yellow hover:underline cursor-pointer hover:cursor-grab" onClick={() => { window.location.href = '/pdf/Khunlook_Brochure_back.pdf'; }}>
-                                   download back
+                                   download
                                    <FontAwesomeIcon icon={faDownload} className="text-Yellow text-md ml-2" />
                               </div>
                          </div>
