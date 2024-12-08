@@ -6,14 +6,31 @@ interface LoginData {
   PASSWORD: string;
 }
 
-interface LoginResponse {
+interface User {
+  ID: string;
+  NAME: string;
+  USERNAME: string;
+  EMAIL: string;
+  PHONE_NUMBER: string;
+}
+
+interface Tokens {
   accessToken: string;
   refreshToken: string;
 }
 
+interface LoginResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: User;
+    tokens: Tokens;
+  };
+}
+
 export default async function userLogin(data: LoginData): Promise<LoginResponse> {
   try {
-    const response = await axios.post<LoginResponse>("http://localhost:4000/auth", data, {
+    const response = await axios.post<LoginResponse>("http://localhost:4000/api/v1/auth", data, {
       headers: { "Content-Type": "application/json" },
     });
     return response.data;

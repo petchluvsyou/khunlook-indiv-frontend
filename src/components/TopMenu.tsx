@@ -84,17 +84,20 @@ export default function TopMenu() {
       <div className="flex items-center gap-4">
         {
           session ?
-            <button
-              onClick={() => {
-                if (confirm('Are you sure you want to sign out?')) {
-                  signOut({ callbackUrl: '/' });
-                }
-              }}
-              className="flex flex-row gap-3"
-            >
-              <p className='font-bold'>ออกจากระบบ</p>
-              <AccountCircleIcon className='invert-0' />
-            </button>
+            <div className="flex items-center gap-4">
+              <p>Welcome, {session.user.name}!</p>
+              <button
+                onClick={() => {
+                  if (confirm('Are you sure you want to sign out?')) {
+                    signOut({ callbackUrl: '/' });
+                  }
+                }}
+                className="flex flex-row gap-3"
+              >
+                <p className='font-bold'>ออกจากระบบ</p>
+                <AccountCircleIcon className='invert-0' />
+              </button>
+            </div>
             :
             <Link href={"/login"} className='flex flex-row gap-3'>
               <p className='font-bold'>เข้าสู่ระบบ</p>
