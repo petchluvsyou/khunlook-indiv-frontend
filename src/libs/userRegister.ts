@@ -5,11 +5,12 @@ export interface RegisterData {
   USERNAME: string;
   PASSWORD: string;
   EMAIL: string;
+  PHONE_NUMBER: string;
 }
 
 export default async function userRegister(data: RegisterData): Promise<void> {
   try {
-    const response = await axios.post('http://localhost:4000/api/v1/user', data, {
+    const response = await axios.post('http://52.221.239.141:3000/api/v1/user', data, {
       headers: { 'Content-Type': 'application/json' },
     });
     return response.data;

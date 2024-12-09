@@ -5,7 +5,6 @@ import axios from "axios";
 
 interface ExtendedUser extends User {
   id: string;
-  name: string;
   username: string;
   email: string;
   accessToken: string;
@@ -31,9 +30,8 @@ export const authOptions: AuthOptions = {
 
           const user: ExtendedUser = {
             id: data.data.user.ID,
-            name: data.data.user.NAME,
-            username: data.data.user.USERNAME,
-            email: data.data.user.EMAIL,
+            username: data.data.user.username,
+            email: data.data.user.email,
             accessToken: data.data.tokens.accessToken,
             refreshToken: data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
@@ -54,7 +52,6 @@ export const authOptions: AuthOptions = {
       if (user) {
         const extendedUser = user as ExtendedUser;
         token.id = extendedUser.id;
-        token.name = extendedUser.name;
         token.username = extendedUser.username;
         token.email = extendedUser.email;
         token.accessToken = extendedUser.accessToken;
@@ -86,7 +83,6 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       session.user.id = token.id as string;
-      session.user.name = token.name as string;
       session.user.username = token.username as string;
       session.user.email = token.email as string;
       session.accessToken = token.accessToken as string;
