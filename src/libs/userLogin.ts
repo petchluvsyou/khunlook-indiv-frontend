@@ -8,10 +8,9 @@ interface LoginData {
 
 interface User {
   ID: string;
-  NAME: string;
-  USERNAME: string;
-  EMAIL: string;
-  PHONE_NUMBER: string;
+  username: string;
+  email: string;
+  phone_number: string;
 }
 
 interface Tokens {
@@ -30,7 +29,7 @@ interface LoginResponse {
 
 export default async function userLogin(data: LoginData): Promise<LoginResponse> {
   try {
-    const response = await axios.post<LoginResponse>("http://localhost:4000/api/v1/auth", data, {
+    const response = await axios.post<LoginResponse>("http://52.221.239.141:3000/api/v1/auth", data, {
       headers: { "Content-Type": "application/json" },
     });
     return response.data;

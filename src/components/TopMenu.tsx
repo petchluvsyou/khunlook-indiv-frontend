@@ -85,7 +85,7 @@ export default function TopMenu() {
         {
           session ?
             <div className="flex items-center gap-4">
-              <p>Welcome, {session.user.name}!</p>
+              <p>Welcome, {session.user.username}!</p>
               <button
                 onClick={() => {
                   if (confirm('Are you sure you want to sign out?')) {
@@ -95,7 +95,7 @@ export default function TopMenu() {
                 className="flex flex-row gap-3"
               >
                 <p className='font-bold'>ออกจากระบบ</p>
-                <AccountCircleIcon className='invert-0' />
+                <Link href={"/profile"}><AccountCircleIcon className='invert-0' /></Link>
               </button>
             </div>
             :
