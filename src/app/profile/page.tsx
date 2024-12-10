@@ -72,9 +72,9 @@ export default function page() {
                {profile && 
                (<div>
                     
-                    <p className="text-3xl lg:text-4xl">{profile.CID}</p>
-                    <p className="text-base lg:text-md text-gray-200 font-light">{profile.PID}</p>
-                    <p className="text-base lg:text-md text-gray-200 font-light">Tel: {profile.HID}</p>
+                    <p className="text-3xl lg:text-4xl">CID: {profile.CID}</p>
+                    <p className="text-base lg:text-md text-gray-200 font-light">PID: {profile.PID}</p>
+                    <p className="text-base lg:text-md text-gray-200 font-light">HID: {profile.HID}</p>
                </div>
                )
                }
