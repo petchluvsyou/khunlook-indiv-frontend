@@ -28,15 +28,23 @@ interface LoginResponse {
   };
 }
 
-export default async function userLogin(data: LoginData): Promise<LoginResponse> {
+export default async function userLogin(
+  data: LoginData
+): Promise<LoginResponse> {
   try {
-    const response = await axios.post<LoginResponse>("http://52.221.239.141:3000/api/v1/auth", data, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await axios.post<LoginResponse>(
+      "http://52.221.239.141:3000/api/v1/auth",
+      data,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response && error.response.data) {
-      const errorMessage = error.response.data || "Failed to log in. Please check your credentials.";
+      const errorMessage =
+        error.response.data ||
+        "Failed to log in. Please check your credentials.";
       throw new Error(errorMessage);
     } else {
       throw new Error("An error occurred during login.");

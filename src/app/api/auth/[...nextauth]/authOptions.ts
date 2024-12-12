@@ -27,7 +27,10 @@ export const authOptions: AuthOptions = {
 
         try {
           const { username, password } = credentials;
-          const data = await userLogin({ USERNAME: username, PASSWORD: password });
+          const data = await userLogin({
+            USERNAME: username,
+            PASSWORD: password,
+          });
 
           const user: ExtendedUser = {
             id: data.data.user.ID,
@@ -56,22 +59,32 @@ export const authOptions: AuthOptions = {
         token.id = extendedUser.id;
         token.username = extendedUser.username;
         token.email = extendedUser.email;
+        token.pid = extendedUser.pid;
         token.accessToken = extendedUser.accessToken;
         token.refreshToken = extendedUser.refreshToken;
         token.accessTokenExpires = extendedUser.accessTokenExpires;
         token.refreshTokenExpires = extendedUser.refreshTokenExpires;
       }
 
-      if (typeof token.refreshTokenExpires === 'number' && Date.now() > token.refreshTokenExpires) {
+      if (
+        typeof token.refreshTokenExpires === "number" &&
+        Date.now() > token.refreshTokenExpires
+      ) {
         console.log("Refresh token expired. User needs to log in again.");
         return {};
       }
 
-      if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires) {
+      if (
+        typeof token.accessTokenExpires === "number" &&
+        Date.now() > token.accessTokenExpires
+      ) {
         try {
-          const response = await axios.post('http://52.221.239.141:3000/api/v1/auth/refresh', {
-            refreshToken: token.refreshToken,
-          });
+          const response = await axios.post(
+            "http://52.221.239.141:3000/api/v1/auth/refresh",
+            {
+              refreshToken: token.refreshToken,
+            }
+          );
 
           token.accessToken = response.data.tokens.accessToken;
           token.accessTokenExpires = Date.now() + 3600 * 1000;
