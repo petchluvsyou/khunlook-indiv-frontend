@@ -7,6 +7,7 @@ interface LoginData {
 }
 
 interface User {
+  pid: string;
   ID: string;
   username: string;
   email: string;

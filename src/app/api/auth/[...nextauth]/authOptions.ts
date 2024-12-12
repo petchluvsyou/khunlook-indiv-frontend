@@ -7,6 +7,7 @@ interface ExtendedUser extends User {
   id: string;
   username: string;
   email: string;
+  pid: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;
@@ -32,6 +33,7 @@ export const authOptions: AuthOptions = {
             id: data.data.user.ID,
             username: data.data.user.username,
             email: data.data.user.email,
+            pid: data.data.user.pid,
             accessToken: data.data.tokens.accessToken,
             refreshToken: data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
@@ -67,7 +69,7 @@ export const authOptions: AuthOptions = {
 
       if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires) {
         try {
-          const response = await axios.post('http://localhost:4000/api/v1/auth/refresh', {
+          const response = await axios.post('http://52.221.239.141:3000/api/v1/auth/refresh', {
             refreshToken: token.refreshToken,
           });
 

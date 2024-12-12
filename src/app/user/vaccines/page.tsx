@@ -56,6 +56,7 @@ export default function page() {
                          onChange={handleChildOptionChange}
                          className="p-2 border border-gray-300 rounded w-48"
                     >
+                         {/*fetch child option */}
                          <option key='1' value='Dong'>Dong</option>
                          <option key='2' value='Petch'>Petch</option>
                     </select>
@@ -106,12 +107,12 @@ export default function page() {
                                    {/* Vaccine Rows */}
                                    {/* BCG */}
                                    <div className="bg-Bg p-4 rounded-md">วัคซีนวัณโรค (BCG)</div>
-                                   <VaccineCell vaccineType="BCG" colspan={1} color="Yellow" prev_chosen={true} prev_location="Dongy Hospital" prev_reserveDate="10/26/2024"/>
+                                   <VaccineCell vaccineType="BCG" colspan={1} color="Yellow" prev_chosen={false} prev_location="" prev_reserveDate=""/>
                                    <div className="col-span-5 p-4"></div>
 
                                    {/* HBV */}
                                    <div className="bg-Bg p-4 rounded-md">วัคซีนตับอักเสบบี (HBV)</div>
-                                   <VaccineCell vaccineType="HBV1" colspan={1} color="DarkRed" prev_chosen={true} prev_location="GearGear WHO center" prev_reserveDate="10/05/2024"/>
+                                   <VaccineCell vaccineType="HBV1" colspan={1} color="Yellow" prev_chosen={false} prev_location="" prev_reserveDate=""/>
                                    <div className="col-span-5 p-4"></div>
 
                                    {/* DTPHB */}
