@@ -33,11 +33,11 @@ const MENUITEMS = [
     title: "สิ่งเล็กๆที่สร้างลูก",
     pageRef: "/memory",
     subItems: [
-      { title: "ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ", pageRef: "/articles/food" },
-      { title: "7 เคล็ดลับอ่านนิทานให้ลูก", pageRef: "/articles/development" },
-      { title: "9 เหตุผลที่พ่อแม่ทุกคนควร “อ่านให้ลูกฟัง”", pageRef: "/articles/oral-and-dental" },
-      { title: "“จ๊ะ-เอ๋!” แค่สองคำ แต่มีความหมายลึกซึ้ง", pageRef: "/articles/toys-and-safety" },
-      { title: "พ่อแม่คือของเล่นมีชีวิต", pageRef: "/articles/pregnancy-health" },
+        { title: "ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ", pageRef: "/memory/download-drive" },
+        { title: "7 เคล็ดลับอ่านนิทานให้ลูก", pageRef: "/memory/page/7-tips-reading" },  // Dynamic route for scraped content
+        { title: "9 เหตุผลที่พ่อแม่ทุกคนควร “อ่านให้ลูกฟัง”", pageRef: "/memory/page/9-reasons-reading" },
+        { title: "“จ๊ะ-เอ๋!” แค่สองคำ แต่มีความหมายลึกซึ้ง", pageRef: "/memory/page/ja-ae" },
+        { title: "พ่อแม่คือของเล่นมีชีวิต", pageRef: "/memory/page/parents-play" }
     ],
   },
   {
