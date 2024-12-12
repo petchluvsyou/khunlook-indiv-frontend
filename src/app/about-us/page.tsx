@@ -35,7 +35,7 @@ export default function page() {
   return (
     <div className="flex justify-center items-center text-center relative z-10 flex flex-col py-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
       <h1 className="font-bold text-3xl sm:text-5xl mt-8 sm:mt-5 mb-12 sm:mb-8">
-        ติดต่อเรา
+        เกี่ยวกับเรา
       </h1>
       <div className="flex flex-col gap-4 mb-12 p-6 w-3/4 sm:w-1/2 border border-yellow-500 rounded-md text-center">
         <p className="text-xl font-bold text-yellow-500 text-center">Contact us</p>
