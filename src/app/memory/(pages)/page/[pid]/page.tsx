@@ -8,6 +8,6 @@ export default function MemoryPage({ params }: { params: { pid: string } }) {
   }
 
   return (
-    <div className="text-Dark text-lg mb-6" dangerouslySetInnerHTML={{ __html: MemoryData.content }}></div>
+    <div className="bg-Bg text-Dark" dangerouslySetInnerHTML={{ __html: MemoryData.content }}></div>
   );
 }

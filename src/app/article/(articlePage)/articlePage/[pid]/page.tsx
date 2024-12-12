@@ -8,7 +8,7 @@ export default function ArticlePage({ params }: { params: { pid: string } }) {
   }
 
   return (
-    <div className="pt-44 py-16 px-8 max-w-screen-lg mx-auto">
+    <div className="bg-Bg pt-44 py-16 px-44">
       <h1 className="text-4xl font-bold text-gray-800 mb-6">{ArticleData.title}</h1>
       <p className="text-sm text-gray-600 mb-4">
         <strong>หมวดหมู่:</strong> {ArticleData.category} | <strong>เผยแพร่เมื่อ:</strong> {ArticleData.published_date}
