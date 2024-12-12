@@ -7,7 +7,7 @@ interface LoginData {
 }
 
 interface User {
-  pid: string;
+  PID: string;
   ID: string;
   username: string;
   email: string;
@@ -33,12 +33,14 @@ export default async function userLogin(
 ): Promise<LoginResponse> {
   try {
     const response = await axios.post<LoginResponse>(
-      "http://52.221.239.141:3000/api/v1/auth",
+      "http://localhost:3002/api/v1/auth",
+      // "http://52.221.239.141:3000/api/v1/auth",
       data,
       {
         headers: { "Content-Type": "application/json" },
       }
     );
+    console.log(response.data);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response && error.response.data) {

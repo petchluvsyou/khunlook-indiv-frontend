@@ -10,16 +10,20 @@ import {
 import requiredVaccineData from "./vaccineData/requiredVaccineData";
 import optionalVaccineData from "./vaccineData/optionalVaccineData";
 import vaccineName from "./vaccineData/vaccineName";
-import VaccineCell from "@/components/VaccineCell";
 import AddChildPanel from "@/components/AddChildPanel";
 import EditChildPanel from "@/components/EditChildPanel";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import { useSession } from "next-auth/react";
+import VaccineService from "@/libs/VaccineService/VaccineService";
+import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
+import VaccineCell from "@/components/VaccineCell";
 
 export default function page() {
   const session = useSession();
   const [childs, setChilds] = useState<IChildData[] | null>([]);
+  const [childpid, setChildPid] = useState<string>("");
+  const [vaccines, setVaccines] = useState<IGetVaccine[]>([]);
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
     "required"
   );
@@ -67,13 +71,36 @@ export default function page() {
   useEffect(() => {
     const getChild = async () => {
       const childService = new ChildService(session.data?.accessToken);
-      const res = await childService.getChildByID(6);
+      const res = await childService.getChildByID(
+        session.data?.user?.pid ?? ""
+      );
       const arr = Object.values(res.data.data);
       setChilds(arr);
-      console.log(res);
+      setChildOption(arr[0].NAME);
+      setChildPid(arr[0].PID);
     };
     getChild();
   }, []);
+  useEffect(() => {
+    const getVaccines = async () => {
+      const child = childs?.find((child) => child.NAME === childOption);
+      const vaccineService = new VaccineService(session.data?.accessToken);
+      const res = await vaccineService.getInformation({
+        childpid: child?.PID ?? "",
+        // isinplan: age === "lt1" ? "1" : "2",
+        isinplan: "1",
+        loggedin: 1,
+        previous_chosen: "1",
+      });
+      const arr = res.data.history;
+      await setVaccines(arr);
+    };
+    getVaccines();
+  }, [childOption, age]);
+
+  const getMatchingVaccine = (description: string): IGetVaccine | undefined => {
+    return vaccines?.find((item) => item.DESCRIPTION === description);
+  };
 
   return (
     <div className="min-h-screen justify-center items-center text-center relative z-0 flex flex-col p-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
@@ -173,12 +200,15 @@ export default function page() {
               {/* BCG */}
               <div className="bg-Bg p-4 rounded-md">วัคซีนวัณโรค (BCG)</div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="BCG"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={true}
-                prev_location="Dongy Hospital"
-                prev_reserveDate="10/26/2024"
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "BCG"
+                )}
+                prev_location={getMatchingVaccine("BCG")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("BCG")?.DATE_SERV ?? ""}
               />
               <div className="col-span-5 p-4"></div>
 
@@ -187,12 +217,15 @@ export default function page() {
                 วัคซีนตับอักเสบบี (HBV)
               </div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="HBV1"
                 colspan={1}
                 color="DarkRed"
-                prev_chosen={true}
-                prev_location="GearGear WHO center"
-                prev_reserveDate="10/05/2024"
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "HBV1"
+                )}
+                prev_location={getMatchingVaccine("HBV1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("HBV1")?.DATE_SERV ?? ""}
               />
               <div className="col-span-5 p-4"></div>
 
@@ -202,26 +235,35 @@ export default function page() {
               </div>
               <div className="col-span-1 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="DTPHB 1"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
-                prev_location=""
-                prev_reserveDate=""
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "DTPHB 1"
+                )}
+                prev_location={getMatchingVaccine("DTPHB1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("DTPHB1")?.DATE_SERV ?? ""}
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="DTPHB 2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
-                prev_location=""
-                prev_reserveDate=""
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "DTPHB 2"
+                )}
+                prev_location={getMatchingVaccine("DTPHB2")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("DTPHB2")?.DATE_SERV ?? ""}
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="DTPHB 3"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "DTPHB 3"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -231,34 +273,46 @@ export default function page() {
               <div className="bg-Bg p-4 rounded-md">วัคซีนโปลิโอ (OPV)</div>
               <div className="p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="OPV1"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "OPV1"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="OPV2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "OPV2"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="IPV"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "IPV"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="OPV3"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "OPV3"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -270,10 +324,13 @@ export default function page() {
               </div>
               <div className="col-span-4 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="MMR1"
                 colspan={2}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "MMR1"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -284,10 +341,13 @@ export default function page() {
               </div>
               <div className="col-span-4 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="JE1"
                 colspan={2}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "JE1"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -339,27 +399,36 @@ export default function page() {
                 วัคซีนคอตีบ,บาดทะยัก (DTPHB)
               </div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="DTwP กระตุ้น 1"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "DTwP กระตุ้น 1"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <div className="col-span-2 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="DTwP กระตุ้น 2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "DTwP กระตุ้น 2"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="Td"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "Td"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -368,19 +437,25 @@ export default function page() {
               <div className="bg-Bg p-4 rounded-md">วัคซีนโปลิโอ (OPV)</div>
               <div className="col-span-1 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="OPV4"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "OPV4"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <div className="col-span-2 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="OPV5"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "OPV5"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -391,10 +466,13 @@ export default function page() {
               </div>
               <div className="col-span-2 p-4"></div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="MMR2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "MMR2"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -405,18 +483,24 @@ export default function page() {
                 วัคซีนไข้สมองอักเสบ (JE)
               </div>
               <VaccineCell
+                childpid={childpid}
                 vaccineType="JE2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "JE"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="JE3"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "JE3"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -464,10 +548,17 @@ export default function page() {
             </div>
             <div className="col-span-1 p-4"></div>
             <VaccineCell
-              vaccineType="DTP-IPV-Hib 2"
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
+              vaccineType="DTP-IPV-Hib2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-Hib2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -479,26 +570,47 @@ export default function page() {
               ทัยป์บี (DTP-IPV-HB-Hib)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="DTP-IPV-HB-Hib1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="DTP-IPV-HB-Hib2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="DTP-IPV-HB-Hib3"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib3"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -510,26 +622,47 @@ export default function page() {
               (Hib)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Hib1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Hib1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Hib2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Hib2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Hib3"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Hib3"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -541,10 +674,17 @@ export default function page() {
             </div>
             <div className="col-span-3 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="JE1: Lived attenuated"
               colspan={2}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "JE1: Lived attenuated"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -555,10 +695,17 @@ export default function page() {
             </div>
             <div className="col-span-4 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="HAV1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "HAV1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -567,10 +714,17 @@ export default function page() {
             <div className="bg-Bg p-4 rounded-md">วัคซีนโรคอีสุกอีใส (Var)</div>
             <div className="col-span-4 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="VZV1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "VZV1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -579,10 +733,19 @@ export default function page() {
             <div className="bg-Bg p-4 rounded-md">วัคซีนไข้หวัดใหญ่ (Flu)</div>
             <div className="col-span-2 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
               colspan={3}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) =>
+                  item.DESCRIPTION ===
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -592,35 +755,63 @@ export default function page() {
               วัคซีนโรคไอพีดี (IPD) ชนิดคอนจูเกต หรือวัคซีน PCV (PCV)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="PCV1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "PCV1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="PCV2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "PCV2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
-              vaccineType="(PCV3)"
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
+              vaccineType="PCV3"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "PCV3"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <div className="col-span-1 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="PCV4"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "PCV4"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -630,26 +821,47 @@ export default function page() {
               วัคซีนโรคอุจจาระร่วงจากเชื้อไวรัสโรต้า (RV3)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Rota1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Rota1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Rota2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Rota2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Rota3 (เฉพาะ pentavalent)"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Rota3"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -691,10 +903,17 @@ export default function page() {
               ทัยป์บี (DTP-IPV-Hib)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="DTP-IPV-Hib 4"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-Hib4"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -706,19 +925,33 @@ export default function page() {
               ทัยป์บี (DTP-IPV-HB-Hib)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="DTP-IPV-HB-Hib4"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib4"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <div className="col-span-2 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Tdap1 Tdap-IPV"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Tdap1 Tdap-IPV"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -730,10 +963,17 @@ export default function page() {
               (Hib)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Hib4"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "Hib4"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -744,10 +984,15 @@ export default function page() {
               วัคซีนโรคไข้สมองอักเสบเจอี (JE)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="JE2: Lived attenuated"
               colspan={3}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some((item) => item.DESCRIPTION === "JE2")}
               prev_location=""
               prev_reserveDate=""
             />
@@ -758,10 +1003,17 @@ export default function page() {
               วัคซีนโรคตับอักเสบเอ (HA)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="HAV2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "HAV2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -770,19 +1022,33 @@ export default function page() {
             {/* VAR */}
             <div className="bg-Bg p-4 rounded-md">วัคซีนโรคอีสุกอีใส (Var)</div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="VZV1"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "VZV1"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
             <div className="col-span-2 p-4"></div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="VZV2"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "VZV2"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -791,10 +1057,19 @@ export default function page() {
             {/* FLU */}
             <div className="bg-Bg p-4 rounded-md">วัคซีนไข้หวัดใหญ่ (Flu)</div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
               colspan={5}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) =>
+                  item.DESCRIPTION ===
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -804,10 +1079,17 @@ export default function page() {
               วัคซีนโรคไอพีดี (IPD) ชนิดคอนจูเกต หรือวัคซีน PCV (PCV)
             </div>
             <VaccineCell
+              childpid={
+                childs?.filter((child) => {
+                  child.NAME === childOption;
+                })[0].PID ?? ""
+              }
               vaccineType="PCV4"
               colspan={1}
               color="Yellow"
-              prev_chosen={false}
+              prev_chosen={vaccines?.some(
+                (item) => item.DESCRIPTION === "PCV4"
+              )}
               prev_location=""
               prev_reserveDate=""
             />
@@ -826,26 +1108,35 @@ export default function page() {
             <div className="col-span-4 p-4"></div>
             <div className="col-span-1 grid grid-cols-3 gap-1">
               <VaccineCell
+                childpid={childpid}
                 vaccineType="HPV1"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "HPV1"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="HPV2"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "HPV2"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
               <VaccineCell
+                childpid={childpid}
                 vaccineType="HPV3"
                 colspan={1}
                 color="Yellow"
-                prev_chosen={false}
+                prev_chosen={vaccines?.some(
+                  (item) => item.DESCRIPTION === "HPV3"
+                )}
                 prev_location=""
                 prev_reserveDate=""
               />
@@ -892,7 +1183,6 @@ export default function page() {
                 )}
               </div>
             )}
-
           </div>
         ))}
       </div>

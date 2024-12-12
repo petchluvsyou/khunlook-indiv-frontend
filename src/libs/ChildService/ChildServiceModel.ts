@@ -1,5 +1,5 @@
 export interface IAddChildRequest {
-  momcid: number;
+  momcid: string;
   childcid: number;
   childpid: string;
   childhospcode: string;

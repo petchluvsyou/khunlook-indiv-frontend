@@ -1,17 +1,23 @@
-import axios from "axios";
 import ApiServiceBase from "../ApiServiceBase";
-import { IUpdateVaccine } from "./VaccineServiceModel";
+import {
+  ICreateChildVaccineRequest,
+  IGetChildVaccineRequest,
+  IUpdateVaccineRequest,
+} from "./VaccineServiceModel";
 class VaccineService extends ApiServiceBase {
   constructor(accessToken: string = "") {
     super(accessToken);
   }
-  getInformation() {
-    return this.API.post("/vaccine/information");
+  getInformation(request: IGetChildVaccineRequest) {
+    return this.API.post("/vaccine/information", request);
   }
   getHospital() {
     return this.API.post("/vaccine/hospital");
   }
-  updateChildVaccine(request: IUpdateVaccine) {
+  createChildVaccine(request: ICreateChildVaccineRequest) {
+    return this.API.post("/vaccine/create", request);
+  }
+  updateChildVaccine(request: IUpdateVaccineRequest) {
     return this.API.put("/vaccine/", request);
   }
 }
