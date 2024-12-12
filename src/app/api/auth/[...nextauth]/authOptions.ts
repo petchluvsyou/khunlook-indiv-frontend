@@ -67,7 +67,7 @@ export const authOptions: AuthOptions = {
 
       if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires) {
         try {
-          const response = await axios.post('http://localhost:4000/api/v1/auth/refresh', {
+          const response = await axios.post('http://52.221.239.141:3000/api/v1/auth/refresh', {
             refreshToken: token.refreshToken,
           });
 
