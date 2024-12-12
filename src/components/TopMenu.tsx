@@ -91,6 +91,7 @@ export default function TopMenu() {
 		},
 	];
 
+
 	return (
 		<div className="fixed z-40 w-full h-16 lg:h-24 py-4 lg:py-7 px-5 lg:px-12 gap-3 bg-Bg flex item-center shadow-lg justify-between">
 			<div className="flex items-center gap-4">
@@ -147,14 +148,11 @@ export default function TopMenu() {
 					</Link>
 				)}
 				<div className="relative flex lg:hidden items-center">
-					<MenuIcon
-						fontSize="small"
-						onClick={toggleDropdown}
-						className="w-6 h-6 rounded-md"
-					/>
-					{isOpen && <DropDownList />}
+					<MenuIcon fontSize='small' onClick={toggleDropdown} className='w-6 h-6 rounded-md cursor-pointer hover:text-Yellow' />
+          {isOpen && <DropDownList menuItems={MENUITEMS}/>}
 				</div>
 			</div>
 		</div>
 	);
 }
+
