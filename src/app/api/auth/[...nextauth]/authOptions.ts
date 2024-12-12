@@ -1,7 +1,7 @@
-import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthOptions, User } from "next-auth";
-import userLogin from "@/libs/userLogin";
-import axios from "axios";
+import userLogin from '@/libs/userLogin';
+import axios from 'axios';
+import { AuthOptions, User } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 interface ExtendedUser extends User {
   id: string;
@@ -12,25 +12,26 @@ interface ExtendedUser extends User {
   refreshToken: string;
   accessTokenExpires: number;
   refreshTokenExpires: number;
+
 }
 
 export const authOptions: AuthOptions = {
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text", placeholder: "username" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials) return null;
+	providers: [
+		CredentialsProvider({
+			name: 'Credentials',
+			credentials: {
+				username: { label: 'Username', type: 'text', placeholder: 'username' },
+				password: { label: 'Password', type: 'password' },
+			},
+			async authorize(credentials) {
+				if (!credentials) return null;
 
-        try {
-          const { username, password } = credentials;
-          const data = await userLogin({
-            USERNAME: username,
-            PASSWORD: password,
-          });
+				try {
+					const { username, password } = credentials;
+					const data = await userLogin({
+						USERNAME: username,
+						PASSWORD: password,
+					});
 
           const user: ExtendedUser = {
             id: data.data.user.ID,
@@ -66,13 +67,14 @@ export const authOptions: AuthOptions = {
         token.refreshTokenExpires = extendedUser.refreshTokenExpires;
       }
 
-      if (
-        typeof token.refreshTokenExpires === "number" &&
-        Date.now() > token.refreshTokenExpires
-      ) {
-        console.log("Refresh token expired. User needs to log in again.");
-        return {};
-      }
+
+			if (
+				typeof token.refreshTokenExpires === 'number' &&
+				Date.now() > token.refreshTokenExpires
+			) {
+				console.log('Refresh token expired. User needs to log in again.');
+				return {};
+			}
 
       if (
         typeof token.accessTokenExpires === "number" &&
@@ -87,13 +89,14 @@ export const authOptions: AuthOptions = {
             }
           );
 
-          token.accessToken = response.data.tokens.accessToken;
-          token.accessTokenExpires = Date.now() + 3600 * 1000;
-        } catch (error) {
-          console.error("Token refresh error:", error);
-          return {};
-        }
-      }
+
+					token.accessToken = response.data.tokens.accessToken;
+					token.accessTokenExpires = Date.now() + 3600 * 1000;
+				} catch (error) {
+					console.error('Token refresh error:', error);
+					return {};
+				}
+			}
 
       return token;
     },
@@ -110,4 +113,5 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
+
 };

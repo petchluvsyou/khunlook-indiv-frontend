@@ -221,6 +221,7 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
             >
               ล้างค่า
             </button>
+
           </div>
         </div>
       </div>

@@ -58,7 +58,6 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 
 interface ChildData {
-	currentDate: Dayjs | null;
 	birthDate: Dayjs | null;
 	gender: string;
 	measureDate: Dayjs | null;

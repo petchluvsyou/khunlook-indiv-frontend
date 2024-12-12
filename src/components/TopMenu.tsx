@@ -45,7 +45,6 @@ export default function TopMenu() {
 			? [
 					{ title: 'พัฒนาการ', pageRef: '/user/development' },
 					{ title: 'วัคซีน', pageRef: '/user/vaccines' },
-					{ title: 'สรุปข้อมูลลูก', pageRef: '/user/data' },
 			  ]
 			: [
 					{ title: 'พัฒนาการ', pageRef: '/development' },
@@ -54,7 +53,7 @@ export default function TopMenu() {
 
 		{
 			title: 'สิ่งเล็กๆที่สร้างลูก',
-			pageRef: '/memory',
+			pageRef: '#',
 			subItems: [
 				{
 					title: 'ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ',
@@ -90,6 +89,7 @@ export default function TopMenu() {
 			],
 		},
 	];
+
 
 	return (
 		<div className="fixed z-40 w-full h-16 lg:h-24 py-4 lg:py-7 px-5 lg:px-12 gap-3 bg-Bg flex item-center shadow-lg justify-between">
@@ -147,14 +147,11 @@ export default function TopMenu() {
 					</Link>
 				)}
 				<div className="relative flex lg:hidden items-center">
-					<MenuIcon
-						fontSize="small"
-						onClick={toggleDropdown}
-						className="w-6 h-6 rounded-md"
-					/>
-					{isOpen && <DropDownList />}
+					<MenuIcon fontSize='small' onClick={toggleDropdown} className='w-6 h-6 rounded-md cursor-pointer hover:text-Yellow' />
+          {isOpen && <DropDownList menuItems={MENUITEMS}/>}
 				</div>
 			</div>
 		</div>
 	);
 }
+
