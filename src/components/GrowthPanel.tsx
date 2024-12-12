@@ -127,7 +127,7 @@ export default function GrowthPanel({ token }: { token: string }) {
 							className="hidden lg:block w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
 						/> */}
 					</div>
-					{token == '' ? (
+					{token != '' ? (
 						<></>
 					) : (
 						<div className="flex flex-row justify-center gap-4">
