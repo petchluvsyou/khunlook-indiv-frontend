@@ -9,6 +9,7 @@ import { useState } from 'react';
 import DropDownList from './DropDownList';
 import TopMenuItem from './TopMenuItem';
 
+
 export default function TopMenu() {
 	const { data: session, status } = useSession();
 	// console.log('Session:', session);
@@ -52,34 +53,54 @@ export default function TopMenu() {
 					{ title: 'วัคซีน', pageRef: '/vaccines' },
 			  ]),
 
-		{
-			title: 'สิ่งเล็กๆที่สร้างลูก',
-			pageRef: '/memory',
-			subItems: [
-				{ title: 'อาหารของคุณลูก', pageRef: '/articles/food' },
-				{ title: 'พัฒนาการ', pageRef: '/articles/development' },
-				{ title: 'ช่องปากและฟัน', pageRef: '/articles/oral-and-dental' },
-				{
-					title: 'อุปกรณ์ ของเล่น และการป้องกันอุบัติเหตุ',
-					pageRef: '/articles/toys-and-safety',
-				},
-				{ title: 'สุขภาพครรภ์', pageRef: '/articles/pregnancy-health' },
-				{ title: 'ดูแลกัน', pageRef: '/articles/care' },
-				{ title: 'ช่วงตรวจคัดกรอง', pageRef: '/articles/screening' },
-			],
-		},
-		{
-			title: 'เกี่ยวกับเรา',
-			pageRef: '/about-us',
-			subItems: [
-				{ title: 'ติดต่อเรา', pageRef: '/about-us/contact-us' },
-				{
-					title: 'KhunLook on Mobile',
-					pageRef: '/about-us/khunlook-on-mobile',
-				},
-			],
-		},
-	];
+  const MENUITEMS = [
+    { title: "หน้าแรก", pageRef: "/" },
+    {
+      title: "บทความ",
+      pageRef: "/article",
+      subItems: [
+        { title: "อาหารของคุณลูก", pageRef: "/article/foodinfo" },
+        { title: "พัฒนาการ", pageRef: "/article/growth" },
+        { title: "วัคซีน", pageRef: "/article/vaccine" },
+        { title: "ช่องปากและฟัน", pageRef: "/article/mouth" },
+        { title: "อุปกรณ์ ของเล่น และการป้องกันอุบัติเหตุ", pageRef: "/article/tools" },
+        { title: "สุขภาพครรภ์", pageRef: "/article/pregHealth" },
+        { title: "ดูแลกัน", pageRef: "/article/takecare" },
+        { title: "ช่วงตรวจคัดกรอง", pageRef: "/article/filter" },
+      ],
+    },
+    { title: "การเจริญเติบโต", pageRef: "/growth" },
+    ...(session
+      ? [
+        { title: "พัฒนาการ", pageRef: "/user/development" },
+        { title: "วัคซีน", pageRef: "/user/vaccines" },
+        { title: "สรุปข้อมูลลูก", pageRef: "/user/data" }
+        ]
+      : [
+        { title: "พัฒนาการ", pageRef: "/development" },
+        { title: "วัคซีน", pageRef: "/vaccines" },
+        ]),
+    
+    {
+      title: "สิ่งเล็กๆที่สร้างลูก",
+      pageRef: "/memory",
+      subItems: [
+        { title: "ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ", pageRef: "/memory/download-drive" },
+        { title: "7 เคล็ดลับอ่านนิทานให้ลูก", pageRef: "/memory/page/7-tips-reading" },  // Dynamic route for scraped content
+        { title: "9 เหตุผลที่พ่อแม่ทุกคนควร “อ่านให้ลูกฟัง”", pageRef: "/memory/page/9-reasons-reading" },
+        { title: "“จ๊ะ-เอ๋!” แค่สองคำ แต่มีความหมายลึกซึ้ง", pageRef: "/memory/page/ja-ae" },
+        { title: "พ่อแม่คือของเล่นมีชีวิต", pageRef: "/memory/page/parents-play" }
+      ],
+    },
+    {
+      title: "เกี่ยวกับเรา",
+      pageRef: "/about-us",
+      subItems: [
+        { title: "ติดต่อเรา", pageRef: "/about-us/contact-us" },
+        { title: "KhunLook on Mobile", pageRef: "/about-us/khunlook-on-mobile" },
+      ],
+    },
+  ];
 
 	return (
 		<div className="fixed z-40 w-full h-16 lg:h-24 py-4 lg:py-7 px-5 lg:px-12 gap-3 bg-Bg flex item-center shadow-lg justify-between">
