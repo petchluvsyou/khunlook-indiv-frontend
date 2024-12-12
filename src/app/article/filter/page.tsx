@@ -3,8 +3,8 @@ import ContentSection from "@/components/Article";
 
 export default function Filter() {
     const informationBoxes = [
-        { imgSrc: "/img/knowledge.png", title: "การตรวจคัดกรองลูกวัยแรกเกิด - 1 ปี", targetPage: "/foodinfo/age1_2" },
-        { imgSrc: "/img/knowledge.png", title: "การตรวจคัดกรองลูกวัย 2 ปี -18 ปี", targetPage: "/foodinfo/age1_2" },
+        { imgSrc: "/img/article_img/filter/filter1y.png", title: "การตรวจคัดกรองลูกวัยแรกเกิด - 1 ปี", targetPage: "/article/articlePage/filter1y" },
+        { imgSrc: "/img/article_img/filter/filter2_18y.png", title: "การตรวจคัดกรองลูกวัย 2 ปี -18 ปี", targetPage: "/article/articlePage/filter2_18y" },
     ];
 
     return (
