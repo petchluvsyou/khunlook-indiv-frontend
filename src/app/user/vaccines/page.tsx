@@ -56,6 +56,7 @@ export default function page() {
                          onChange={handleChildOptionChange}
                          className="p-2 border border-gray-300 rounded w-48"
                     >
+                         {/*fetch child option */}
                          <option key='1' value='Dong'>Dong</option>
                          <option key='2' value='Petch'>Petch</option>
                     </select>
