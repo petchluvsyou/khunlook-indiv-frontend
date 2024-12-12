@@ -10,6 +10,24 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { useState } from 'react';
 
+interface Child {
+	momcid: number;
+	childcid: number;
+	childpid: string;
+	childhospcode: string;
+	childname: string;
+	datepickerchild: string;
+	sexchild: string;
+	gaweek: number;
+	childfullname: string;
+	childbtime: string;
+	childabo: string;
+	childrh: string;
+	childmemo: string;
+	lowbtweigth: number;
+	birthAsphyxia: string;
+}
+
 interface ChildData {
 	currentDate: Dayjs | null;
 	birthDate: Dayjs | null;
@@ -20,7 +38,17 @@ interface ChildData {
 	headCircum: string;
 }
 
-export default function GrowthPanel({ token }: { token: string }) {
+type ChildDetail = { childpid: string; childname: string };
+
+export default function GrowthPanel({
+	token,
+	pid,
+	childDetails,
+}: {
+	token: string;
+	pid: string;
+	childDetails: ChildDetail[];
+}) {
 	const [currentDate, setCurrentDate] = useState<Dayjs | null>(null);
 	const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
 	const [gender, setGender] = useState('');
@@ -33,7 +61,6 @@ export default function GrowthPanel({ token }: { token: string }) {
 
 	const handleSubmit = async () => {
 		const newData: ChildData = {
-			currentDate,
 			birthDate,
 			gender,
 			measureDate,
@@ -42,7 +69,16 @@ export default function GrowthPanel({ token }: { token: string }) {
 			headCircum,
 		};
 
-		if (token) {
+		const allFieldsValid = Object.values(newData).every(
+			(value) => value !== null && value !== '',
+		);
+
+		if (!allFieldsValid) {
+			alert('Please ensure all fields are filled out correctly.');
+			return;
+		}
+
+		if (token != '' && pid != '') {
 			try {
 				await postGrowthData(newData);
 			} catch (error) {
@@ -52,6 +88,11 @@ export default function GrowthPanel({ token }: { token: string }) {
 			// Append to tempChildData
 			setTempChildData((prevData) => [...prevData, newData]);
 		}
+		setBirthDate(null);
+		setMeasureDate(null);
+		setWeight('');
+		setHeight('');
+		setHeadCircum('');
 	};
 
 	return (
@@ -69,7 +110,7 @@ export default function GrowthPanel({ token }: { token: string }) {
 			</div>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<div className="flex flex-col w-5/6 sm:w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-6 text-Grey">
-					{token == '' ? (
+					{pid == '' ? (
 						<></>
 					) : (
 						<div className="flex flex-row justify-center gap-4">
@@ -84,12 +125,15 @@ export default function GrowthPanel({ token }: { token: string }) {
 								}}
 								className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
 							>
-								<MenuItem value={'male'}>ดอง</MenuItem>
-								<MenuItem value={'female'}>ปุ๊น</MenuItem>
+								{childDetails.map((detail) => (
+									<MenuItem key={detail.childpid} value={detail.childpid}>
+										{detail.childname}{' '}
+									</MenuItem>
+								))}
 							</Select>
 						</div>
 					)}
-					<div className="flex flex-row justify-center gap-4">
+					{/* <div className="flex flex-row justify-center gap-4">
 						<p className="self-center">วันที่ปัจจุบัน:</p>
 						<MobileDatePicker
 							value={currentDate}
@@ -99,26 +143,29 @@ export default function GrowthPanel({ token }: { token: string }) {
 							disableOpenPicker
 							className="w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
 						/>
-						{/* <DatePicker
+						<DatePicker
 							value={currentDate}
 							onChange={(value) => {
 								setCurrentDate(value);
 							}}
 							disableOpenPicker
 							className="hidden lg:block w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
-						/> */}
-					</div>
-					<div className="flex flex-row justify-center gap-4">
-						<p className="self-center">วันเกิด:</p>
-						<MobileDatePicker
-							value={birthDate}
-							onChange={(value) => {
-								setBirthDate(value);
-							}}
-							disableOpenPicker
-							className="w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
-						/>
-						{/* <DatePicker
+						/> 
+					</div> */}
+					{pid != '' ? (
+						<></>
+					) : (
+						<div className="flex flex-row justify-center gap-4">
+							<p className="self-center">วันเกิด:</p>
+							<MobileDatePicker
+								value={birthDate}
+								onChange={(value) => {
+									setBirthDate(value);
+								}}
+								disableOpenPicker
+								className="w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
+							/>
+							{/* <DatePicker
 							value={birthDate}
 							onChange={(value) => {
 								setBirthDate(value);
@@ -126,8 +173,9 @@ export default function GrowthPanel({ token }: { token: string }) {
 							disableOpenPicker
 							className="hidden lg:block w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
 						/> */}
-					</div>
-					{token != '' ? (
+						</div>
+					)}
+					{pid != '' ? (
 						<></>
 					) : (
 						<div className="flex flex-row justify-center gap-4">
@@ -222,7 +270,6 @@ export default function GrowthPanel({ token }: { token: string }) {
 						<button
 							className="rounded-xl bg-DarkRed font-line-seed-sans p-1.5 w-24 text-base text-white gap-2 flex flex-row justify-center"
 							onClick={() => {
-								setCurrentDate(null);
 								setBirthDate(null);
 								setGender('');
 								setMeasureDate(null);
