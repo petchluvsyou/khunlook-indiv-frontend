@@ -264,8 +264,10 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "DTPHB 3"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("DTPHB 3")?.HOSPITAL ?? ""}
+                prev_reserveDate={
+                  getMatchingVaccine("DTPHB 3")?.DATE_SERV ?? ""
+                }
               />
               <div className="col-span-2 p-4"></div>
 
@@ -280,8 +282,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "OPV1"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("OPV1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("OPV1")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -291,8 +293,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "OPV2"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("OPV2")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("OPV2")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -302,8 +304,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "IPV"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("IPV")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("IPV")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -313,8 +315,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "OPV3"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("OPV3")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("OPV3")?.DATE_SERV ?? ""}
               />
               <div className="col-span-1 p-4"></div>
 
@@ -331,8 +333,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "MMR1"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("MMR1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("MMR1")?.DATE_SERV ?? ""}
               />
 
               {/* JE */}
@@ -348,8 +350,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "JE1"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("JE1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("JE1")?.DATE_SERV ?? ""}
               />
             </div>
           ) : (
@@ -406,8 +408,12 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "DTwP กระตุ้น 1"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={
+                  getMatchingVaccine("DTwP กระตุ้น 1")?.HOSPITAL ?? ""
+                }
+                prev_reserveDate={
+                  getMatchingVaccine("DTwP กระตุ้น 1")?.DATE_SERV ?? ""
+                }
               />
               <div className="col-span-2 p-4"></div>
               <VaccineCell
@@ -418,8 +424,12 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "DTwP กระตุ้น 2"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={
+                  getMatchingVaccine("DTwP กระตุ้น 2")?.HOSPITAL ?? ""
+                }
+                prev_reserveDate={
+                  getMatchingVaccine("DTwP กระตุ้น 2")?.DATE_SERV ?? ""
+                }
               />
               <VaccineCell
                 childpid={childpid}
@@ -429,8 +439,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "Td"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("Td")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("Td")?.DATE_SERV ?? ""}
               />
 
               {/* OPV */}
@@ -444,8 +454,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "OPV4"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("OPV4")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("OPV4")?.DATE_SERV ?? ""}
               />
               <div className="col-span-2 p-4"></div>
               <VaccineCell
@@ -456,8 +466,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "OPV5"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("OPV5")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("OPV5")?.DATE_SERV ?? ""}
               />
 
               {/* MMR */}
@@ -473,8 +483,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "MMR2"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("MMR2")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("MMR2")?.DATE_SERV ?? ""}
               />
               <div className="col-span-2 p-4"></div>
 
@@ -490,8 +500,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "JE"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("JE")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("JE")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -501,8 +511,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "JE3"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("JE3")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("JE3")?.DATE_SERV ?? ""}
               />
               <div className="col-span-2 p-4"></div>
             </div>
@@ -559,8 +569,10 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-Hib2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("DTP-IPV-Hib2")?.HOSPITAL ?? ""}
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-Hib2")?.DATE_SERV ?? ""
+              }
             />
             <div className="col-span-3 p-4"></div>
 
@@ -581,8 +593,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("DTP-IPV-HB-Hib1")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-HB-Hib1")?.DATE_SERV ?? ""
+              }
             />
             <VaccineCell
               childpid={
@@ -596,8 +612,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("DTP-IPV-HB-Hib2")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-HB-Hib2")?.DATE_SERV ?? ""
+              }
             />
             <VaccineCell
               childpid={
@@ -611,8 +631,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib3"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("DTP-IPV-HB-Hib3")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-HB-Hib3")?.DATE_SERV ?? ""
+              }
             />
             <div className="col-span-2 p-4"></div>
 
@@ -633,8 +657,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Hib1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Hib1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Hib1")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -648,8 +672,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Hib2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Hib2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Hib2")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -663,8 +687,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Hib3"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Hib3")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Hib3")?.DATE_SERV ?? ""}
             />
             <div className="col-span-2 p-4"></div>
 
@@ -685,8 +709,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "JE1: Lived attenuated"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("JE1: Lived attenuated")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("JE1: Lived attenuated")?.DATE_SERV ?? ""
+              }
             />
 
             {/* HA */}
@@ -706,8 +734,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "HAV1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("HAV1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("HAV1")?.DATE_SERV ?? ""}
             />
 
             {/* VAR */}
@@ -725,8 +753,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "VZV1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("VZV1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("VZV1")?.DATE_SERV ?? ""}
             />
 
             {/* FLU */}
@@ -746,8 +774,16 @@ export default function page() {
                   item.DESCRIPTION ===
                   "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine(
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+                )?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine(
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+                )?.DATE_SERV ?? ""
+              }
             />
 
             {/* IPD PCV */}
@@ -766,8 +802,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "PCV1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("PCV1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("PCV1")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -781,8 +817,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "PCV2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("PCV2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("PCV2")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -796,8 +832,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "PCV3"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("PCV3")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("PCV3")?.DATE_SERV ?? ""}
             />
             <div className="col-span-1 p-4"></div>
             <VaccineCell
@@ -812,8 +848,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "PCV4"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("PCV4")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("PCV4")?.DATE_SERV ?? ""}
             />
 
             {/* RV3 */}
@@ -832,8 +868,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Rota1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Rota1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Rota1")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -847,8 +883,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Rota2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Rota2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Rota2")?.DATE_SERV ?? ""}
             />
             <VaccineCell
               childpid={
@@ -862,8 +898,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Rota3"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Rota3")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Rota3")?.DATE_SERV ?? ""}
             />
             <div className="col-span-2 p-4"></div>
 
@@ -914,8 +950,10 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-Hib4"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("DTP-IPV-Hib4")?.HOSPITAL ?? ""}
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-Hib4")?.DATE_SERV ?? ""
+              }
             />
             <div className="col-span-4 p-4"></div>
 
@@ -936,8 +974,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "DTP-IPV-HB-Hib4"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("DTP-IPV-HB-Hib4")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("DTP-IPV-HB-Hib4")?.DATE_SERV ?? ""
+              }
             />
             <div className="col-span-2 p-4"></div>
             <VaccineCell
@@ -952,8 +994,12 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Tdap1 Tdap-IPV"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine("Tdap1 Tdap-IPV")?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine("Tdap1 Tdap-IPV")?.DATE_SERV ?? ""
+              }
             />
             <div className="col-span-1 p-4"></div>
 
@@ -974,8 +1020,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "Hib4"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("Hib4")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("Hib4")?.DATE_SERV ?? ""}
             />
             <div className="col-span-4 p-4"></div>
 
@@ -993,8 +1039,8 @@ export default function page() {
               colspan={3}
               color="Yellow"
               prev_chosen={vaccines?.some((item) => item.DESCRIPTION === "JE2")}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("JE2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("JE2")?.DATE_SERV ?? ""}
             />
             <div className="col-span-2 p-4"></div>
 
@@ -1014,8 +1060,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "HAV2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("HAV2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("HAV2")?.DATE_SERV ?? ""}
             />
             <div className="col-span-4 p-4"></div>
 
@@ -1033,8 +1079,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "VZV1"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("VZV1")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("VZV1")?.DATE_SERV ?? ""}
             />
             <div className="col-span-2 p-4"></div>
             <VaccineCell
@@ -1049,8 +1095,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "VZV2"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("VZV2")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("VZV2")?.DATE_SERV ?? ""}
             />
             <div className="col-span-1 p-4"></div>
 
@@ -1070,8 +1116,16 @@ export default function page() {
                   item.DESCRIPTION ===
                   "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={
+                getMatchingVaccine(
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+                )?.HOSPITAL ?? ""
+              }
+              prev_reserveDate={
+                getMatchingVaccine(
+                  "Influenza ให้ปีละครั้งช่วงอายุ 6 เดือน - 18 ปี (เน้นในอายุ 6-24 เดือน) ในปีแรกฉีด 2 เข็มห่างกัน 4 สัปดาห์"
+                )?.DATE_SERV ?? ""
+              }
             />
 
             {/* IPD PCV */}
@@ -1090,8 +1144,8 @@ export default function page() {
               prev_chosen={vaccines?.some(
                 (item) => item.DESCRIPTION === "PCV4"
               )}
-              prev_location=""
-              prev_reserveDate=""
+              prev_location={getMatchingVaccine("PCV4")?.HOSPITAL ?? ""}
+              prev_reserveDate={getMatchingVaccine("PCV4")?.DATE_SERV ?? ""}
             />
             <div className="col-span-4 p-4"></div>
 
@@ -1115,8 +1169,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "HPV1"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("HPV1")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("HPV1")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -1126,8 +1180,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "HPV2"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("HPV2")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("HPV2")?.DATE_SERV ?? ""}
               />
               <VaccineCell
                 childpid={childpid}
@@ -1137,8 +1191,8 @@ export default function page() {
                 prev_chosen={vaccines?.some(
                   (item) => item.DESCRIPTION === "HPV3"
                 )}
-                prev_location=""
-                prev_reserveDate=""
+                prev_location={getMatchingVaccine("HPV3")?.HOSPITAL ?? ""}
+                prev_reserveDate={getMatchingVaccine("HPV3")?.DATE_SERV ?? ""}
               />
             </div>
           </div>
