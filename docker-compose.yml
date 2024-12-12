@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  client-side:
+    image: khunlook-client-side:1
+    build: .
+    container_name: client-side
+    ports:
+      - "3001:3000"
+    env_file:
+      - ${CLIENT_SIDE_ENV_FILE:-.env}
+    restart: always
+    networks:
+      - khunlook
+
+networks:
+  khunlook:
+    driver: bridge
+    name: khunlook
