@@ -113,8 +113,8 @@ export default function TopMenu() {
             </Link>
         }
         <div className="relative flex lg:hidden items-center">
-          <MenuIcon fontSize='small' onClick={toggleDropdown} className='w-6 h-6 rounded-md' />
-          {isOpen && <DropDownList />}
+          <MenuIcon fontSize='small' onClick={toggleDropdown} className='w-6 h-6 rounded-md cursor-pointer hover:text-Yellow' />
+          {isOpen && <DropDownList menuItems={MENUITEMS}/>}
         </div>
       </div>
     </div>
