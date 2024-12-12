@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Footer(){
     return (
-        <div className="relative -z-20 flex flex-col p-12 pt-24 bg-Bg gap-12 text-center items-center">
+        <div className="relative z-20 flex flex-col p-12 pt-24 mt-20 bg-Bg gap-12 text-center items-center">
             <div className="grid grid-cols-3 lg:flex lg:flex-row justify-center gap-12 flex-wrap">
                 <Link href={'https://www.nrct.go.th/'}><Image src='/img/logo/NRCT.png' alt='NRCT logo' width={0} height={0} sizes='100vh' className='h-[120px] w-auto object-contain'/></Link>
                 <Link href={'https://www.hsri.or.th/'}><Image src='/img/logo/HSAI.png' alt='HSAI logo' width={0} height={0} sizes='100vh' className='h-[120px] w-auto object-contain'/></Link>
