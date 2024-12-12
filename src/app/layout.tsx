@@ -9,6 +9,7 @@ import './globals.css';
 export const metadata: Metadata = {
 	title: 'Khunlook',
 	description: '',
+	icons: '/img/khunlook.png',
 };
 
 export default async function RootLayout({
