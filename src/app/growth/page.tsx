@@ -49,12 +49,12 @@ export default async function Page() {
 	});
 
 	return (
-		<>
+		<div className="bg-Bg">
 			<GrowthPanel
 				token={session ? session.accessToken : ''}
 				pid={session ? session.user.pid : ''}
 				childDetails={childDetails}
 			/>
-		</>
+		</div>
 	);
 }
