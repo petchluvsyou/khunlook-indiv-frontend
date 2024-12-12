@@ -5,8 +5,8 @@ class ChildService extends ApiServiceBase {
   constructor(accessToken: string = "") {
     super(accessToken);
   }
-  getChildByID(user_id: number) {
-    return this.API.get<IGetChildResponse>(`/child/${user_id}`);
+  getChildByID(user_pid: string) {
+    return this.API.get<IGetChildResponse>(`/child/${user_pid}`);
   }
   addChild(request: IAddChildRequest) {
     console.log(request);

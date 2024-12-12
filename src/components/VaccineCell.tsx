@@ -4,8 +4,11 @@ import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
 import { useSession } from "next-auth/react";
 import VaccineService from "@/libs/VaccineService/VaccineService";
+import { MAPTYPETOCODE } from "@/app/user/vaccines/vaccineData/vaccineTypeToCode";
+import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 
 interface VaccineCellProps {
+  childpid: string;
   vaccineType: string;
   colspan: number;
   color: string;
@@ -15,6 +18,7 @@ interface VaccineCellProps {
 }
 
 export default function VaccineCell({
+  childpid,
   vaccineType,
   colspan,
   color,
@@ -34,20 +38,34 @@ export default function VaccineCell({
       setReserveDate(prev_reserveDate ? dayjs(prev_reserveDate) : null);
     }
   }, [prev_chosen, prev_location, prev_reserveDate]);
-
+  console.log(reserveDate, vaccineType);
   const handleChange = async () => {
     const vaccineService = new VaccineService(session.data?.accessToken);
-    const res = await vaccineService.updateChildVaccine({
-      vaccineplace: location,
-      childpid: session.data?.user.id ?? "0",
-      vaccinetype: vaccineType,
-      vaccinated_date: reserveDate?.format("YYYY-mm-dd") ?? "0000-00-00",
-      prev_dateserv: prev_reserveDate,
-      months: "2",
-    });
+    if (prev_chosen) {
+      const res = await vaccineService.updateChildVaccine({
+        vaccineplace: location,
+        childpid: childpid ?? "",
+        vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
+        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "0000-00-00",
+        prev_dateserv: prev_reserveDate,
+        // months: "2",
+      });
+      console.log(res);
+    } else {
+      const res = await vaccineService.createChildVaccine({
+        vaccineplace: location,
+        childpid: childpid ?? "",
+        vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
+        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "0000-00-00",
+        // months: "2",
+      });
+      console.log(res);
+    }
   };
+
   const handleClick = () => {
     setIsClicked(!isClicked);
+    console.log(childpid);
     // POST vaccinated information
   };
 
@@ -86,9 +104,9 @@ export default function VaccineCell({
             className="w-full border-0 border-b-2 border-gray-300 focus:border-Yellow placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
           >
             {/*get Location option from database*/}
-            <option value="Dongy Hospital">Dongy Hospital</option>
-            <option value="Sira medical center">Sira medical center</option>
-            <option value="GearGear WHO center">GearGear WHO cente</option>
+            <option value="DDD">Dongy Hospital</option>
+            <option value="PPP">Sira medical center</option>
+            <option value="GGG">GearGear WHO cente</option>
           </select>
         </div>
       ) : (

@@ -1,7 +1,6 @@
-'use client'
+"use client";
 import { signIn } from "next-auth/react";
 import { useState, FormEvent } from "react";
-import userLogin from "@/libs/userLogin";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -14,7 +13,7 @@ export default function Login() {
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    setErrorMessage(""); 
+    setErrorMessage("");
 
     try {
       const res = await signIn("credentials", {
@@ -22,12 +21,12 @@ export default function Login() {
         username,
         password,
       });
-  
+
       if (res?.error) {
         setErrorMessage(res.error);
       } else {
         console.log("login successful");
-        router.push('/');
+        router.push("/");
       }
     } catch (error) {
       console.error("An unexpected error occurred:", error);
@@ -39,10 +38,14 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col items-center justify-center w-full bg-white rounded-lg shadow-md lg:max-w-screen-sm">
         <div className="p-6 w-full lg:p-8">
-          <h1 className="mb-3 text-2xl font-bold text-gray-900 lg:text-3xl dark:text-white">Login to your account</h1>
+          <h1 className="mb-3 text-2xl font-bold text-gray-900 lg:text-3xl dark:text-white">
+            Login to your account
+          </h1>
           <form onSubmit={handleLogin} className="mt-8">
             <div className="mb-6">
-              <label className="block mb-2 text-sm font-medium text-gray-900">Username</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Username
+              </label>
               <input
                 type="text"
                 name="username"
@@ -53,7 +56,9 @@ export default function Login() {
               />
             </div>
             <div className="mb-6">
-              <label className="block mb-2 text-sm font-medium text-gray-900">Password</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -64,9 +69,7 @@ export default function Login() {
               />
             </div>
             {errorMessage && (
-              <p className="text-red-500 text-center mb-4">
-                {errorMessage}
-              </p>
+              <p className="text-red-500 text-center mb-4">{errorMessage}</p>
             )}
             <button
               type="submit"
@@ -76,7 +79,10 @@ export default function Login() {
             </button>
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Not registered?
-              <Link className="ml-1 text-blue-700 hover:underline dark:text-blue-500" href={"/register"}>
+              <Link
+                className="ml-1 text-blue-700 hover:underline dark:text-blue-500"
+                href={"/register"}
+              >
                 Create an account.
               </Link>
             </div>

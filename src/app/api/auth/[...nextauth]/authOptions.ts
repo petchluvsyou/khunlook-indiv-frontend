@@ -7,7 +7,7 @@ interface ExtendedUser extends User {
   id: string;
   username: string;
   email: string;
-  pid: string;
+  PID: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;
@@ -36,7 +36,7 @@ export const authOptions: AuthOptions = {
             id: data.data.user.ID,
             username: data.data.user.username,
             email: data.data.user.email,
-            pid: data.data.user.pid,
+            PID: data.data.user.PID,
             accessToken: data.data.tokens.accessToken,
             refreshToken: data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
@@ -59,7 +59,7 @@ export const authOptions: AuthOptions = {
         token.id = extendedUser.id;
         token.username = extendedUser.username;
         token.email = extendedUser.email;
-        token.pid = extendedUser.pid;
+        token.pid = extendedUser.PID;
         token.accessToken = extendedUser.accessToken;
         token.refreshToken = extendedUser.refreshToken;
         token.accessTokenExpires = extendedUser.accessTokenExpires;
@@ -80,7 +80,8 @@ export const authOptions: AuthOptions = {
       ) {
         try {
           const response = await axios.post(
-            "http://52.221.239.141:3000/api/v1/auth/refresh",
+            "http://localhost:3002/api/v1/auth/refresh",
+            // "http://52.221.239.141:3000/api/v1/auth/refresh",
             {
               refreshToken: token.refreshToken,
             }
@@ -99,6 +100,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       session.user.id = token.id as string;
       session.user.username = token.username as string;
+      session.user.pid = token.pid as string;
       session.user.email = token.email as string;
       session.accessToken = token.accessToken as string;
       return session;
