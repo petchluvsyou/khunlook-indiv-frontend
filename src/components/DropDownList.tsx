@@ -8,7 +8,6 @@ interface MenuItem {
   pageRef: string;
   subItems?: MenuItem[];
 }
-
 export default function DropDownList({ menuItems }: { menuItems: MenuItem[] }) {
   const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
 
