@@ -1,72 +1,64 @@
-import { useSession } from "next-auth/react";
-import TopMenuItem from "./TopMenuItem";
-import Link from "next/link";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
-export default function DropDownList() {
-  const session = useSession();
+interface MenuItem {
+  title: string;
+  pageRef: string;
+  subItems?: MenuItem[];
+}
+
+export default function DropDownList({ menuItems }: { menuItems: MenuItem[] }) {
+  const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
+
+  const toggleAccordion = (index: number) => {
+    setActiveIndexes((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
 
   return (
-    <div
-      id="dropdown"
-      className="absolute top-full right-0 z-50 bg-white divide-y divide-Bg rounded-lg shadow w-44 dark:bg-Dark"
-    >
-      <div
-        className="py-2 text-sm text-gray-700 dark:text-gray-200"
-        aria-labelledby="dropdownDefaultButton"
-      >
-        {session ? (
-          <Link
-            href="/login"
-            className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-          >
-            เข้าสู่ระบบ
-          </Link>
-        ) : (
-          <Link
-            href="/login"
-            className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-          >
-            ออกจากระบบ
-          </Link>
-        )}
-        <Link
-          href="/articles"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          บทความ
-        </Link>
-        <Link
-          href="/growth"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          การเจริญเติบโต
-        </Link>
-        <Link
-          href="/development"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          พัฒนาการ
-        </Link>
-        <Link
-          href="/vaccines"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          วัคซีน
-        </Link>
-        <Link
-          href="/memory"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          สิ่งเล็กๆที่สร้างลูก
-        </Link>
-        <Link
-          href="/about-us"
-          className="block px-4 py-2 hover:bg-Bg dark:hover:bg-Dark dark:hover:text-white"
-        >
-          เกี่ยวกับเรา
-        </Link>
-      </div>
-
+    <div className="absolute top-10 right-0 w-56 bg-white border border-gray-300 rounded-md shadow-lg z-50">
+      <ul className="flex flex-col">
+        {menuItems.map((item, index) => (
+          <li key={index} className="group">
+            <div className="flex justify-between items-center px-4 py-2">
+              <Link
+                href={item.pageRef}
+                className="text-gray-800 hover:bg-gray-100 flex-grow"
+              >
+                {item.title}
+              </Link>
+              {item.subItems && (
+                <button
+                  onClick={() => toggleAccordion(index)}
+                  className="ml-2 focus:outline-none"
+                >
+                  <FontAwesomeIcon
+                    icon={activeIndexes.includes(index) ? faAngleUp : faAngleDown}
+                    className="text-gray-600"
+                  />
+                </button>
+              )}
+            </div>
+            {item.subItems && activeIndexes.includes(index) && (
+              <ul className="pl-4">
+                {item.subItems.map((subItem, subIndex) => (
+                  <li key={subIndex}>
+                    <Link
+                      href={subItem.pageRef}
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-200"
+                    >
+                      {subItem.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
