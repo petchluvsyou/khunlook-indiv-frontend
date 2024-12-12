@@ -94,7 +94,7 @@ export default function EditChildPanel({ onClose }: { onClose: () => void }) {
                <div className="p-4 w-full lg:p-6">
                     <div className="flex justify-between">
                          <h1 className="mb-3 text-2xl font-bold text-gray-900 lg:text-2xl dark:text-white">
-                              Add new child
+                              Edit child information
                          </h1>
                          <div onClick={onClose}>
                               <FontAwesomeIcon
