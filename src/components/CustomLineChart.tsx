@@ -1,4 +1,4 @@
-import { LineChart } from '@mui/x-charts/LineChart';
+import { LineChart, lineElementClasses } from '@mui/x-charts/LineChart';
 import { useEffect, useState } from 'react';
 
 type Dataset = {
@@ -75,8 +75,11 @@ export default function CustomLineChart({
 		<>
 			<LineChart
 				sx={{
-					'& .MuiLineElement-root': {
+					[`& .${lineElementClasses.root}`]: {
 						strokeWidth: 2,
+					},
+					'& .MuiAreaElement-series-child': {
+						strokeWidth: 4,
 					},
 				}}
 				xAxis={[
@@ -84,7 +87,7 @@ export default function CustomLineChart({
 						dataKey: 'XValue',
 						scaleType: 'band',
 						label: xlabel,
-						tickSize: 5,
+						tickSize: 1,
 					},
 				]}
 				yAxis={[
@@ -105,17 +108,14 @@ export default function CustomLineChart({
 						showGrid: true,
 						...stackStrategy,
 					})),
-					...(childDataset.length > 0
-						? [
-								{
-									dataKey: 'YValue',
-									label: 'ลูก',
-									color: '#556666',
-									showMark: true,
-									area: false,
-								},
-						  ]
-						: []),
+					{
+						id: 'child',
+						dataKey: 'YValue',
+						label: 'ลูก',
+						color: '#556666',
+						showMark: true,
+						area: false,
+					},
 				]}
 				dataset={combinedDataset}
 				{...customize}
