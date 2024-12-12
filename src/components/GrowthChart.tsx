@@ -18,8 +18,25 @@ import {
 	heightForAgeBoy,
 	keyToLabel as keyToLabelHFAB,
 } from '@/app/growth/heightForAgeBoy';
+import dayjs, { Dayjs } from 'dayjs';
 
-export default function GrowthChart({ gender }: { gender: string }) {
+interface ChildData {
+	currentDate: Dayjs | null;
+	birthDate: Dayjs | null;
+	gender: string;
+	measureDate: Dayjs | null;
+	weight: string;
+	height: string;
+	headCircum: string;
+}
+
+export default function GrowthChart({
+	gender,
+	childData,
+}: {
+	gender: string;
+	childData: ChildData[];
+}) {
 	const [chartComparison, setChartComparison] = useState('height-age');
 
 	return (
@@ -105,7 +122,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="ส่วนสูง (ซม.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ height, measureDate, birthDate }) => ({
+								YValue: parseFloat(height),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'weight-age' && gender == 'female' && (
@@ -115,7 +140,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAB}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ weight, measureDate, birthDate }) => ({
+								YValue: parseFloat(weight),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'weight-height' && gender == 'female' && (
@@ -125,7 +158,12 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="ส่วนสูง (ซม.)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ height, weight }) => ({
+								YValue: parseFloat(weight),
+								XValue: parseFloat(height),
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'headcircum-age' && gender == 'female' && (
@@ -135,7 +173,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="รอบศรีษะ (ซม.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ headCircum, measureDate, birthDate }) => ({
+								YValue: parseFloat(headCircum),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'height-age' && gender == 'male' && (
@@ -145,7 +191,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAB}
 						ylabel="ส่วนสูง (ซม.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ height, measureDate, birthDate }) => ({
+								YValue: parseFloat(height),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'weight-age' && gender == 'male' && (
@@ -155,14 +209,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[
-							{ XValue: 20, YValue: 50 },
-							{ XValue: 50, YValue: 80 },
-							{ XValue: 80, YValue: 120 },
-							{ XValue: 110, YValue: 70 },
-							{ XValue: 140, YValue: 150 },
-							{ XValue: 170, YValue: 100 },
-						]}
+						childDataset={childData
+							.map(({ weight, measureDate, birthDate }) => ({
+								YValue: parseFloat(weight),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'weight-height' && gender == 'male' && (
@@ -172,7 +227,12 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="ส่วนสูง (ซม.)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ height, weight }) => ({
+								YValue: parseFloat(weight),
+								XValue: parseFloat(height),
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 				{chartComparison == 'headcircum-age' && gender == 'male' && (
@@ -182,7 +242,15 @@ export default function GrowthChart({ gender }: { gender: string }) {
 						colors={colorsHFAG}
 						ylabel="รอบศรีษะ (ซม.)"
 						xlabel="อายุ (ปี)"
-						childDataset={[]}
+						childDataset={childData
+							.map(({ headCircum, measureDate, birthDate }) => ({
+								YValue: parseFloat(headCircum),
+								XValue:
+									measureDate && birthDate
+										? dayjs(measureDate).diff(dayjs(birthDate), 'month')
+										: 0,
+							}))
+							.sort((a, b) => a.XValue - b.XValue)}
 					/>
 				)}
 			</div>
