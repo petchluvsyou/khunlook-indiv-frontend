@@ -1,10 +1,9 @@
-import Footer from "@/components/Footer";
 import ContentSection from "@/components/Article";
 
 export default function Vaccine() {
     const informationBoxes = [
-        { imgSrc: "/img/knowledge.png", title: "การสร้างเสริมภูมิคุ้มกันที่เหมาะสมสำหรับลูกแต่ละวัย", targetPage: "/foodinfo/age1_2" },
-        { imgSrc: "/img/knowledge.png", title: "คำแนะนำเพิ่มเติมสำหรับการรับวัคซีน", targetPage: "/foodinfo/age1_2" },
+        { imgSrc: "/img/article_img/vaccine/vac_nor.jpg", title: "การสร้างเสริมภูมิคุ้มกันที่เหมาะสมสำหรับลูกแต่ละวัย", targetPage: "/article/articlePage/vac_nor" },
+        { imgSrc: "/img/article_img/vaccine/vac_extra.jpg", title: "คำแนะนำเพิ่มเติมสำหรับการรับวัคซีน", targetPage: "/article/articlePage/vac_extra" },
     ];
 
     return (
