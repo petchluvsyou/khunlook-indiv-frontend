@@ -21,7 +21,7 @@ export default function ContentSection({ title, description, informationBoxes }:
                 className="flex justify-center items-center font-normal text-lg sm:text-3xl mb-1.5 sm:mb-0 text-center"
                 dangerouslySetInnerHTML={{ __html: description }}
             ></p>   
-            <div className="    flex flex-wrap justify-center m-10">
+            <div className="flex flex-wrap justify-center m-10">
                 {informationBoxes.map((box, index) => (
                     <InformationBox
                         key={index}

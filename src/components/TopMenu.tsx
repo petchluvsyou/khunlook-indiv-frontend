@@ -10,6 +10,7 @@ import { useSession, signOut } from 'next-auth/react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
+
 export default function TopMenu() {
 
   const { data: session, status } = useSession();
@@ -55,13 +56,11 @@ export default function TopMenu() {
       title: "สิ่งเล็กๆที่สร้างลูก",
       pageRef: "/memory",
       subItems: [
-        { title: "อาหารของคุณลูก", pageRef: "/articles/food" },
-        { title: "พัฒนาการ", pageRef: "/articles/development" },
-        { title: "ช่องปากและฟัน", pageRef: "/articles/oral-and-dental" },
-        { title: "อุปกรณ์ ของเล่น และการป้องกันอุบัติเหตุ", pageRef: "/articles/toys-and-safety" },
-        { title: "สุขภาพครรภ์", pageRef: "/articles/pregnancy-health" },
-        { title: "ดูแลกัน", pageRef: "/articles/care" },
-        { title: "ช่วงตรวจคัดกรอง", pageRef: "/articles/screening" },
+        { title: "ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ", pageRef: "/memory/download-drive" },
+        { title: "7 เคล็ดลับอ่านนิทานให้ลูก", pageRef: "/memory/page/7-tips-reading" },  // Dynamic route for scraped content
+        { title: "9 เหตุผลที่พ่อแม่ทุกคนควร “อ่านให้ลูกฟัง”", pageRef: "/memory/page/9-reasons-reading" },
+        { title: "“จ๊ะ-เอ๋!” แค่สองคำ แต่มีความหมายลึกซึ้ง", pageRef: "/memory/page/ja-ae" },
+        { title: "พ่อแม่คือของเล่นมีชีวิต", pageRef: "/memory/page/parents-play" }
       ],
     },
     {

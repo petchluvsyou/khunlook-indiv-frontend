@@ -7,6 +7,7 @@ declare module "next-auth" {
       pid: string;
       username: string;
       email: string;
+      pid: string;
     };
     accessToken: string;
     refreshToken: string;

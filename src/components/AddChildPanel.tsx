@@ -2,10 +2,12 @@
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
+import BasicTimePicker from "./BasicTimePicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ChildService from "@/libs/ChildService/ChildService";
 import { useSession } from "next-auth/react";
+
 
 export default function AddChildPanel({ onClose }: { onClose: () => void }) {
   const session = useSession();
@@ -207,26 +209,23 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
             </select>
           </div>
 
-          {serverMessage && (
-            <p className="text-red-500 text-center">{serverMessage}</p>
-          )}
 
-          <div className="flex space-x-2">
-            <button
-              onClick={handleSubmit}
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded-md"
-            >
-              ยืนยัน
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold p-2 rounded-md"
-            >
-              ล้างค่า
-            </button>
+                         <div className="flex space-x-2">
+                              <button
+                                   onClick={handleSubmit}
+                                   className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded-md"
+                              >
+                                   ยืนยัน
+                              </button>
+                              <button
+                                   onClick={handleReset}
+                                   className="w-full bg-red-500 hover:bg-red-600 text-white font-bold p-2 rounded-md"
+                              >
+                                   ล้างค่า
+                              </button>
+                         </div>
+                    </div>
+               </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
+     );
 }
