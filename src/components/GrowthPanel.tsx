@@ -1,7 +1,6 @@
 'use client';
 
 import GrowthChart from '@/components/GrowthChart';
-import postGrowthData from '@/libs/postGrowthData';
 import CheckIcon from '@mui/icons-material/Check';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { MenuItem, Select, TextField } from '@mui/material';
@@ -29,7 +28,6 @@ interface Child {
 }
 
 interface ChildData {
-	currentDate: Dayjs | null;
 	birthDate: Dayjs | null;
 	gender: string;
 	measureDate: Dayjs | null;
@@ -80,7 +78,7 @@ export default function GrowthPanel({
 
 		if (token != '' && pid != '') {
 			try {
-				await postGrowthData(newData);
+				// await postGrowthData(newData);
 			} catch (error) {
 				alert('Error posting data');
 			}
