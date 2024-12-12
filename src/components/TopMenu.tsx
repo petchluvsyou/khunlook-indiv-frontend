@@ -45,7 +45,6 @@ export default function TopMenu() {
 			? [
 					{ title: 'พัฒนาการ', pageRef: '/user/development' },
 					{ title: 'วัคซีน', pageRef: '/user/vaccines' },
-					{ title: 'สรุปข้อมูลลูก', pageRef: '/user/data' },
 			  ]
 			: [
 					{ title: 'พัฒนาการ', pageRef: '/development' },
@@ -54,7 +53,7 @@ export default function TopMenu() {
 
 		{
 			title: 'สิ่งเล็กๆที่สร้างลูก',
-			pageRef: '/memory',
+			pageRef: '#',
 			subItems: [
 				{
 					title: 'ดาวน์โหลดสื่อส่งเสรืมพัฒนาการ',

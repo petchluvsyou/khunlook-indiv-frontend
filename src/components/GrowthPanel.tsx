@@ -95,7 +95,7 @@ export default function GrowthPanel({
 
 	return (
 		<div className="bg-Bg">
-			<div className="flex justify-center items-center text-center relative z-0 flex-col p-12 pb-16 lg:pb-24 bg-Bg gap-1 top-16 lg:top-24 w-full">
+			<div className="flex justify-center items-center text-center relative z-0 flex-col p-12 bg-Bg gap-1 top-16 lg:top-24 w-full">
 				<h1 className="font-bold text-3xl lg:text-5xl text-Dark pb-1 mt-5 lg:pb-3">
 					การเจริญเติบโตของ
 				</h1>

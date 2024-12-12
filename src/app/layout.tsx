@@ -1,31 +1,32 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import TopMenu from "@/components/TopMenu";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]/authOptions";
-import NextAuthProvider from "@/providers/NextAuthProvider";
-import Footer from "@/components/Footer";
+import Footer from '@/components/Footer';
+import TopMenu from '@/components/TopMenu';
+import NextAuthProvider from '@/providers/NextAuthProvider';
+import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]/authOptions';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Khunlook",
-  description: "",
+	title: 'Khunlook',
+	description: '',
+	icons: '/img/khunlook.png',
 };
 
 export default async function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const nextAuthSession = await getServerSession(authOptions);
-  return (
-    <html lang="en">
-      <body className="font-line-seed-sans text-black bg-white">
-        <NextAuthProvider session={nextAuthSession}>
-          <TopMenu />
-          {children}
-          <Footer/>
-        </NextAuthProvider>
-      </body>
-    </html>
-  );
+	const nextAuthSession = await getServerSession(authOptions);
+	return (
+		<html lang="en">
+			<body className="font-line-seed-sans text-black bg-Bg">
+				<NextAuthProvider session={nextAuthSession}>
+					<TopMenu />
+					{children}
+					<Footer />
+				</NextAuthProvider>
+			</body>
+		</html>
+	);
 }
