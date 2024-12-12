@@ -7,7 +7,7 @@ export default async function Page() {
 
 	return (
 		<>
-			<GrowthPanel token={session ? session.user.id : ''} />
+			<GrowthPanel token={session ? session.accessToken : ''} />
 		</>
 	);
 }
