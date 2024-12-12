@@ -28,6 +28,7 @@ export default function GrowthPanel({ token }: { token: string }) {
 	const [weight, setWeight] = useState('');
 	const [height, setHeight] = useState('');
 	const [headCircum, setHeadCircum] = useState('');
+	const [child, setChild] = useState('');
 	const [tempChildData, setTempChildData] = useState<ChildData[]>([]);
 
 	const handleSubmit = async () => {
@@ -44,14 +45,12 @@ export default function GrowthPanel({ token }: { token: string }) {
 		if (token) {
 			try {
 				await postGrowthData(newData);
-				alert('Data posted successfully!');
 			} catch (error) {
 				alert('Error posting data');
 			}
 		} else {
 			// Append to tempChildData
 			setTempChildData((prevData) => [...prevData, newData]);
-			alert('Data added locally!');
 		}
 	};
 
@@ -70,6 +69,26 @@ export default function GrowthPanel({ token }: { token: string }) {
 			</div>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<div className="flex flex-col w-5/6 sm:w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-6 text-Grey">
+					{token == '' ? (
+						<></>
+					) : (
+						<div className="flex flex-row justify-center gap-4">
+							<p className="self-center">ลูก:</p>
+							<Select
+								labelId="demo-simple-select-helper-label"
+								id="demo-simple-select-helper"
+								value={child}
+								label="child"
+								onChange={(e) => {
+									setChild(e.target.value);
+								}}
+								className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
+							>
+								<MenuItem value={'male'}>ดอง</MenuItem>
+								<MenuItem value={'female'}>ปุ๊น</MenuItem>
+							</Select>
+						</div>
+					)}
 					<div className="flex flex-row justify-center gap-4">
 						<p className="self-center">วันที่ปัจจุบัน:</p>
 						<MobileDatePicker
@@ -108,22 +127,26 @@ export default function GrowthPanel({ token }: { token: string }) {
 							className="hidden lg:block w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
 						/> */}
 					</div>
-					<div className="flex flex-row justify-center gap-4">
-						<p className="self-center">เพศ:</p>
-						<Select
-							labelId="demo-simple-select-helper-label"
-							id="demo-simple-select-helper"
-							value={gender}
-							label="gender"
-							onChange={(e) => {
-								setGender(e.target.value);
-							}}
-							className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
-						>
-							<MenuItem value={'male'}>ชาย</MenuItem>
-							<MenuItem value={'female'}>หญิง</MenuItem>
-						</Select>
-					</div>
+					{token == '' ? (
+						<></>
+					) : (
+						<div className="flex flex-row justify-center gap-4">
+							<p className="self-center">เพศ:</p>
+							<Select
+								labelId="demo-simple-select-helper-label"
+								id="demo-simple-select-helper"
+								value={gender}
+								label="gender"
+								onChange={(e) => {
+									setGender(e.target.value);
+								}}
+								className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
+							>
+								<MenuItem value={'male'}>ชาย</MenuItem>
+								<MenuItem value={'female'}>หญิง</MenuItem>
+							</Select>
+						</div>
+					)}
 					<div className="flex flex-row justify-center gap-4">
 						<p className="self-center">
 							วันที่ชั่งน้ำหนัก วัดส่วนสูง รอบศรีษะ:

@@ -85,7 +85,7 @@ export default function CustomLineChart({
 				xAxis={[
 					{
 						dataKey: 'XValue',
-						scaleType: 'band',
+						scaleType: 'point',
 						label: xlabel,
 						tickSize: 1,
 					},
@@ -94,7 +94,7 @@ export default function CustomLineChart({
 					{
 						valueFormatter: (value) => value.toString(),
 						max: Math.max(...dataset.map((item) => item.P99), 0) * 1.1,
-						min: Math.min(...dataset.map((item) => item.P3), 0) * 0.8,
+						min: Math.min(...dataset.map((item) => item.P3), 10000) * 0.8,
 						label: ylabel,
 						tickSize: 5,
 					},
@@ -112,7 +112,7 @@ export default function CustomLineChart({
 						id: 'child',
 						dataKey: 'YValue',
 						label: 'ลูก',
-						color: '#556666',
+						color: '#6b003e',
 						showMark: true,
 						area: false,
 					},

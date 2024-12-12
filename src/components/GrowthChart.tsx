@@ -18,6 +18,43 @@ import {
 	heightForAgeBoy,
 	keyToLabel as keyToLabelHFAB,
 } from '@/app/growth/heightForAgeBoy';
+
+import {
+	colors as colorsWFAB,
+	keyToLabel as keyToLabelWFAB,
+	weightForAgeBoy,
+} from '@/app/growth/weightForAgeBoy';
+
+import {
+	colors as colorsWFAG,
+	keyToLabel as keyToLabelWFAG,
+	weightForAgeGirl,
+} from '@/app/growth/weightForAgeGirl';
+
+import {
+	colors as colorsHCFAB,
+	headCircumForAgeBoy,
+	keyToLabel as keyToLabelHCFAB,
+} from '@/app/growth/headCircumForAgeBoy';
+
+import {
+	colors as colorsHCFAG,
+	headCircumForAgeGirl,
+	keyToLabel as keyToLabelHCFAG,
+} from '@/app/growth/headCircumForAgeGirl';
+
+import {
+	colors as colorsWFHB,
+	keyToLabel as keyToLabelWFHB,
+	weightForHeightBoy,
+} from '@/app/growth/weightForHeightBoy';
+
+import {
+	colors as colorsWFHG,
+	keyToLabel as keyToLabelWFHG,
+	weightForHeightGirl,
+} from '@/app/growth/weightForHeightGirl';
+
 import dayjs, { Dayjs } from 'dayjs';
 
 interface ChildData {
@@ -135,9 +172,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'weight-age' && gender == 'female' && (
 					<CustomLineChart
-						dataset={heightForAgeBoy}
-						keyToLabel={keyToLabelHFAB}
-						colors={colorsHFAB}
+						dataset={weightForAgeGirl}
+						keyToLabel={keyToLabelWFAG}
+						colors={colorsWFAG}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="อายุ (ปี)"
 						childDataset={childData
@@ -153,9 +190,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'weight-height' && gender == 'female' && (
 					<CustomLineChart
-						dataset={heightForAgeGirl}
-						keyToLabel={keyToLabelHFAG}
-						colors={colorsHFAG}
+						dataset={weightForHeightGirl}
+						keyToLabel={keyToLabelWFHG}
+						colors={colorsWFHG}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="ส่วนสูง (ซม.)"
 						childDataset={childData
@@ -168,9 +205,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'headcircum-age' && gender == 'female' && (
 					<CustomLineChart
-						dataset={heightForAgeGirl}
-						keyToLabel={keyToLabelHFAG}
-						colors={colorsHFAG}
+						dataset={headCircumForAgeGirl}
+						keyToLabel={keyToLabelHCFAG}
+						colors={colorsHCFAG}
 						ylabel="รอบศรีษะ (ซม.)"
 						xlabel="อายุ (ปี)"
 						childDataset={childData
@@ -204,9 +241,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'weight-age' && gender == 'male' && (
 					<CustomLineChart
-						dataset={heightForAgeGirl}
-						keyToLabel={keyToLabelHFAG}
-						colors={colorsHFAG}
+						dataset={weightForAgeBoy}
+						keyToLabel={keyToLabelWFAB}
+						colors={colorsWFAB}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="อายุ (ปี)"
 						childDataset={childData
@@ -222,9 +259,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'weight-height' && gender == 'male' && (
 					<CustomLineChart
-						dataset={heightForAgeGirl}
-						keyToLabel={keyToLabelHFAG}
-						colors={colorsHFAG}
+						dataset={weightForHeightBoy}
+						keyToLabel={keyToLabelWFHB}
+						colors={colorsWFHB}
 						ylabel="น้ำหนัก (กก.)"
 						xlabel="ส่วนสูง (ซม.)"
 						childDataset={childData
@@ -237,9 +274,9 @@ export default function GrowthChart({
 				)}
 				{chartComparison == 'headcircum-age' && gender == 'male' && (
 					<CustomLineChart
-						dataset={heightForAgeGirl}
-						keyToLabel={keyToLabelHFAG}
-						colors={colorsHFAG}
+						dataset={headCircumForAgeBoy}
+						keyToLabel={keyToLabelHCFAB}
+						colors={colorsHCFAB}
 						ylabel="รอบศรีษะ (ซม.)"
 						xlabel="อายุ (ปี)"
 						childDataset={childData
