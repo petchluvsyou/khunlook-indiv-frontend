@@ -93,7 +93,10 @@ export default function VaccineCell({
         <div className="">
           <div className="mb-1">{vaccineType}</div>
           <div className="relative" onClick={(e) => e.stopPropagation()}>
-            <DateReserve onDateChange={handleDateChange} />
+            <DateReserve
+              onDateChange={handleDateChange}
+              initialDate={dayjs(prev_chosen ? prev_reserveDate : "0000-00-00")}
+            />
           </div>
           <select
             id="location"

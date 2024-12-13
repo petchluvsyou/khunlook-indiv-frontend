@@ -9,7 +9,6 @@ class ChildService extends ApiServiceBase {
     return this.API.get<IGetChildResponse>(`/child/${user_pid}`);
   }
   addChild(request: IAddChildRequest) {
-    console.log(request);
     return this.API.post("/child", request);
   }
 }
