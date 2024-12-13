@@ -59,11 +59,17 @@ export default function page() {
   const DevelopmentServiceClass = new DevelopmentService(
     session.data?.accessToken
   );
+
+  const getMatchingSkills = (code: string): ICurrentSkills | undefined => {
+    return currentSkills?.find((item) => item.CODE === code);
+  };
   const handleChildOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setChildOption(e.target.value);
-    const currentIndex = allChildInfo.findIndex(
-      (item) => item.NAME === childOption
+    const currentIndex = Object.values(allChildInfo).findIndex(
+      (item) => item.NAME === e.target.value
     );
+    setChildIndex(currentIndex);
+
     if (
       allChildInfo[currentIndex].ASPHYXIA === "1" ||
       allChildInfo[currentIndex].BWEIGHT < 2500
@@ -72,10 +78,11 @@ export default function page() {
     } else {
       toggleOption("เด็กปฐมวัย");
     }
-    setChildIndex(currentIndex);
+    console.log(currentIndex);
+    // onLoadWindow();
   };
   const setDevelopmentInfo = async () => {
-    const request: IGetDevelopmentRequest = {
+    let request: IGetDevelopmentRequest = {
       ageMin: 0,
       ageMax: 0,
       childpid: allChildInfo[childIndex]?.PID ?? "",
@@ -86,29 +93,31 @@ export default function page() {
       loggedin: 1,
       tableName: "",
     };
-    // if (ageRange.split(" ").length === 1){
-    //      request.ageMin = 0
-    //      request.ageMax = 1
-    // }else{
-    //      if(ageRange.split(" ")[0].split("-").length ===1){
-    //           request.ageMax = parseInt(ageRange.split(" ")[0])
-    //           request.ageMin = parseInt(ageRange.split(" ")[0])
-    //      }
-    //      else{
-    //           request.ageMax = parseInt(ageRange.split(" ")[0].split("-")[0])
-    //           request.ageMin = parseInt(ageRange.split(" ")[0].split("-")[0])
-    //      }
-    // }
-    request.ageMax = 1;
-    request.ageMin = 0;
+    if (ageRange.split(" ").length === 1) {
+      request.ageMin = 0;
+      request.ageMax = 0;
+    } else {
+      if (ageRange.split(" ")[0].split("-").length === 1) {
+        request.ageMax = parseInt(ageRange.split(" ")[0]);
+        request.ageMin = parseInt(ageRange.split(" ")[0]);
+      } else {
+        request.ageMax = parseInt(ageRange.split(" ")[0].split("-")[1]);
+        request.ageMin = parseInt(ageRange.split(" ")[0].split("-")[0]);
+        // console.log(request);
+      }
+    }
+    // request.ageMax = 0;
+    // request.ageMin = 0;
     if (selectedOption === "เด็กกลุ่มเสี่ยง")
       request.tableName = "GL_DEVELOPMENT_DAIM";
     else if (selectedOption === "เด็กปฐมวัย")
       request.tableName = "GL_DEVELOPMENT_DSPM";
-    const response = await DevelopmentServiceClass.getDevelopment(request);
-    const arr = Object.values(response.data.content[0]);
+    let response = await DevelopmentServiceClass.getDevelopment(request);
+    console.log(response);
+    let arr = Object.values(response.data.content[0]);
+    let arr2 = response.data.history;
     setCurrentData(arr as ICurrentData[]);
-    setCurrentSkills(response.data.history);
+    setCurrentSkills(arr2);
   };
   const saveDevelopmentCallBack = async (
     daterec: string,
@@ -150,20 +159,29 @@ export default function page() {
   };
 
   const onLoadWindow = async () => {
-    const response = await childServiceClass.getChildByID(
-      session.data?.user.pid ?? "0000"
-    );
-    const childInfo = response.data.data;
-    setAllChildInfo(childInfo);
-    setChildOption(childInfo[childIndex]?.NAME);
+    setChildOption(allChildInfo[childIndex]?.NAME);
   };
+  useEffect(() => {
+    const getAllChildInfo = async () => {
+      const response = await childServiceClass.getChildByID(
+        session.data?.user.pid ?? "0000"
+      );
+      const childInfo = response.data.data;
+      setAllChildInfo(childInfo);
+      if (childInfo[0]?.ASPHYXIA === "1" || childInfo[0]?.BWEIGHT < 2500) {
+        toggleOption("เด็กกลุ่มเสี่ยง");
+      } else {
+        toggleOption("เด็กปฐมวัย");
+      }
+    };
+    getAllChildInfo();
+  }, []);
 
   useEffect(() => {
     onLoadWindow();
-  }, []);
-  useEffect(() => {
     setDevelopmentInfo();
-  }, [allChildInfo, childOption]);
+    console.log(currentData, currentSkills);
+  }, [childOption, allChildInfo, ageRange]);
   return (
     <div className="justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
       <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">
@@ -189,10 +207,11 @@ export default function page() {
                */}
       <div className="flex justify-center mb-6 sm:mb-10">
         <button
+          disabled={selectedOption === "เด็กกลุ่มเสี่ยง"}
           className={`relative px-4 py-2 rounded ${
             selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
           }`}
-          onClick={() => toggleOption("เด็กปฐมวัย")}
+          // onClick={() => toggleOption("เด็กปฐมวัย")}
         >
           เด็กปฐมวัย (DSPM)
           <hr
@@ -204,12 +223,13 @@ export default function page() {
           />
         </button>
         <button
+          disabled={selectedOption === "เด็กปฐมวัย"}
           className={`relative px-4 py-2 rounded ${
             selectedOption === "เด็กกลุ่มเสี่ยง"
               ? "text-black"
               : "text-gray-400"
           }`}
-          onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
+          // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
         >
           เด็กกลุ่มเสี่ยง (DAIM)
           <hr
@@ -236,12 +256,11 @@ export default function page() {
           className="p-2 border border-gray-300 rounded w-48 mr-2"
         >
           {/*fetch all child options*/}
-          <option key="1" value="Dong">
-            Dong
-          </option>
-          <option key="2" value="Petch">
-            Petch
-          </option>
+          {Object.values(allChildInfo)?.map((child, i) => (
+            <option key={i} value={child.NAME}>
+              {child.NAME}
+            </option>
+          ))}
         </select>
         <label htmlFor="ageRange" className="text-gray-700 mr-2">
           ในช่วง:
@@ -307,10 +326,15 @@ export default function page() {
               <div className="grid grid-cols-3 gap-1 w-full">
                 {/*fetch child information to check whether certain skill is previously checked and also prev date*/}
                 <DevelopmentCheckCell
+                  currentSkills={currentSkills}
                   prev_chosen={currentSkills?.some(
                     (item) => item.CODE === row.CODE
                   )}
-                  prev_reserveDate=""
+                  prev_reserveDate={
+                    dayjs(getMatchingSkills(row.CODE)?.DATE_OCCURRED).format(
+                      "YYYY-MM-DD"
+                    ) ?? "0000-00-00"
+                  }
                   saveDevelopmentCallBack={saveDevelopmentCallBack}
                   devcode={row.CODE}
                   deleteDevelopmentCallBack={deleteDevelopmentCallBack}

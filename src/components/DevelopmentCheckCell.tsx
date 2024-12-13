@@ -5,7 +5,18 @@ import DateReserve from "./DateReserve";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
+interface ICurrentSkills {
+  CODE: string;
+  TYPE: string;
+  MIN_AGE_MONTH: string;
+  MAX_AGE_MONTH: string;
+  AGE_MONTH_DESCRIPTION: string;
+  MONTH_AT_OCCURRED: string;
+  DATE_OCCURRED: string;
+  TBName: string;
+}
 interface DevelopmentCheckCellProps {
+  currentSkills: ICurrentSkills[];
   prev_chosen: boolean;
   prev_reserveDate: string;
   devcode: string;
@@ -18,6 +29,7 @@ interface DevelopmentCheckCellProps {
 }
 
 export default function DevelopmentCheckCell({
+  currentSkills,
   prev_chosen,
   prev_reserveDate,
   devcode,
@@ -26,16 +38,25 @@ export default function DevelopmentCheckCell({
 }: DevelopmentCheckCellProps) {
   const [isClicked, setIsClicked] = useState(false);
   const [reserveDate, setReserveDate] = useState<Dayjs | null>(null);
-
+  const getMatchingSkills = (code: string): any | undefined => {
+    return currentSkills?.find((item: any) => item.CODE === code);
+  };
+  useEffect(() => {
+    const f: boolean = currentSkills?.some(
+      (item: any) => item.CODE === devcode
+    );
+    setIsClicked(f);
+    setReserveDate(f ? dayjs(getMatchingSkills(devcode)?.DATE_OCCURRED) : null);
+  }, [currentSkills]);
   useEffect(() => {
     if (prev_chosen) {
       setIsClicked(true);
       setReserveDate(dayjs(prev_reserveDate));
     }
   }, [prev_chosen, prev_reserveDate]);
-
   const handleClick = () => {
     if (isClicked) {
+      setReserveDate(null);
       deleteDevelopmentCallBack(devcode);
     }
     // else {
@@ -51,14 +72,22 @@ export default function DevelopmentCheckCell({
   };
 
   const handleDateChange = (value: Dayjs) => {
+    if (isClicked) {
+      if (reserveDate) {
+        saveDevelopmentCallBack(
+          value?.format("YYYY-MM-DD") ?? "0000-00-00",
+          devcode,
+          1
+        );
+      } else {
+        saveDevelopmentCallBack(
+          value?.format("YYYY-MM-DD") ?? "0000-00-00",
+          devcode,
+          0
+        );
+      }
+    }
     setReserveDate(value);
-    console.log(reserveDate);
-    saveDevelopmentCallBack(
-      value?.format("YYYY-MM-DD") ?? "0000-00-00",
-      devcode,
-      0
-    );
-
     // PUT new date
   };
 
@@ -91,7 +120,10 @@ export default function DevelopmentCheckCell({
       </span>
       {isClicked ? (
         <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <DateReserve onDateChange={handleDateChange} />
+          <DateReserve
+            onDateChange={handleDateChange}
+            initialDate={reserveDate}
+          />
         </div>
       ) : (
         <></>

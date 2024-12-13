@@ -77,7 +77,7 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
       childabo: "3",
       childrh: "2",
       childmemo: "dsajd",
-      lowbtweigth: wg,
+      lowbtweigth: birthWeight,
       birthAsphyxia: "2",
     });
     //POST new child
@@ -221,7 +221,6 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
             >
               ล้างค่า
             </button>
-
           </div>
         </div>
       </div>
