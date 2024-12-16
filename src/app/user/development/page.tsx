@@ -15,33 +15,12 @@ import {
   IGetDevelopmentRequest,
   ISaveDevelopmentRequest,
   IDeleteDevelopmentRequest,
+  ICurrentData,
+  ICurrentSkills,
 } from "@/libs/DevelopmentService/DevelopmentServiceModel";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import dayjs from "dayjs";
 
-interface ICurrentSkills {
-  CODE: string;
-  TYPE: string;
-  MIN_AGE_MONTH: string;
-  MAX_AGE_MONTH: string;
-  AGE_MONTH_DESCRIPTION: string;
-  MONTH_AT_OCCURRED: string;
-  DATE_OCCURRED: string;
-  TBName: string;
-}
-
-interface ICurrentData {
-  MIN_AGE_MONTH: string;
-  MAX_AGE_MONTH: string;
-  CODE: string;
-  TYPE: string;
-  AGE_MONTH_DESCRIPTION: string;
-  DESCRIPTION: string;
-  INFORMATION: string;
-  TYPE_DESRIPTION: string;
-  TBName: string;
-  SCREENING: string;
-}
 export default function page() {
   const [selectedOption, setSelectedOption] = useState<
     "เด็กปฐมวัย" | "เด็กกลุ่มเสี่ยง"
@@ -50,10 +29,10 @@ export default function page() {
   const [currentData, setCurrentData] = useState<ICurrentData[]>([]);
   const [currentSkills, setCurrentSkills] = useState<ICurrentSkills[]>([]);
   const [childOption, setChildOption] = useState<string>("");
+  const [childIndex, setChildIndex] = useState(0);
   const [allChildInfo, setAllChildInfo] = useState<IChildData[]>([]);
   const [isAddChildPanelVisible, setAddChildPanelVisible] = useState(false);
   const [isEditChildPanelVisible, setEditChildPanelVisible] = useState(false);
-  const [childIndex, setChildIndex] = useState(0);
   const session = useSession();
   const childServiceClass = new ChildService(session.data?.accessToken);
   const DevelopmentServiceClass = new DevelopmentService(
@@ -163,15 +142,20 @@ export default function page() {
   };
   useEffect(() => {
     const getAllChildInfo = async () => {
-      const response = await childServiceClass.getChildByID(
-        session.data?.user.pid ?? "0000"
-      );
-      const childInfo = response.data.data;
-      setAllChildInfo(childInfo);
-      if (childInfo[0]?.ASPHYXIA === "1" || childInfo[0]?.BWEIGHT < 2500) {
-        toggleOption("เด็กกลุ่มเสี่ยง");
-      } else {
-        toggleOption("เด็กปฐมวัย");
+      try{
+        const response = await childServiceClass.getChildByID(
+          session.data?.user.pid ?? "0000"
+        );
+        const childInfo = response.data.data;
+        setAllChildInfo(childInfo);
+        if (childInfo[0]?.ASPHYXIA === "1" || childInfo[0]?.BWEIGHT < 2500) {
+          toggleOption("เด็กกลุ่มเสี่ยง");
+        } else {
+          toggleOption("เด็กปฐมวัย");
+        }
+      }
+      catch(err){
+        
       }
     };
     getAllChildInfo();
@@ -223,7 +207,7 @@ export default function page() {
           />
         </button>
         <button
-          disabled={selectedOption === "เด็กปฐมวัย"}
+          disabled={selectedOption === "เด็กปฐมวัย" }
           className={`relative px-4 py-2 rounded ${
             selectedOption === "เด็กกลุ่มเสี่ยง"
               ? "text-black"
@@ -348,7 +332,7 @@ export default function page() {
                     className="rounded-md"
                   />
                 </div>
-                <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">
+                <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block overflow-y-auto">
                   {row.DESCRIPTION}
                 </div>
               </div>

@@ -1,15 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
-import developmentData from "./developmentData";
+// import developmentData from "./developmentData";
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { ICurrentData, IGetDevelopmentRequest } from "@/libs/DevelopmentService/DevelopmentServiceModel";
+import developmentData from "./developmentData";
+import DevelopmentService from "@/libs/DevelopmentService/DevelopmentService";
 
 export default function page() {
      const [selectedOption, setSelectedOption] = useState<'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง'>('เด็กปฐมวัย');
      const [ageRange, setAgeRange] = useState<string>('0-1 เดือน');
-     const [currentData, setCurrentData] = useState<any>();
+     const [currentData, setCurrentData] = useState<ICurrentData []>();
 
      const getDefaultAgeRange = (option: 'เด็กปฐมวัย' | 'เด็กกลุ่มเสี่ยง'): string => {
           return option === 'เด็กปฐมวัย' ? '0-1 เดือน' : 'แรกเกิด';
@@ -23,14 +26,44 @@ export default function page() {
      const handleAgeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           setAgeRange(e.target.value);
      };
+     
+     useEffect(()=>{
+          const getCurrentData=async ()=>{
+               let request: IGetDevelopmentRequest = {
+                     ageMin: 0,
+                     ageMax: 0,
+                     childpid: "",
+                     childbirth: null,
+                     childcorrectedbirth: null,
+                     loggedin: 0,
+                     tableName: "",
+                   };
+                   if (ageRange.split(" ").length === 1) {
+                     request.ageMin = 0;
+                     request.ageMax = 0;
+                   } else {
+                     if (ageRange.split(" ")[0].split("-").length === 1) {
+                       request.ageMax = parseInt(ageRange.split(" ")[0]);
+                       request.ageMin = parseInt(ageRange.split(" ")[0]);
+                     } else {
+                       request.ageMax = parseInt(ageRange.split(" ")[0].split("-")[1]);
+                       request.ageMin = parseInt(ageRange.split(" ")[0].split("-")[0]);
+                     }
+                   }
+                   if (selectedOption === "เด็กกลุ่มเสี่ยง") request.tableName = "GL_DEVELOPMENT_DAIM";
+                   else if (selectedOption === "เด็กปฐมวัย") request.tableName = "GL_DEVELOPMENT_DSPM";
+                   const DevelopmentServiceClass = new DevelopmentService()
+                   let response = await DevelopmentServiceClass.getDevelopment(request);
+                   console.log(response);
+                   let arr = Object.values(response.data.content[0]);
+                   setCurrentData(arr as ICurrentData[]);
+          }
+          getCurrentData()
+     },[])
 
-     useEffect(() => {
-          const data = developmentData[selectedOption].find(data => data.age === ageRange);
-          setCurrentData(data);
-     }, [selectedOption, ageRange]);
 
      return (
-          <div className="flex justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
+          <div className="justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
                <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">พัฒนาการของ</h1>
                <p className="text-[48px] sm:text-6xl font-bold text-[#D49D44] mb-6">คุณลูก</p>
                <p className="text-gray-500 text-sm sm:text-base mb-16 w-[50%]">
@@ -80,7 +113,7 @@ export default function page() {
                     <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">พัฒนาการตามวัย</div>
                     <div className="flex items-center justify-center text-center h-12 font-semibold bg-[#D49D44] rounded-md sm:flex hidden">วิธีส่งเสริมให้ลูกทำได้</div>
 
-                    {currentData?.rows.map((row: { skill: string, description: string }, index: number) => (
+                    {currentData?.map((row: ICurrentData, index: number) => (
                          <>
                               {/*md*/}
                               <div className="grid grid-cols-2 gap-1 w-full">
@@ -93,16 +126,16 @@ export default function page() {
                                              className="rounded-md"
                                         />
                                    </div>
-                                   <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block">{row.skill}</div>
+                                   <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block overflow-y-auto">{row.INFORMATION}</div>
                               </div>
                               <div className="h-40 p-3 bg-gray-100 rounded-md text-left hidden sm:block overflow-y-auto">
-                                   {row.description}
+                                   {row.DESCRIPTION}
                               </div>
 
                               {/*sm*/}
                               <Link href={`/development/${selectedOption}/${ageRange}/${index}`} passHref className="p-3 col-span-2 flex items-center text-left item-center h-16 bg-white rounded-md sm:hidden mt-2">
                                    <div>
-                                        {row.skill}
+                                        {row.INFORMATION}
                                         <FontAwesomeIcon icon={faArrowRight} className="text-[#D49D44] text-xl ml-2" />
                                    </div>
                               </Link>

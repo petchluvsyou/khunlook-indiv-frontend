@@ -12,7 +12,7 @@ export default async function postGrowthData(data: {
 }) {
 	try {
 		const response = await axios.post(
-			'http://52.221.239.141:3000/api/v1/growth',
+			'http://localhost:3002/api/v1/growth',
 			data,
 			{
 				headers: {
