@@ -1,7 +1,7 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import GrowthPanel from "@/components/GrowthPanel";
 import getChild from "@/libs/getChild";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
 interface ChildrenJson {
   message: string;

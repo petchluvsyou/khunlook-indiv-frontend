@@ -561,7 +561,7 @@ export default function page() {
               childpid={
                 childs?.filter((child) => {
                   child.NAME === childOption;
-                })[0].PID ?? ""
+                })[0]?.PID ?? ""
               }
               vaccineType="DTP-IPV-Hib2"
               colspan={1}
@@ -664,7 +664,7 @@ export default function page() {
               childpid={
                 childs?.filter((child) => {
                   child.NAME === childOption;
-                })[0].PID ?? ""
+                })[0]?.PID ?? ""
               }
               vaccineType="Hib2"
               colspan={1}

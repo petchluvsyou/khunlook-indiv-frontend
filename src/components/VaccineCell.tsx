@@ -38,7 +38,6 @@ export default function VaccineCell({
       setReserveDate(prev_reserveDate ? dayjs(prev_reserveDate) : null);
     }
   }, [prev_chosen, prev_location, prev_reserveDate]);
-  console.log(reserveDate, vaccineType);
   const handleChange = async () => {
     const vaccineService = new VaccineService(session.data?.accessToken);
     if (prev_chosen) {
@@ -46,8 +45,9 @@ export default function VaccineCell({
         vaccineplace: location,
         childpid: childpid ?? "",
         vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
-        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "0000-00-00",
-        prev_dateserv: prev_reserveDate,
+        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "2020-10-10",
+        prev_dateserv:
+          dayjs(prev_reserveDate).format("YYYY-MM-DD") ?? "2020-10-10",
         // months: "2",
       });
       console.log(res);
@@ -56,23 +56,28 @@ export default function VaccineCell({
         vaccineplace: location,
         childpid: childpid ?? "",
         vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
-        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "0000-00-00",
+        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "2020-10-10",
         // months: "2",
       });
       console.log(res);
     }
+    console.log(reserveDate?.format("YYYY-MM-DD"));
   };
 
   const handleClick = () => {
+    if (isClicked) {
+      setReserveDate(null);
+    }
+
     setIsClicked(!isClicked);
-    console.log(childpid);
-    // POST vaccinated information
+    handleChange();
+
+    // POST development information
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
     setLocation(e.target.value);
-    handleChange();
     // PUT new location
   };
 
