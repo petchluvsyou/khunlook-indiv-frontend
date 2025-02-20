@@ -76,16 +76,16 @@ export default function GrowthChart({
       }
       const service = new GrowthService(session.data?.accessToken);
       let results: any[] = [];
-      for (let i = 0; i <= 10; i++) {
+      for (let i = 2; i <= 2; i++) {
         const res = await service.queryResult({
           sex: sex,
           typeGraph: i,
           minFirstGL: 0,
           maxFirstGL: 0,
           minSecondGL: 0,
-          maxSecondGL: 0,
+          maxSecondGL: 999,
           minThirdGL: 0,
-          maxThirdGL: 999,
+          maxThirdGL: 0,
         });
         results.push(res.data.data?.[0] ?? []);
       }
@@ -96,11 +96,11 @@ export default function GrowthChart({
       setIsLoading(false);
     }
   };
-  console.log(childData);
   useEffect(() => {
     setIsLoading(true);
     fetchGrowthData();
   }, [gender, childData]);
+
   return (
     <>
       <div className="hidden lg:block pt-6">
@@ -183,13 +183,13 @@ export default function GrowthChart({
                     xlabel="อายุ (ปี)"
                     childDataset={childData
                       .map(({ height, measureDate, birthDate }) => ({
-                        YValue: parseFloat(height),
-                        XValue:
+                        YVALUE: parseFloat(height),
+                        XVALUE:
                           measureDate && birthDate
                             ? dayjs(measureDate).diff(dayjs(birthDate), "month")
                             : 0,
                       }))
-                      .sort((a, b) => a.XValue - b.XValue)}
+                      .sort((a, b) => a.XVALUE - b.XVALUE)}
                   />
                 );
               case "weight-age":
@@ -202,29 +202,29 @@ export default function GrowthChart({
                     xlabel="อายุ (ปี)"
                     childDataset={childData
                       .map(({ weight, measureDate, birthDate }) => ({
-                        YValue: parseFloat(weight),
-                        XValue:
+                        YVALUE: parseFloat(weight),
+                        XVALUE:
                           measureDate && birthDate
                             ? dayjs(measureDate).diff(dayjs(birthDate), "month")
                             : 0,
                       }))
-                      .sort((a, b) => a.XValue - b.XValue)}
+                      .sort((a, b) => a.XVALUE - b.XVALUE)}
                   />
                 );
               case "weight-height":
                 return (
                   <CustomLineChart
-                    dataset={chartData[2]}
+                    dataset={chartData[0]}
                     keyToLabel={keyToLabelWFHG}
                     colors={colorsWFHG}
                     ylabel="น้ำหนัก (กก.)"
                     xlabel="ส่วนสูง (ซม.)"
                     childDataset={childData
                       .map(({ height, weight }) => ({
-                        YValue: parseFloat(weight),
-                        XValue: parseFloat(height),
+                        YVALUE: parseFloat(weight),
+                        XVALUE: parseFloat(height),
                       }))
-                      .sort((a, b) => a.XValue - b.XValue)}
+                      .sort((a, b) => a.XVALUE - b.XVALUE)}
                   />
                 );
               case "headcircum-age":
@@ -237,13 +237,13 @@ export default function GrowthChart({
                     xlabel="อายุ (ปี)"
                     childDataset={childData
                       .map(({ headCircum, measureDate, birthDate }) => ({
-                        YValue: parseFloat(headCircum),
-                        XValue:
+                        YVALUE: parseFloat(headCircum),
+                        XVALUE:
                           measureDate && birthDate
                             ? dayjs(measureDate).diff(dayjs(birthDate), "month")
                             : 0,
                       }))
-                      .sort((a, b) => a.XValue - b.XValue)}
+                      .sort((a, b) => a.XVALUE - b.XVALUE)}
                   />
                 );
               default:

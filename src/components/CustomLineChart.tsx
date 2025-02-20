@@ -3,17 +3,17 @@ import { LineChart, lineElementClasses } from "@mui/x-charts/LineChart";
 import { useEffect, useState } from "react";
 
 type Dataset = {
-  XValue: number;
-  P3: string;
-  P15: string;
-  P85: string;
-  P97: string;
-  P99: string;
+  XVALUE: number;
+  LESS5: string;
+  LESS3: string;
+  LESS1: string;
+  MORE2: string;
+  MORE4: string;
 };
 
 type ChildDataset = {
-  XValue: number;
-  YValue: number;
+  XVALUE: number;
+  YVALUE: number;
 };
 
 type KeyToLabel = { [key: string]: string };
@@ -56,22 +56,26 @@ export default function CustomLineChart({
   }, []);
 
   // Convert Month to Year and Month format
-  const intDataset = dataset.map((item) => ({
-    ...item,
-    P3: Number(item.P3),
-    P15: Number(item.P15),
-    P85: Number(item.P85),
-    P97: Number(item.P97),
-    P99: Number(item.P97),
-  }));
-  const transformedDataset = intDataset.map((item, idx) => ({
-    ...item,
-    XValue: `${Math.floor(idx / 12)} years ${idx % 12} months`,
-  }));
+  console.log(dataset);
+  const intDataset =
+    dataset?.map((item) => ({
+      XVALUE: parseFloat(item.XVALUE.toString()),
+      LESS5: parseFloat(item.LESS5),
+      LESS3: parseFloat(item.LESS3),
+      LESS1: parseFloat(item.LESS1),
+      MORE2: parseFloat(item.MORE2),
+      MORE4: parseFloat(item.MORE4),
+    })) ?? [];
+  console.log("FU", intDataset);
+  const transformedDataset =
+    intDataset?.map((item, idx) => ({
+      ...item,
+      XVALUE: `${Math.floor(idx / 12)} years ${idx % 12} months`,
+    })) ?? [];
 
   const transformedChildDataset = childDataset.map((item) => ({
-    XValue: `${Math.floor(item.XValue / 12)} years ${item.XValue % 12} months`,
-    YValue: item.YValue,
+    XVALUE: `${Math.floor(item.XVALUE / 12)} years ${item.XVALUE % 12} months`,
+    YVALUE: item.YVALUE,
   }));
   // Conditional dataset selection
   const combinedDataset =
@@ -92,7 +96,7 @@ export default function CustomLineChart({
         }}
         xAxis={[
           {
-            dataKey: "XValue",
+            dataKey: "XVALUE",
             scaleType: "point",
             label: xlabel,
             tickSize: 1,
@@ -102,9 +106,10 @@ export default function CustomLineChart({
           {
             valueFormatter: (value) => value.toString(),
             max:
-              Math.max(...intDataset.map((item) => Number(item.P99)), 0) * 1.1,
+              Math.max(...intDataset.map((item) => Number(item.MORE4)), 0) *
+              1.1,
             min:
-              Math.min(...intDataset.map((item) => Number(item.P3)), 10000) *
+              Math.min(...intDataset.map((item) => Number(item.LESS1)), 10000) *
               0.8,
             label: ylabel,
             tickSize: 5,
@@ -119,14 +124,6 @@ export default function CustomLineChart({
             showGrid: true,
             ...stackStrategy,
           })),
-          {
-            id: "child",
-            dataKey: "YValue",
-            label: "ลูก",
-            color: "#6b003e",
-            showMark: true,
-            area: false,
-          },
         ]}
         dataset={combinedDataset}
         {...customize}
