@@ -76,7 +76,7 @@ export default function GrowthChart({
       }
       const service = new GrowthService(session.data?.accessToken);
       let results: any[] = [];
-      for (let i = 2; i <= 2; i++) {
+      for (let i = 1; i <= 2; i++) {
         const res = await service.queryResult({
           sex: sex,
           typeGraph: i,
@@ -214,7 +214,7 @@ export default function GrowthChart({
               case "weight-height":
                 return (
                   <CustomLineChart
-                    dataset={chartData[0]}
+                    dataset={chartData[1]}
                     keyToLabel={keyToLabelWFHG}
                     colors={colorsWFHG}
                     ylabel="น้ำหนัก (กก.)"
@@ -230,7 +230,7 @@ export default function GrowthChart({
               case "headcircum-age":
                 return (
                   <CustomLineChart
-                    dataset={chartData[1]}
+                    dataset={chartData[0]}
                     keyToLabel={keyToLabelHCFAB}
                     colors={colorsHCFAB}
                     ylabel="รอบศรีษะ (ซม.)"

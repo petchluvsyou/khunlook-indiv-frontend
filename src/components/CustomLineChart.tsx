@@ -3,12 +3,15 @@ import { LineChart, lineElementClasses } from "@mui/x-charts/LineChart";
 import { useEffect, useState } from "react";
 
 type Dataset = {
-  XVALUE: number;
-  LESS5: string;
-  LESS3: string;
-  LESS1: string;
-  MORE2: string;
-  MORE4: string;
+  XVALUE: number | undefined;
+  LESS5?: string | undefined;
+  LESS3?: string | undefined;
+  LESS1?: string | undefined;
+  MORE2?: string | undefined;
+  MORE4?: string | undefined;
+  P3?: string | undefined;
+  P97?: string | undefined;
+  OVER?: string | undefined;
 };
 
 type ChildDataset = {
@@ -56,17 +59,28 @@ export default function CustomLineChart({
   }, []);
 
   // Convert Month to Year and Month format
-  console.log(dataset);
   const intDataset =
-    dataset?.map((item) => ({
-      XVALUE: parseFloat(item.XVALUE.toString()),
-      LESS5: parseFloat(item.LESS5),
-      LESS3: parseFloat(item.LESS3),
-      LESS1: parseFloat(item.LESS1),
-      MORE2: parseFloat(item.MORE2),
-      MORE4: parseFloat(item.MORE4),
-    })) ?? [];
-  console.log("FU", intDataset);
+    dataset?.map((item) => {
+      if (item?.LESS1) {
+        return {
+          XVALUE: parseFloat(item?.XVALUE?.toString() ?? ""),
+          LESS5: item.LESS5 ? parseFloat(item.LESS5) : undefined,
+          LESS3: item.LESS3 ? parseFloat(item.LESS3) : undefined,
+          LESS1: item.LESS1 ? parseFloat(item.LESS1) : undefined,
+          MORE2: item.MORE2 ? parseFloat(item.MORE2) : undefined,
+          MORE4: item.MORE4 ? parseFloat(item.MORE4) : undefined,
+        };
+      } else {
+        return {
+          XVALUE: parseFloat(item?.XVALUE?.toString() ?? ""),
+          P3: item.P3 ? parseFloat(item.P3) : undefined,
+          P97: item.P97 ? parseFloat(item.P97) : undefined,
+          OVER: 60,
+        };
+      }
+    }) ?? [];
+  console.log(intDataset);
+
   const transformedDataset =
     intDataset?.map((item, idx) => ({
       ...item,
@@ -106,11 +120,19 @@ export default function CustomLineChart({
           {
             valueFormatter: (value) => value.toString(),
             max:
-              Math.max(...intDataset.map((item) => Number(item.MORE4)), 0) *
-              1.1,
+              Math.max(
+                ...intDataset.map((item) =>
+                  Number(item.MORE4 ?? item.OVER ?? "999")
+                ),
+                0
+              ) * 1.1,
             min:
-              Math.min(...intDataset.map((item) => Number(item.LESS1)), 10000) *
-              0.8,
+              Math.min(
+                ...intDataset.map((item) =>
+                  Number(item.LESS5 ?? item.P3 ?? "0")
+                ),
+                10000
+              ) * 0.8,
             label: ylabel,
             tickSize: 5,
           },
