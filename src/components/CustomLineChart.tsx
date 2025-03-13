@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 
 type Dataset = {
   XVALUE: number | undefined;
-  aLESS5?: string | undefined;
-  aLESS3?: string | undefined;
-  aLESS1?: string | undefined;
-  bMORE2?: string | undefined;
-  bMORE4?: string | undefined;
+  LESS5?: string | undefined;
+  LESS3?: string | undefined;
+  LESS1?: string | undefined;
+  MORE2?: string | undefined;
+  MORE4?: string | undefined;
   P3?: string | undefined;
   P97?: string | undefined;
   OVER?: string | undefined;
@@ -61,14 +61,14 @@ export default function CustomLineChart({
   // Convert Month to Year and Month format
   const intDataset =
     dataset?.map((item) => {
-      if (item?.aLESS1) {
+      if (item?.LESS1) {
         return {
           XVALUE: parseFloat(item?.XVALUE?.toString() ?? ""),
-          aLESS5: item.aLESS5 ? parseFloat(item.aLESS5) : undefined,
-          aLESS3: item.aLESS3 ? parseFloat(item.aLESS3) : undefined,
-          aLESS1: item.aLESS1 ? parseFloat(item.aLESS1) : undefined,
-          bMORE2: item.bMORE2 ? parseFloat(item.bMORE2) : undefined,
-          bMORE4: item.bMORE4 ? parseFloat(item.bMORE4) : undefined,
+          LESS5: item.LESS5 ? parseFloat(item.LESS5) : undefined,
+          LESS3: item.LESS3 ? parseFloat(item.LESS3) : undefined,
+          LESS1: item.LESS1 ? parseFloat(item.LESS1) : undefined,
+          MORE2: item.MORE2 ? parseFloat(item.MORE2) : undefined,
+          MORE4: item.MORE4 ? parseFloat(item.MORE4) : undefined,
         };
       } else {
         return {
@@ -120,13 +120,13 @@ export default function CustomLineChart({
             valueFormatter: (value) => value.toString(),
             max:
               Math.max(
-                ...intDataset.map((item) => Number(item.bMORE4 ?? item.P97)),
+                ...intDataset.map((item) => Number(item.MORE4 ?? item.P97)),
                 0
               ) * 1.1,
             min:
               Math.min(
                 ...intDataset.map((item) =>
-                  Number(item.aLESS5 ?? item.P3 ?? "0")
+                  Number(item.LESS5 ?? item.P3 ?? "0")
                 ),
                 10000
               ) * 0.8,
