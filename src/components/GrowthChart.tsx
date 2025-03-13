@@ -25,6 +25,11 @@ import {
 } from "@/app/growth/headCircumForAgeBoy";
 
 import {
+  colors as colorsWFHB,
+  keyToLabel as keyToLabelWFHB,
+} from "@/app/growth/weightForHeightBoy";
+
+import {
   colors as colorsWFHG,
   keyToLabel as keyToLabelWFHG,
 } from "@/app/growth/weightForHeightGirl";
@@ -76,7 +81,7 @@ export default function GrowthChart({
       }
       const service = new GrowthService(session.data?.accessToken);
       let results: any[] = [];
-      for (let i = 1; i <= 2; i++) {
+      for (let i = 1; i <= 4; i++) {
         const res = await service.queryResult({
           sex: sex,
           typeGraph: i,
@@ -215,8 +220,8 @@ export default function GrowthChart({
                 return (
                   <CustomLineChart
                     dataset={chartData[1]}
-                    keyToLabel={keyToLabelWFHG}
-                    colors={colorsWFHG}
+                    keyToLabel={keyToLabelWFHB}
+                    colors={colorsWFHB}
                     ylabel="น้ำหนัก (กก.)"
                     xlabel="ส่วนสูง (ซม.)"
                     childDataset={childData

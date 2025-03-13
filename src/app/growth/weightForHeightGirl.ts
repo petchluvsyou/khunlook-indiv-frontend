@@ -1,18 +1,17 @@
 export const keyToLabel: { [key: string]: string } = {
-  LESS5: "ผอมไปนะครับ",
-  LESS3: "ค่อนข้างผอมครับ",
-  LESS1: "น้ำหนักอยู่ในเกณฑ์เหมาะสมกับส่วนสูง",
-  MORE2: "ท้วมนะครับ",
-  MORE4: "เริ่มอ้วนแล้วครับ",
+  aLESS5: "ผอมไปนะครับ",
+  aLESS3: "ค่อนข้างผอมครับ",
+  aLESS1: "น้ำหนักอยู่ในเกณฑ์เหมาะสมกับส่วนสูง",
+  bMORE2: "ท้วมนะครับ",
+  bMORE4: "เริ่มอ้วนแล้วครับ",
 };
 
 export const colors: { [key: string]: string } = {
-  LESS5: "#C36277",
-  LESS3: "#D49D44",
-  LESS1: "#718930",
-  MORE2: "#486708",
-  MORE4: "#AAAAAA",
-  OVER: "#000000",
+  aLESS5: "#C36277",
+  aLESS3: "#D49D44",
+  aLESS1: "#718930",
+  bMORE2: "#486708",
+  bMORE4: "#AAAAAA",
 };
 
 export const weightForHeightGirl = [

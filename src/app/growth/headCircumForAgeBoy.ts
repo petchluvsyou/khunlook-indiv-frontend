@@ -7,7 +7,7 @@ export const keyToLabel: { [key: string]: string } = {
 export const colors: { [key: string]: string } = {
   P3: "#C36277",
   P97: "#486708",
-  OVER: "#AAAAAA",
+  OVER: "#FFFFFF",
 };
 
 export const headCircumForAgeBoy = [
