@@ -10,9 +10,13 @@ import CustomLineChart from "./CustomLineChart";
 
 import {
   colors as colorsHFAG,
-  heightForAgeGirl,
   keyToLabel as keyToLabelHFAG,
 } from "@/app/growth/heightForAgeGirl";
+
+import {
+  colors as colorsHFAB,
+  keyToLabel as keyToLabelHFAB,
+} from "@/app/growth/heightForAgeBoy";
 
 import {
   colors as colorsWFAG,
@@ -28,11 +32,6 @@ import {
   colors as colorsWFHB,
   keyToLabel as keyToLabelWFHB,
 } from "@/app/growth/weightForHeightBoy";
-
-import {
-  colors as colorsWFHG,
-  keyToLabel as keyToLabelWFHG,
-} from "@/app/growth/weightForHeightGirl";
 
 import GrowthService from "@/libs/GrowthService/GrowthService";
 import dayjs, { Dayjs } from "dayjs";
@@ -180,10 +179,9 @@ export default function GrowthChart({
               case "height-age":
                 return (
                   <CustomLineChart
-                    // dataset={heightForAgeGirl}
                     dataset={chartData[3]}
-                    keyToLabel={keyToLabelHFAG}
-                    colors={colors}
+                    keyToLabel={keyToLabelHFAB}
+                    colors={colorsHFAB}
                     ylabel="ส่วนสูง (ซม.)"
                     xlabel="อายุ (ปี)"
                     childDataset={childData
@@ -249,17 +247,6 @@ export default function GrowthChart({
                             : 0,
                       }))
                       .sort((a, b) => a.XVALUE - b.XVALUE)}
-                  />
-                );
-              default:
-                return (
-                  <CustomLineChart
-                    dataset={[]}
-                    keyToLabel={keyToLabelHFAG}
-                    colors={colorsHFAG}
-                    ylabel=""
-                    xlabel=""
-                    childDataset={[]}
                   />
                 );
             }

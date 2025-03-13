@@ -120,7 +120,9 @@ export default function CustomLineChart({
             valueFormatter: (value) => value.toString(),
             max:
               Math.max(
-                ...intDataset.map((item) => Number(item.MORE4 ?? item.P97)),
+                ...intDataset.map((item) =>
+                  Number(item.MORE4 ?? item.MORE2 ?? item.P97)
+                ),
                 0
               ) * 1.1,
             min:
