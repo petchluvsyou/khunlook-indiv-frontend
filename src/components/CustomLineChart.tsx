@@ -78,7 +78,6 @@ export default function CustomLineChart({
         };
       }
     }) ?? [];
-  console.log(intDataset);
 
   const transformedDataset =
     intDataset?.map((item, idx) => ({

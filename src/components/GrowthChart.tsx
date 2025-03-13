@@ -9,11 +9,6 @@ import { useEffect, useState } from "react";
 import CustomLineChart from "./CustomLineChart";
 
 import {
-  colors as colorsHFAG,
-  keyToLabel as keyToLabelHFAG,
-} from "@/app/growth/heightForAgeGirl";
-
-import {
   colors as colorsHFAB,
   keyToLabel as keyToLabelHFAB,
 } from "@/app/growth/heightForAgeBoy";
@@ -57,13 +52,6 @@ export default function GrowthChart({
   const [chartComparison, setChartComparison] = useState("height-age");
   const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>(Array(11).fill([]));
-  const colors: { [key: string]: string } = {
-    P3: "#C36277",
-    P15: "#D49D44",
-    P85: "#718930",
-    P97: "#486708",
-    P99: "#AAAAAA",
-  };
   const fetchGrowthData = async () => {
     try {
       let sex = "1";
@@ -179,7 +167,7 @@ export default function GrowthChart({
               case "height-age":
                 return (
                   <CustomLineChart
-                    dataset={chartData[3]}
+                    dataset={chartData[2]}
                     keyToLabel={keyToLabelHFAB}
                     colors={colorsHFAB}
                     ylabel="ส่วนสูง (ซม.)"
@@ -198,7 +186,7 @@ export default function GrowthChart({
               case "weight-age":
                 return (
                   <CustomLineChart
-                    dataset={chartData[4]}
+                    dataset={chartData[3]}
                     keyToLabel={keyToLabelWFAG}
                     colors={colorsWFAG}
                     ylabel="น้ำหนัก (กก.)"
