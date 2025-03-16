@@ -10,7 +10,7 @@ import {
 import requiredVaccineData from "./vaccineData/requiredVaccineData";
 import optionalVaccineData from "./vaccineData/optionalVaccineData";
 import vaccineName from "./vaccineData/vaccineName";
-import Calendar from "@/components/vaccine/VaccineContainer";
+import VaccineContainer from "@/components/vaccine/VaccineContainer";
 
 export default function page() {
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
@@ -65,7 +65,7 @@ export default function page() {
         </label>
       </div>
       <div>
-        <Calendar />
+        <VaccineContainer />
       </div>
       {/*sm*/}
       <div className="sm:hidden w-full p-4">
