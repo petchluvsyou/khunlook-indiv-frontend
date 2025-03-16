@@ -16,10 +16,10 @@ export interface ICreateChildVaccineRequest {
 }
 
 export interface IGetChildVaccineRequest {
-  childpid: string;
+  childpid?: string;
   isinplan: string;
   loggedin: number;
-  previous_chosen: string;
+  previous_chosen?: string;
 }
 
 export interface IGetVaccine {
