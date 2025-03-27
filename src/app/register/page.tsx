@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
-import userRegister from '@/libs/userRegister';
+import UserService from '@/libs/UserService/UserService';
 
 export default function Register() {
   const router = useRouter();
@@ -86,7 +85,9 @@ export default function Register() {
 
     try {
       const registerData = {NAME : name, USERNAME : username, PASSWORD: password, EMAIL : email,PHONE_NUMBER:tel};
-      await userRegister(registerData);
+      // await userRegister(registerData);
+      const userService = new UserService()
+      await userService.userRegister(registerData)
       console.log("registration successful");
       router.push('/login')
     } catch (error: any) {

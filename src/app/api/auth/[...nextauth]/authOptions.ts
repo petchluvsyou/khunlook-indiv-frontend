@@ -1,4 +1,4 @@
-import userLogin from "@/libs/userLogin";
+import UserService from "@/libs/UserService/UserService";
 import axios from "axios";
 import { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -27,18 +27,19 @@ export const authOptions: AuthOptions = {
 
         try {
           const { username, password } = credentials;
-          const data = await userLogin({
+          const userService = new UserService();
+          const data = await userService.userLogin({
             USERNAME: username,
             PASSWORD: password,
           });
 
           const user: ExtendedUser = {
-            id: data.data.user.ID,
-            username: data.data.user.username,
-            email: data.data.user.email,
-            PID: data.data.user.PID,
-            accessToken: data.data.tokens.accessToken,
-            refreshToken: data.data.tokens.refreshToken,
+            id: data.data.data.user.ID,
+            username: data.data.data.user.username,
+            email: data.data.data.user.email,
+            PID: data.data.data.user.PID,
+            accessToken: data.data.data.tokens.accessToken,
+            refreshToken: data.data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
             refreshTokenExpires: Date.now() + 12 * 3600 * 1000,
           };
