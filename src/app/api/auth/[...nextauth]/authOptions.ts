@@ -1,4 +1,4 @@
-import userLogin from "@/libs/userLogin";
+import UserService from "@/libs/UserService/UserService";
 import axios from "axios";
 import { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -27,7 +27,8 @@ export const authOptions: AuthOptions = {
 
         try {
           const { username, password } = credentials;
-          const data = await userLogin({
+          const userService = new UserService();
+          const data = await userService.userLogin({
             USERNAME: username,
             PASSWORD: password,
           });

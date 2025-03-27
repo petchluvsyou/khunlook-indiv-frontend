@@ -9,7 +9,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
 
-interface Child {
+export interface Child {
   momcid: number;
   childcid: number;
   childpid: string;
