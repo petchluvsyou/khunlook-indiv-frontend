@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export interface RegisterData {
   NAME: string;
@@ -10,13 +10,16 @@ export interface RegisterData {
 
 export default async function userRegister(data: RegisterData): Promise<void> {
   try {
-    const response = await axios.post('http://localhost:3002/api/v1/user', data, {
-      headers: { 'Content-Type': 'application/json' },
+    const response = await axios.post(`${process.env.API_URL}user`, data, {
+      headers: { "Content-Type": "application/json" },
     });
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response && error.response.data) {
-      const errorMessage = error.response.data.error || error.response.data.message || "Failed to register.";
+      const errorMessage =
+        error.response.data.error ||
+        error.response.data.message ||
+        "Failed to register.";
       throw new Error(errorMessage);
     } else {
       throw new Error("An unexpected error occurred during registration.");

@@ -80,8 +80,7 @@ export const authOptions: AuthOptions = {
       ) {
         try {
           const response = await axios.post(
-            "http://localhost:3002/api/v1/auth/refresh",
-            // "http://52.221.239.141:3000/api/v1/auth/refresh",
+            `${process.env.API_URL}auth/refresh`,
             {
               refreshToken: token.refreshToken,
             }

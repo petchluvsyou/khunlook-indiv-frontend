@@ -1,6 +1,6 @@
 export default async function getChildren(token: string) {
   const response = await fetch(
-    `http://localhost:3002/api/v1/development/query-child`,
+    `${process.env.API_URL}development/query-child`,
     {
       method: "POST",
       headers: {
