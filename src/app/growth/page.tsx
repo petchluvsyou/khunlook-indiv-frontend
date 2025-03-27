@@ -1,58 +1,28 @@
 import GrowthPanel from "@/components/GrowthPanel";
-import getChild from "@/libs/getChild";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/authOptions";
+import ChildService from "@/libs/ChildService/ChildService";
+import { useSession } from "next-auth/react";
 
-interface ChildrenJson {
-  message: string;
-  data: {
-    additionalProp1: Child[];
-  };
-  success: 0;
-}
-
-interface Child {
-  momcid: number;
-  childcid: number;
-  childpid: string;
-  childhospcode: string;
-  childname: string;
-  datepickerchild: string;
-  sexchild: string;
-  gaweek: number;
-  childfullname: string;
-  childbtime: string;
-  childabo: string;
-  childrh: string;
-  childmemo: string;
-  lowbtweigth: number;
-  birthAsphyxia: string;
-}
 
 export default async function Page() {
-  const session = await getServerSession(authOptions);
-  const children: { [key: number]: Child }[] = [];
+  const session = useSession()
+  let children: any[] = [];
 
   if (session) {
-    const childrenJson: Promise<ChildrenJson> = getChild(
-      session.accessToken,
-      session.user.pid
-    );
-    const childrenJsonReady = await childrenJson;
-    const children = childrenJsonReady.data.additionalProp1;
+    const childService = new ChildService(session.data?.accessToken);
+    const response = await childService.getChildByID(session.data?.user.pid || "0");
+    children = response.data.data; 
   }
-
   const childDetails = children.map((childObj) => {
     const key = Object.keys(childObj)[0];
     const child = childObj[parseInt(key)];
-    return { childpid: child.childpid, childname: child.childname };
+    return { childpid: child.PID, childname: child.NAME };
   });
 
   return (
     <div className="bg-Bg">
       <GrowthPanel
-        token={session ? session.accessToken : ""}
-        pid={session ? session.user.pid : ""}
+        token={session ? session.data?.accessToken||"" : ""}
+        pid={session ? session.data?.user.pid ||"": ""}
         childDetails={childDetails}
       />
     </div>
