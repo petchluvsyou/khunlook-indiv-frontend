@@ -1,4 +1,9 @@
+"use client";
+
 import ChildDetails from "@/components/ChildDetails";
+import getChildrenFromID from "@/libs/getChildrenFromID";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 interface Summary {
   age: string;
@@ -94,7 +99,64 @@ const summaryData: SummaryList = [
   },
 ];
 
-export default async function Page() {
+const formatThaiDate = (isoDate) =>
+  new Intl.DateTimeFormat("th-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(isoDate));
+
+export default function Page() {
+  const [selectedPID, setSelectedPID] = useState("");
+  const [selectedChild, setSelectedChild] = useState([]);
+  const [children, setChildren] = useState([]);
+  const session = useSession();
+  const [age, setAge] = useState("");
+
+  useEffect(() => {
+    if (selectedChild.BIRTH) {
+      setAge(calculateAgeFormatted(selectedChild.BIRTH));
+    }
+  }, [selectedChild]);
+
+  function calculateAgeFormatted(birthTime) {
+    const birthDate = new Date(birthTime);
+    const now = new Date();
+
+    console.log(now, birthDate);
+
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} ปี ${months} เดือน`;
+  }
+
+  useEffect(() => {
+    async function fetchChildren() {
+      if (session?.data?.accessToken && session?.data?.user?.pid) {
+        const childData = await getChildrenFromID(
+          session.data.accessToken,
+          session.data.user.pid
+        );
+        setChildren(Object.values(childData.data) || []);
+      }
+    }
+    fetchChildren();
+  }, [session]);
+
+  const handleSelectChange = (event) => {
+    const selectedName = event.target.value;
+    const selectedChild = children.find((item) => item.NAME === selectedName);
+    setSelectedPID(selectedChild ? selectedChild.PID : "");
+    setSelectedChild(selectedChild ? selectedChild : []);
+    console.log(selectedChild);
+  };
+
   return (
     <div className="bg-Bg">
       <div className="flex justify-center items-center text-center relative z-0 flex-col p-12 bg-Bg gap-1 top-16 lg:top-24 w-full">
@@ -107,20 +169,32 @@ export default async function Page() {
         <p className="text-2xl text-Dark font-bold mb-6 mt-8">
           เลือกคุณลูกเพื่อดูสรุปข้อมูลเลย!
         </p>
-        <select
-          id="vaccineOption"
-          className="p-2 px-4 border border-gray-300 rounded-xl w-60"
-        >
-          <option key="required" value="required">
-            ดอง
-          </option>
-        </select>
-        <ChildDetails
-          childName={childName}
-          childAge={childAge}
-          childBD={childBD}
-          summaryData={summaryData}
-        />
+
+        {children.length > 0 ? (
+          <select
+            id="vaccineOption"
+            className="p-2 px-4 border border-gray-300 rounded-xl w-60"
+            onChange={handleSelectChange}
+          >
+            <option value="">เลือกคุณลูก</option>
+            {children.map((item) => (
+              <option key={item.PID} value={item.NAME}>
+                {item.NAME}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <p className="text-gray-500">กำลังโหลดข้อมูล...</p>
+        )}
+
+        {selectedPID && (
+          <ChildDetails
+            childName={selectedChild.NAME}
+            childAge={age}
+            childBD={formatThaiDate(selectedChild.BIRTH)}
+            summaryData={summaryData}
+          />
+        )}
       </div>
     </div>
   );
