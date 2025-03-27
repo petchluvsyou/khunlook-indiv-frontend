@@ -1,30 +1,45 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import GrowthPanel from "@/components/GrowthPanel";
 import ChildService from "@/libs/ChildService/ChildService";
-import { useSession } from "next-auth/react";
-
+import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import { getServerSession } from "next-auth";
 
 export default async function Page() {
-  const session = useSession()
-  let children: any[] = [];
-
-  if (session) {
-    const childService = new ChildService(session.data?.accessToken);
-    const response = await childService.getChildByID(session.data?.user.pid || "0");
-    children = response.data.data; 
+  const session = await getServerSession(authOptions);
+  if (session){
+    const childServiceClass = new ChildService(session?.accessToken)
+    console.log(session.user.pid)
+    const response = await childServiceClass.getChildByID(
+      session.user.pid
+    );
+    console.log(response.data.data)
+    const children = Object.entries(response.data.data).map(([key, child]: [string, IChildData]) => ({
+      ...child,
+      key: parseInt(key, 10), 
+    }));
+    const childDetails = children.map((child) => {
+      return { childpid: child.PID, childname: child.NAME };
+    });
+    console.log(childDetails)
+  
+    return (
+      <div className="bg-Bg">
+        <GrowthPanel
+          token={session?.accessToken || ""}
+          pid={session?.user.pid || ""}
+          childDetails={childDetails}
+        />
+      </div>
+    );
   }
-  const childDetails = children.map((childObj) => {
-    const key = Object.keys(childObj)[0];
-    const child = childObj[parseInt(key)];
-    return { childpid: child.PID, childname: child.NAME };
-  });
-
-  return (
+  return(
     <div className="bg-Bg">
       <GrowthPanel
-        token={session ? session.data?.accessToken||"" : ""}
-        pid={session ? session.data?.user.pid||"" : ""}
-        childDetails={childDetails}
+        token={""}
+        pid={ ""}
+        childDetails={[]}
       />
     </div>
   );
-}
+  }
+  
