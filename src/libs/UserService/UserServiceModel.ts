@@ -24,6 +24,10 @@ export interface Tokens {
 }
 
 export interface IUserLoginResponse {
-  user: User;
-  tokens: Tokens;
+  data: {
+    user: User;
+    tokens: Tokens;
+  };
+  success: boolean;
+  message: string;
 }

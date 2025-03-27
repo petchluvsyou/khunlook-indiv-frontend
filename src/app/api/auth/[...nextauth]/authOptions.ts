@@ -34,12 +34,12 @@ export const authOptions: AuthOptions = {
           });
 
           const user: ExtendedUser = {
-            id: data.data.user.ID,
-            username: data.data.user.username,
-            email: data.data.user.email,
-            PID: data.data.user.PID,
-            accessToken: data.data.tokens.accessToken,
-            refreshToken: data.data.tokens.refreshToken,
+            id: data.data.data.user.ID,
+            username: data.data.data.user.username,
+            email: data.data.data.user.email,
+            PID: data.data.data.user.PID,
+            accessToken: data.data.data.tokens.accessToken,
+            refreshToken: data.data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
             refreshTokenExpires: Date.now() + 12 * 3600 * 1000,
           };
