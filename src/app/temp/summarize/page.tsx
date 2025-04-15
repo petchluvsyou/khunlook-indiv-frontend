@@ -1,4 +1,5 @@
 import ChildDetails from "@/components/ChildDetails";
+import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
 
 interface Summary {
   age: string;

@@ -88,7 +88,6 @@ export default function DevelopmentCheckCell({
       }
     }
     setReserveDate(value);
-    // PUT new date
   };
 
   return (

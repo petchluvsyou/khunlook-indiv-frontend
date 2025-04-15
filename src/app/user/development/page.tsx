@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import developmentData from "./developmentData";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +20,8 @@ import {
 } from "@/libs/DevelopmentService/DevelopmentServiceModel";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import dayjs from "dayjs";
+import { DevelopmentSummary } from "@/components/childcard/development/DevelopmentChildCard";
+import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
 
 export default function page() {
   const [selectedOption, setSelectedOption] = useState<
@@ -97,6 +99,7 @@ export default function page() {
     let arr2 = response.data.history;
     setCurrentData(arr as ICurrentData[]);
     setCurrentSkills(arr2);
+    console.log("New currentSkills:", arr2);
   };
   const saveDevelopmentCallBack = async (
     daterec: string,
@@ -113,7 +116,9 @@ export default function page() {
       devcode: developmentcode,
       isUpdate: isUpdate,
     };
+    console.log("Req:", request);
     const req = await DevelopmentServiceClass.saveDevelopment(request);
+   
   };
   const deleteDevelopmentCallBack = async (developmentCode: string) => {
     const request: IDeleteDevelopmentRequest = {
@@ -142,7 +147,7 @@ export default function page() {
   };
   useEffect(() => {
     const getAllChildInfo = async () => {
-      try{
+      try {
         const response = await childServiceClass.getChildByID(
           session.data?.user.pid ?? "0000"
         );
@@ -154,8 +159,8 @@ export default function page() {
           toggleOption("เด็กปฐมวัย");
         }
       }
-      catch(err){
-        
+      catch (err) {
+
       }
     };
     getAllChildInfo();
@@ -166,8 +171,88 @@ export default function page() {
     setDevelopmentInfo();
     console.log(currentData, currentSkills);
   }, [childOption, allChildInfo, ageRange]);
+
+  const summaryData = useMemo(() => {
+    const typeMapping: Record<string, keyof DevelopmentSummary> = {
+      "1": "movement",
+      "2": "dexterity",
+      "3": "comprehension",
+      "4": "language-use",
+      "5": "self-help",
+    };
+
+    const summary: DevelopmentSummary = {
+      movement: { score: 0, fullScore: 0 },
+      dexterity: { score: 0, fullScore: 0 },
+      comprehension: { score: 0, fullScore: 0 },
+      "language-use": { score: 0, fullScore: 0 },
+      "self-help": { score: 0, fullScore: 0 },
+    };
+
+    // Step 1: Count full skills for each TYPE
+    currentData.forEach((skill) => {
+      const key = typeMapping[skill.TYPE]; // Map "1" -> "movement", etc.
+      if (key) {
+        summary[key].fullScore++;
+      }
+    });
+
+    // Step 2: Count child’s skills for each TYPE
+    currentSkills.forEach((skill) => {
+      const key = typeMapping[skill.TYPE];
+      if (key) {
+        summary[key].score++;
+      }
+    });
+
+    return summary;
+  }, [currentData, currentSkills]);
+
+
+  function calculateAgeFormatted(birthTime: string) {
+    const birthDate = new Date(birthTime);
+    const now = new Date();
+
+    console.log(now, birthDate);
+
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} ปี ${months} เดือน`;
+  }
+
+  function formatThaiDate(isoDate: string) {
+    const date = new Date(isoDate);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date:", isoDate);
+      return "Invalid date"; // or return an empty string or fallback message
+    }
+
+    return new Intl.DateTimeFormat("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  }
+
   return (
     <div className="justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
+      <div className="fixed top-32 right-4 z-50">
+        <DevelopmentChildCard
+          childName={allChildInfo[childIndex]?.NAME}
+          childAge={calculateAgeFormatted(allChildInfo[childIndex]?.BIRTH)}
+          childBD={formatThaiDate(allChildInfo[childIndex]?.BIRTH)}
+          ageRange={ageRange}
+          summaryData={summaryData}
+        />
+      </div>
       <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">
         พัฒนาการของ
       </h1>
@@ -192,36 +277,32 @@ export default function page() {
       <div className="flex justify-center mb-6 sm:mb-10">
         <button
           disabled={selectedOption === "เด็กกลุ่มเสี่ยง"}
-          className={`relative px-4 py-2 rounded ${
-            selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
-          }`}
-          // onClick={() => toggleOption("เด็กปฐมวัย")}
+          className={`relative px-4 py-2 rounded ${selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
+            }`}
+        // onClick={() => toggleOption("เด็กปฐมวัย")}
         >
           เด็กปฐมวัย (DSPM)
           <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${
-              selectedOption === "เด็กปฐมวัย"
-                ? "border-black"
-                : "border-gray-400"
-            }`}
+            className={`absolute left-0 right-0 mt-2 border-t-2 ${selectedOption === "เด็กปฐมวัย"
+              ? "border-black"
+              : "border-gray-400"
+              }`}
           />
         </button>
         <button
-          disabled={selectedOption === "เด็กปฐมวัย" }
-          className={`relative px-4 py-2 rounded ${
-            selectedOption === "เด็กกลุ่มเสี่ยง"
-              ? "text-black"
-              : "text-gray-400"
-          }`}
-          // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
+          disabled={selectedOption === "เด็กปฐมวัย"}
+          className={`relative px-4 py-2 rounded ${selectedOption === "เด็กกลุ่มเสี่ยง"
+            ? "text-black"
+            : "text-gray-400"
+            }`}
+        // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
         >
           เด็กกลุ่มเสี่ยง (DAIM)
           <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${
-              selectedOption === "เด็กกลุ่มเสี่ยง"
-                ? "border-black"
-                : "border-gray-400"
-            }`}
+            className={`absolute left-0 right-0 mt-2 border-t-2 ${selectedOption === "เด็กกลุ่มเสี่ยง"
+              ? "border-black"
+              : "border-gray-400"
+              }`}
           />
         </button>
       </div>
