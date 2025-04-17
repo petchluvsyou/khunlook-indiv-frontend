@@ -4,32 +4,31 @@ import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
 import { useSession } from "next-auth/react";
 import VaccineService from "@/libs/VaccineService/VaccineService";
-import { MAPTYPETOCODE } from "@/app/user/vaccines/vaccineData/vaccineTypeToCode";
-import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
+import {
+  IGetVaccine,
+  VaccineInterval,
+} from "@/libs/VaccineService/VaccineServiceModel";
 
 interface VaccineCellProps {
   childpid: string;
-  vaccineType: string;
-  colspan: number;
-  color: string;
-  prev_chosen: boolean;
-  prev_location: string;
-  prev_reserveDate: string;
+  vaccine: VaccineInterval;
+  vaccineHistory: IGetVaccine;
 }
 
 export default function VaccineCell({
   childpid,
-  vaccineType,
-  colspan,
-  color,
-  prev_chosen,
-  prev_location,
-  prev_reserveDate,
+  vaccine,
+  vaccineHistory,
 }: VaccineCellProps) {
   const session = useSession();
+  const prev_chosen = vaccineHistory != null;
+  const prev_location = prev_chosen ? vaccineHistory.HOSPITAL : "";
+  const prev_reserveDate = prev_chosen ? vaccineHistory.DATE_SERV : new Date();
   const [isClicked, setIsClicked] = useState(false);
   const [location, setLocation] = useState("");
-  const [reserveDate, setReserveDate] = useState<Dayjs | null>(null);
+  const [reserveDate, setReserveDate] = useState<Dayjs | null>(
+    prev_reserveDate ? dayjs(prev_reserveDate) : null
+  );
 
   useEffect(() => {
     if (prev_chosen) {
@@ -38,14 +37,14 @@ export default function VaccineCell({
       setReserveDate(prev_reserveDate ? dayjs(prev_reserveDate) : null);
     }
   }, [prev_chosen, prev_location, prev_reserveDate]);
-  const handleChange = async () => {
+  const handleChange = async (day: Dayjs) => {
     const vaccineService = new VaccineService(session.data?.accessToken);
     if (prev_chosen) {
       const res = await vaccineService.updateChildVaccine({
         vaccineplace: location,
         childpid: childpid ?? "",
-        vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
-        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "2020-10-10",
+        vaccinetype: vaccine.CODE,
+        vaccinated_date: day.format("YYYY-MM-DD") ?? "2020-10-10",
         prev_dateserv:
           dayjs(prev_reserveDate).format("YYYY-MM-DD") ?? "2020-10-10",
         // months: "2",
@@ -55,52 +54,47 @@ export default function VaccineCell({
       const res = await vaccineService.createChildVaccine({
         vaccineplace: location,
         childpid: childpid ?? "",
-        vaccinetype: MAPTYPETOCODE?.[vaccineType] as string,
-        vaccinated_date: reserveDate?.format("YYYY-MM-DD") ?? "2020-10-10",
+        vaccinetype: vaccine.CODE,
+        vaccinated_date: day.format("YYYY-MM-DD") ?? "2020-10-10",
         // months: "2",
       });
       console.log(res);
     }
-    console.log(reserveDate?.format("YYYY-MM-DD"));
   };
 
   const handleClick = () => {
+    if (!session.data) return;
     if (isClicked) {
       setReserveDate(null);
     }
 
     setIsClicked(!isClicked);
-    handleChange();
-
-    // POST development information
+    if (session) handleChange(reserveDate ?? new Dayjs());
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
     setLocation(e.target.value);
-    // PUT new location
   };
 
   const handleDateChange = (value: Dayjs) => {
     setReserveDate(value);
-    handleChange();
-    // PUT new date
+    if (session) handleChange(value);
   };
-
   return (
     <div
-      className={`col-span-${colspan} p-4 text-center rounded-md cursor-pointer ${
-        isClicked ? `bg-${color} font-bold` : "bg-Bg hover:bg-gray-100"
-      }`}
+      className={`col-span-${1} p-4 border border-Grey text-center rounded-md ${
+        session.data && "cursor-pointer"
+      } ${isClicked ? `bg-Yellow font-bold` : "bg-Bg hover:bg-gray-100"}`}
       onClick={handleClick}
     >
       {isClicked ? (
         <div className="">
-          <div className="mb-1">{vaccineType}</div>
+          <div className="mb-1">{vaccine.name ?? ""}</div>
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <DateReserve
               onDateChange={handleDateChange}
-              initialDate={dayjs(prev_chosen ? prev_reserveDate : "0000-00-00")}
+              initialDate={dayjs(prev_chosen ? reserveDate : dayjs())}
             />
           </div>
           <select
@@ -118,7 +112,7 @@ export default function VaccineCell({
           </select>
         </div>
       ) : (
-        <div>{vaccineType}</div>
+        <div>{vaccine?.name ?? ""}</div>
       )}
     </div>
   );
