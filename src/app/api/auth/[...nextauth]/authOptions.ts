@@ -8,6 +8,7 @@ interface ExtendedUser extends User {
   username: string;
   email: string;
   PID: string;
+  CID: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;
@@ -38,6 +39,7 @@ export const authOptions: AuthOptions = {
             username: data.data.data.user.username,
             email: data.data.data.user.email,
             PID: data.data.data.user.PID,
+            CID: data.data.data.user.CID,
             accessToken: data.data.data.tokens.accessToken,
             refreshToken: data.data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
@@ -61,6 +63,7 @@ export const authOptions: AuthOptions = {
         token.username = extendedUser.username;
         token.email = extendedUser.email;
         token.pid = extendedUser.PID;
+        token.cid = extendedUser.CID;
         token.accessToken = extendedUser.accessToken;
         token.refreshToken = extendedUser.refreshToken;
         token.accessTokenExpires = extendedUser.accessTokenExpires;
@@ -101,6 +104,7 @@ export const authOptions: AuthOptions = {
       session.user.id = token.id as string;
       session.user.username = token.username as string;
       session.user.pid = token.pid as string;
+      session.user.cid = token.cid as string;
       session.user.email = token.email as string;
       session.accessToken = token.accessToken as string;
       return session;
