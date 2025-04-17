@@ -58,6 +58,6 @@ export interface IGetHospital {
 }
 
 export interface IHospital {
-  HOSPITALCODE: string;
-  FULLNAME: string;
+  id: string;
+  text: string;
 }

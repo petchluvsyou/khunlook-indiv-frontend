@@ -27,6 +27,7 @@ export default function VaccineGrid({
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
   const [hospital, setHospital] = useState<IHospital[]>([]);
+  const [hospitalSearch, setHospitalSearch] = useState<string>("");
   const session = useSession();
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
@@ -60,7 +61,7 @@ export default function VaccineGrid({
       vaccine.intervals.sort((a, b) =>
         a.startAge === b.startAge
           ? a.endAge - b.endAge
-          : a.startAge - b.startAge
+          : a.startAge - b.startAge,
       );
     });
     return Object.values(vaccineMap);
@@ -78,19 +79,19 @@ export default function VaccineGrid({
       const matchingVaccines = intervals.filter(
         (interval: { startAge: number; endAge: number }) =>
           interval.startAge <= ageLabel.months &&
-          interval.endAge >= ageLabel.months
+          interval.endAge >= ageLabel.months,
       );
 
       const isInPlan = matchingVaccines.length > 0;
       const currentVaccine = isInPlan ? matchingVaccines[0] : null;
       const isMatch = previousVaccine?.some(
-        (prev: any) => prev.name === currentVaccine?.name
+        (prev: any) => prev.name === currentVaccine?.name,
       );
 
       if (isInPlan !== previousBoolean || !isMatch) {
         if (count > 0) {
           result.push(
-            previousBoolean ? [true, count, previousVaccine] : [false, count]
+            previousBoolean ? [true, count, previousVaccine] : [false, count],
           );
         }
 
@@ -104,29 +105,13 @@ export default function VaccineGrid({
 
     if (count > 0) {
       result.push(
-        previousBoolean ? [true, count, previousVaccine] : [false, count]
+        previousBoolean ? [true, count, previousVaccine] : [false, count],
       );
     }
     return result;
   }
 
   useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const vaccineService = new VaccineService();
-        const response = await vaccineService.getHospital({
-          momcid: "",
-          search: "",
-        });
-        if (response.data.success) {
-          setHospital(response.data.data);
-        } else {
-          console.error("Failed to fetch vaccine information");
-        }
-      } catch (error) {
-        console.error("Error fetching vaccines:", error);
-      }
-    }
     async function fetchVaccines() {
       try {
         const vaccineService = new VaccineService();
@@ -147,9 +132,27 @@ export default function VaccineGrid({
     }
 
     fetchVaccines();
-    fetchHospital();
   }, [isInPlan, child]);
-  console.log(hospital);
+  useEffect(() => {
+    async function fetchHospital() {
+      try {
+        const vaccineService = new VaccineService();
+        const response = await vaccineService.getHospital({
+          momcid: "",
+          search: hospitalSearch,
+        });
+        if (response.data) {
+          console.log(response.data.data);
+          setHospital(response.data.data);
+        } else {
+          console.error("Failed to fetch vaccine information");
+        }
+      } catch (error) {
+        console.error("Error fetching vaccines:", error);
+      }
+    }
+    fetchHospital();
+  }, []);
   return (
     <div className="w-full p-4 gap-1 flex">
       <div className="flex flex-col gap-2 bg-white border p-16">
@@ -189,7 +192,9 @@ export default function VaccineGrid({
                       {(timeline[2] ?? []).map((t, i) => (
                         <VaccineCell
                           key={index + i}
-                          childpid={session ? child?.PID ?? "1" : "0"}
+                          childpid={session ? (child?.PID ?? "1") : "0"}
+                          hospital={hospital}
+                          setHospitalSearch={setHospitalSearch}
                           vaccine={t}
                           vaccineHistory={
                             history.filter((h) => h.DESCRIPTION === t.name)[0]

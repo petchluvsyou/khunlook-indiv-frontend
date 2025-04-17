@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import {
   IGetVaccine,
+  IHospital,
   VaccineInterval,
 } from "@/libs/VaccineService/VaccineServiceModel";
 
@@ -13,12 +14,16 @@ interface VaccineCellProps {
   childpid: string;
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
+  setHospitalSearch: (search: string) => void;
+  hospital: IHospital[];
 }
 
 export default function VaccineCell({
   childpid,
   vaccine,
+  hospital,
   vaccineHistory,
+  setHospitalSearch,
 }: VaccineCellProps) {
   const session = useSession();
   const prev_chosen = vaccineHistory != null;
@@ -27,7 +32,7 @@ export default function VaccineCell({
   const [isClicked, setIsClicked] = useState(false);
   const [location, setLocation] = useState("");
   const [reserveDate, setReserveDate] = useState<Dayjs | null>(
-    prev_reserveDate ? dayjs(prev_reserveDate) : null
+    prev_reserveDate ? dayjs(prev_reserveDate) : null,
   );
 
   useEffect(() => {
@@ -97,19 +102,36 @@ export default function VaccineCell({
               initialDate={dayjs(prev_chosen ? reserveDate : dayjs())}
             />
           </div>
-          <select
-            id="location"
-            value={location}
-            onChange={handleLocationChange}
+          <div
+            className="relative text-black"
             onClick={(e) => e.stopPropagation()}
-            required
-            className="w-full border-0 border-b-2 border-gray-300 focus:border-Yellow placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
           >
-            {/*get Location option from database*/}
-            <option value="DDD">Dongy Hospital</option>
-            <option value="PPP">Sira medical center</option>
-            <option value="GGG">GearGear WHO cente</option>
-          </select>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => {
+                setLocation(e.target.value);
+                setHospitalSearch(e.target.value);
+              }}
+              placeholder="Type hospital name"
+              className="w-full border-0 border-b-2 border-gray-300 focus:border-Yellow placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
+            />
+            {location.length >= 3 && (
+              <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-48 overflow-y-auto shadow-md rounded">
+                {hospital.map((h) => (
+                  <li
+                    key={h.id}
+                    className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
+                    onClick={() => {
+                      setLocation(h.text);
+                    }}
+                  >
+                    {h.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       ) : (
         <div>{vaccine?.name ?? ""}</div>
