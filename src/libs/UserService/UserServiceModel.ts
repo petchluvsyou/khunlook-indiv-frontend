@@ -3,6 +3,7 @@ export interface IUserRegisterRequest {
   USERNAME: string;
   PASSWORD: string;
   EMAIL: string;
+  CID: string;
   PHONE_NUMBER: string;
 }
 export interface IUserLoginRequest {
@@ -15,6 +16,7 @@ export interface User {
   ID: string;
   username: string;
   email: string;
+  CID: string;
   phone_number: string;
 }
 

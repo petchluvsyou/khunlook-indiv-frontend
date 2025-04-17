@@ -1,38 +1,41 @@
-'use client'
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import UserService from '@/libs/UserService/UserService';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import UserService from "@/libs/UserService/UserService";
 
 export default function Register() {
   const router = useRouter();
 
-  const [name, setName] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [tel,setTel] = useState<string>('');
+  const [name, setName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [tel, setTel] = useState<string>("");
+  const [cid, setCid] = useState<string>("");
 
   // State for individual field errors
-  const [nameError, setNameError] = useState<string>('');
-  const [usernameError, setUsernameError] = useState<string>('');
-  const [passwordError, setPasswordError] = useState<string>('');
-  const [emailError, setEmailError] = useState<string>('');
-  const [telError, setTelError] = useState<string>('');
+  const [nameError, setNameError] = useState<string>("");
+  const [usernameError, setUsernameError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [telError, setTelError] = useState<string>("");
+  const [cidError, setCidError] = useState<string>("");
 
   // State for handling server error
-  const [serverMessage, setServerMessage] = useState<string>('');
+  const [serverMessage, setServerMessage] = useState<string>("");
 
   const validateFields = () => {
     let isValid = true;
 
     // Reset previous errors
-    setNameError('');
-    setUsernameError('');
-    setPasswordError('');
-    setEmailError('');
-    setServerMessage('');
-    setTelError('');
+    setNameError("");
+    setUsernameError("");
+    setPasswordError("");
+    setEmailError("");
+    setServerMessage("");
+    setTelError("");
+    setCidError("");
 
     // Name validation
     if (name.trim().length === 0) {
@@ -69,7 +72,13 @@ export default function Register() {
       setTelError("Telephone number must be exactly 10 digits.");
       isValid = false;
     }
-    
+
+    // CID validation
+    if (!/^[0-9]+$/.test(cid) || cid.length !== 13) {
+      setCidError(
+        "National ID must be exactly 13 digits and contain only numbers"
+      );
+    }
 
     return isValid;
   };
@@ -78,20 +87,25 @@ export default function Register() {
     e.preventDefault();
 
     if (!validateFields()) {
-      return; 
+      return;
     }
 
-    console.log("data:",{NAME : name, USERNAME : username, PASSWORD: password, EMAIL : email,PHONE_NUMBER:tel});
-
     try {
-      const registerData = {NAME : name, USERNAME : username, PASSWORD: password, EMAIL : email,PHONE_NUMBER:tel};
+      const registerData = {
+        NAME: name,
+        USERNAME: username,
+        PASSWORD: password,
+        EMAIL: email,
+        PHONE_NUMBER: tel,
+        CID: cid,
+      };
       // await userRegister(registerData);
-      const userService = new UserService()
-      await userService.userRegister(registerData)
+      const userService = new UserService();
+      await userService.userRegister(registerData);
       console.log("registration successful");
-      router.push('/login')
+      router.push("/login");
     } catch (error: any) {
-        setServerMessage(error.message);
+      setServerMessage(error.message);
     }
   };
 
@@ -104,7 +118,9 @@ export default function Register() {
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-900">Name</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -113,10 +129,14 @@ export default function Register() {
                 required
                 className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {nameError && <span className="text-red-500 text-sm">{nameError}</span>}
+              {nameError && (
+                <span className="text-red-500 text-sm">{nameError}</span>
+              )}
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-900">Username</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                Username
+              </label>
               <input
                 type="text"
                 name="username"
@@ -125,10 +145,14 @@ export default function Register() {
                 required
                 className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {usernameError && <span className="text-red-500 text-sm">{usernameError}</span>}
+              {usernameError && (
+                <span className="text-red-500 text-sm">{usernameError}</span>
+              )}
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-900">Password</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
@@ -137,10 +161,14 @@ export default function Register() {
                 required
                 className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {passwordError && <span className="text-red-500 text-sm">{passwordError}</span>}
+              {passwordError && (
+                <span className="text-red-500 text-sm">{passwordError}</span>
+              )}
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-900">Email</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
@@ -149,10 +177,14 @@ export default function Register() {
                 required
                 className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {emailError && <span className="text-red-500 text-sm">{emailError}</span>}
+              {emailError && (
+                <span className="text-red-500 text-sm">{emailError}</span>
+              )}
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-900">Phone Number</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                Phone Number
+              </label>
               <input
                 type="text"
                 name="tel"
@@ -161,13 +193,30 @@ export default function Register() {
                 required
                 className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {telError && <span className="text-red-500 text-sm">{telError}</span>}
+              {telError && (
+                <span className="text-red-500 text-sm">{telError}</span>
+              )}
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-900">
+                National ID
+              </label>
+              <input
+                type="text"
+                name="cid"
+                value={cid}
+                onChange={(e) => setCid(e.target.value)}
+                required
+                className="bg-gray-50 border border-gray-300 text-gray-900 lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              />
+              {telError && (
+                <span className="text-red-500 text-sm">{cidError}</span>
+              )}
             </div>
 
             {serverMessage && (
-              <p className="text-red-500 text-center">
-                {serverMessage}
-              </p>
+              <p className="text-red-500 text-center">{serverMessage}</p>
             )}
 
             <button
