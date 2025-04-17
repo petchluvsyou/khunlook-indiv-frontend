@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import VaccineGrid from "./VaccineGrid";
+import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 
 export interface AgeLabel {
   label: string;
@@ -10,6 +11,7 @@ const AGELABELS = [
   { label: "แรกเกิด", months: 0 },
   { label: "2 เดือน", months: 2 },
   { label: "4 เดือน", months: 4 },
+  { label: "5 เดิอน", months: 5 },
   { label: "6 เดือน", months: 6 },
   { label: "9 เดือน", months: 9 },
   { label: "12 เดือน", months: 12 },
@@ -20,7 +22,15 @@ const AGELABELS = [
   { label: "11-15 ปี", months: 132 },
 ];
 
-export default function VaccineContainer() {
+interface VaccineContainerProps {
+  isInPlan: boolean;
+  child?: IChildData;
+}
+
+export default function VaccineContainer({
+  isInPlan,
+  child,
+}: VaccineContainerProps) {
   const [ageLabels, setAgeLabels] = useState(AGELABELS.slice(0, 6));
 
   function toggleAgeLabels() {
@@ -31,13 +41,13 @@ export default function VaccineContainer() {
 
   return (
     <div className="w-full p-4">
-      <VaccineGrid ageLabels={ageLabels} />
       <button
         onClick={toggleAgeLabels}
-        className="mt-4 p-2 bg-blue-500 text-white rounded"
+        className="w-32 py-2 bg-Yellow hover:bg-yellow-500 text-white font-semibold rounded-md transition"
       >
         Change Age
       </button>
+      <VaccineGrid child={child} ageLabels={ageLabels} isInPlan={isInPlan} />
     </div>
   );
 }

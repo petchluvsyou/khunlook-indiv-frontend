@@ -39,3 +39,25 @@ export interface IGetVaccine {
   WEB_GRP_NAME: string;
   WEB_GRP_ORDER: number;
 }
+
+export interface VaccineInterval {
+  name: string;
+  startAge: number;
+  endAge: number;
+  [key: string]: any;
+}
+
+export interface Vaccine {
+  groupName: string;
+  intervals: VaccineInterval[];
+}
+
+export interface IGetHospital {
+  search: string;
+  momcid: string;
+}
+
+export interface IHospital {
+  HOSPITALCODE: string;
+  FULLNAME: string;
+}
