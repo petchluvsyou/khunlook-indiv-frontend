@@ -27,7 +27,20 @@ const summaryData: SummaryList = [
     "language-use": 3,
     "self-help": 2,
     vaccine: {
-      essential: ["MMR", "DTP", "Hepatitis B"],
+      essential: [
+        "MMR",
+        "DTP",
+        "Hepatitis B",
+        "MMR",
+        "DTP",
+        "Hepatitis B",
+        "MMR",
+        "DTP",
+        "Hepatitis B",
+        "MMR",
+        "DTP",
+        "Hepatitis B",
+      ],
       supplement: ["Influenza", "Rotavirus"],
     },
   },
@@ -67,6 +80,18 @@ const summaryData: SummaryList = [
       supplement: ["Hepatitis A"],
     },
   },
+  {
+    age: "6-7 เดือน",
+    movement: 4,
+    dexterity: 3,
+    comprehension: 4,
+    "language-use": 4,
+    "self-help": 3,
+    vaccine: {
+      essential: ["Polio", "Varicella"],
+      supplement: ["Hepatitis A"],
+    },
+  },
 ];
 
 export default async function Page() {
@@ -80,7 +105,7 @@ export default async function Page() {
           คุณลูก
         </p>
         <p className="text-2xl text-Dark font-bold mb-6 mt-8">
-          เลือกลูกเพื่อดูสรุปข้อมูลเลย!
+          เลือกคุณลูกเพื่อดูสรุปข้อมูลเลย!
         </p>
         <select
           id="vaccineOption"

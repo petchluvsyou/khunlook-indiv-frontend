@@ -21,6 +21,41 @@ export interface IGetChildResponse {
   data: IChildData[];
   success: number;
 }
+export interface Child {
+  momcid: number;
+  childcid: number;
+  childpid: string;
+  childhospcode: string;
+  childname: string;
+  datepickerchild: string;
+  sexchild: string;
+  gaweek: number;
+  childfullname: string;
+  childbtime: string;
+  childabo: string;
+  childrh: string;
+  childmemo: string;
+  lowbtweigth: number;
+  birthAsphyxia: string;
+}
+export interface ChildWithKey {
+  key: number;
+  momcid: number;
+  childcid: number;
+  childpid: string;
+  childhospcode: string;
+  childname: string;
+  datepickerchild: string;
+  sexchild: string;
+  gaweek: number;
+  childfullname: string;
+  childbtime: string;
+  childabo: string;
+  childrh: string;
+  childmemo: string;
+  lowbtweigth: number;
+  birthAsphyxia: string;
+}
 export interface IChildData {
   HOSPCODE: string;
   CID: string;
@@ -35,5 +70,5 @@ export interface IChildData {
   BTIME: string; // Assuming this is a time string in 'HHMMSS' format
   MEMO: string;
   BWEIGHT: number; // Birth weight (assumed to be a number)
-  ASPHYXIA: string; // Assuming asphyxia is stored as a string
+  ASPHYXIA: string;
 }
