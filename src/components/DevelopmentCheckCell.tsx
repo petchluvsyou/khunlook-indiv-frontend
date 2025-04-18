@@ -88,7 +88,6 @@ export default function DevelopmentCheckCell({
       }
     }
     setReserveDate(value);
-    // PUT new date
   };
 
   return (
@@ -122,7 +121,7 @@ export default function DevelopmentCheckCell({
         <div className="relative" onClick={(e) => e.stopPropagation()}>
           <DateReserve
             onDateChange={handleDateChange}
-            initialDate={reserveDate}
+            initialDate={reserveDate ?? undefined}
           />
         </div>
       ) : (
