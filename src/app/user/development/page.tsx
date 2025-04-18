@@ -116,8 +116,15 @@ export default function page() {
       devcode: developmentcode,
       isUpdate: isUpdate,
     };
-    console.log("Req:", request);
-    const req = await DevelopmentServiceClass.saveDevelopment(request);
+    try {
+      const res = await DevelopmentServiceClass.saveDevelopment(request);
+      console.log("Saved:", res.status, res.data);
+  
+      // Re-fetch updated development data
+      await setDevelopmentInfo();
+    } catch (error) {
+      console.error("Save error:", error);
+    }
 
   };
   const deleteDevelopmentCallBack = async (developmentCode: string) => {
@@ -125,7 +132,15 @@ export default function page() {
       childpid: allChildInfo[childIndex].PID,
       devcode: developmentCode,
     };
-    const req = await DevelopmentServiceClass.deleteDevelopment(request);
+    try {
+      const res = await DevelopmentServiceClass.deleteDevelopment(request);
+      console.log("Deleted:", res.status);
+  
+      // Refresh development info
+      await setDevelopmentInfo();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
   const getDefaultAgeRange = (
     option: "เด็กปฐมวัย" | "เด็กกลุ่มเสี่ยง"
@@ -189,17 +204,21 @@ export default function page() {
       "self-help": "ไม่มีข้อมูล",
     };
 
-    let ageMax = 0;
+    //extract current ageRange: min,max
     let ageMin = 0;
-
-    if (ageRange.split(" ")[0].split("-").length === 1) {
-      ageMax = parseInt(ageRange.split(" ")[0]);
-      ageMin = parseInt(ageRange.split(" ")[0]);
+    let ageMax = 0;
+    
+    const agePart = ageRange.split(" ")[0]; 
+    
+    if (agePart.includes("-")) {
+      [ageMin, ageMax] = agePart.split("-").map(Number);
     } else {
-      ageMax = parseInt(ageRange.split(" ")[0].split("-")[1]);
-      ageMin = parseInt(ageRange.split(" ")[0].split("-")[0]);
+      ageMin = ageMax = parseInt(agePart);
     }
 
+    if(ageRange=="แรกเกิด") {
+      ageMin = ageMax = 0;
+    }
 
     currentSkills.forEach((skill) => {
       const key = typeMapping[skill.TYPE];
