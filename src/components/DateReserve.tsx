@@ -3,7 +3,7 @@
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 
 export default function DateReserve({
@@ -11,22 +11,22 @@ export default function DateReserve({
   initialDate,
 }: {
   onDateChange: Function;
-  initialDate?: Dayjs | null; // Add this to accept an initial value
+  initialDate?: Dayjs; // Add this to accept an initial value
 }) {
   useEffect(() => {
     if (initialDate) {
       setreserveDate(initialDate);
     }
   }, [initialDate]);
-  const [reserveDate, setreserveDate] = useState<Dayjs | null>(null);
+  const [reserveDate, setreserveDate] = useState<Dayjs>(dayjs());
   return (
-    <div className="">
+    <div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           value={reserveDate}
           defaultValue={reserveDate}
           onChange={(value) => {
-            setreserveDate(value);
+            setreserveDate(value ?? dayjs());
             onDateChange(value);
           }}
         />

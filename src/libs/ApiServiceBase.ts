@@ -6,7 +6,8 @@ class ApiServiceBase {
 
   constructor(accessToken: string, timeout: number = 60000) {
     this.API = axios.create({
-      baseURL: "http://localhost:3002/api/v1/",
+      baseURL:
+        process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3003/api/v1/",
       timeout: timeout,
       headers: { Authorization: `Bearer ${accessToken}` },
     });

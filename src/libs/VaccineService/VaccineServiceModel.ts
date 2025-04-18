@@ -22,6 +22,11 @@ export interface IGetChildVaccineRequest {
   previous_chosen?: string;
 }
 
+export interface IPostChildVaccineClinicRequest {
+  momcid: string;
+  clinicname: string;
+}
+
 export interface IGetVaccine {
   AGE: number;
   AGE_MAX: number;
@@ -38,4 +43,26 @@ export interface IGetVaccine {
   VACCINETYPE: string;
   WEB_GRP_NAME: string;
   WEB_GRP_ORDER: number;
+}
+
+export interface VaccineInterval {
+  name: string;
+  startAge: number;
+  endAge: number;
+  [key: string]: any;
+}
+
+export interface Vaccine {
+  groupName: string;
+  intervals: VaccineInterval[];
+}
+
+export interface IGetHospital {
+  search: string;
+  momcid: string;
+}
+
+export interface IHospital {
+  HOSPITALCODE: string;
+  FULLNAME: string;
 }

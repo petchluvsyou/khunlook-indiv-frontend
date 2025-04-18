@@ -54,7 +54,6 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
       setBirthWeightError("BirthWeight must be positive number");
       isValid = false;
     }
-
     return isValid;
   };
 
@@ -62,8 +61,9 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
     if (!validateFields) {
       return;
     }
+
     const childService = new ChildService(session.data?.accessToken);
-    childService.addChild({
+    const response = await childService.addChild({
       momcid: session.data?.user.pid ?? "1",
       childcid: Number(session.data?.user.id) ?? 1,
       childpid: "C200",
@@ -80,6 +80,9 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
       lowbtweigth: birthWeight,
       birthAsphyxia: "2",
     });
+    if (response.data.success) {
+      console.log("add child success");
+    }
     //POST new child
   };
 

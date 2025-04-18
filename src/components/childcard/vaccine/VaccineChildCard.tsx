@@ -19,17 +19,19 @@ export default function VaccineChildCard({
      missingVaccines,
 }: ChildDetailsProps) {
      return (
-          <div className="relative flex flex-col space-y-3 p-4 bg-Yellow rounded-xl h-full">
+          <div className="relative flex flex-col p-4">
+               {/* Wrapper for hover effect */}
+               <div className="group flex flex-col items-start space-y-3">
 
-               {/* Vaccine Information panel */}
-               <div className="flex gap-4">
-                    <div className="flex flex-col gap-2">
-                         <div className="flex items-center gap-2 p-2 rounded-full transition-all duration-300 w-36 bg-white text-Yellow shadow-md">
-                              <FontAwesomeIcon icon={faSyringe} className="text-Yellow" size="lg" />
-                              <span className="text-sm font-medium">สรุปวัคซีน</span>
-                         </div>
+                    {/* Vaccine Summary Button */}
+                    <div className="flex items-center gap-2 p-2 rounded-full transition-all duration-300 w-36 bg-white text-Yellow shadow-md group-hover:bg-Yellow group-hover:text-white cursor-pointer">
+                         <FontAwesomeIcon icon={faSyringe} className="transition-all duration-300 group-hover:text-white" size="lg" />
+                         <span className="text-sm font-medium transition-all duration-300">สรุปวัคซีน</span>
+                    </div>
 
-                         <div className="flex flex-col space-y-2 w-64 bg-white rounded-md p-4 relative">
+                    {/* Detail Box (show on hover) */}
+                    <div className="transition-all duration-300 max-h-0 opacity-0 overflow-hidden group-hover:max-h-[500px] group-hover:opacity-100 bg-Yellow p-2 rounded-xl">
+                         <div className="flex flex-col space-y-2 w-64 bg-white rounded-md p-4">
                               <p className="text-left text-sm font-bold text-black">
                                    น้อง: <span className="font-medium">{childName}</span>
                               </p>
@@ -40,7 +42,7 @@ export default function VaccineChildCard({
                                    วันเกิด: <span className="font-medium">{childBD}</span>
                               </p>
                               <p className="text-left text-sm font-bold text-black">
-                                   การได้รับวัคซีน: 
+                                   การได้รับวัคซีน:{" "}
                                    {hasReceivedAllVaccines ? (
                                         <span className="font-medium">ฉีดวัคซีนครบแล้ว</span>
                                    ) : (
@@ -54,7 +56,8 @@ export default function VaccineChildCard({
 
                </div>
           </div>
-     );
+
+     )
 }
 
 

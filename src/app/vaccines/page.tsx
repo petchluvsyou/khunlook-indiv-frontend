@@ -40,7 +40,7 @@ export default function page() {
       <h1 className="font-bold text-[24px] sm:text-5xl mb-12 mt-5 sm:mb-16">
         ข้อมูลการรับวัคซีน
       </h1>
-      <div className="mb-8 flex items-center">
+      <div className="flex items-center">
         <label htmlFor="vaccineOption" className="text-gray-700 mr-2">
           วัคซีน
         </label>
@@ -65,7 +65,7 @@ export default function page() {
         </label>
       </div>
       <div>
-        <VaccineContainer />
+        <VaccineContainer isInPlan={vaccineOption === "required"} />
       </div>
       {/*sm*/}
       <div className="sm:hidden w-full p-4">

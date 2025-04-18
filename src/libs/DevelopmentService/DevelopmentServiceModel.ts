@@ -1,9 +1,9 @@
 export interface IGetDevelopmentRequest {
   ageMin: number;
   ageMax: number;
-  childpid: string |null;
-  childbirth: string|null;
-  childcorrectedbirth: string|null;
+  childpid: string | null;
+  childbirth: string | null;
+  childcorrectedbirth: string | null;
   loggedin: number;
   tableName: string;
 }
@@ -43,4 +43,8 @@ export interface ICurrentSkills {
   MONTH_AT_OCCURRED: string;
   DATE_OCCURRED: string;
   TBName: string;
+}
+
+export interface IGetDevelopmentChildrenRequest {
+  mom_pid: string;
 }

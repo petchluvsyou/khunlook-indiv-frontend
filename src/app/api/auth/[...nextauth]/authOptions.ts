@@ -1,4 +1,4 @@
-import userLogin from "@/libs/userLogin";
+import UserService from "@/libs/UserService/UserService";
 import axios from "axios";
 import { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -8,6 +8,7 @@ interface ExtendedUser extends User {
   username: string;
   email: string;
   PID: string;
+  CID: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;
@@ -27,18 +28,20 @@ export const authOptions: AuthOptions = {
 
         try {
           const { username, password } = credentials;
-          const data = await userLogin({
+          const userService = new UserService();
+          const data = await userService.userLogin({
             USERNAME: username,
             PASSWORD: password,
           });
 
           const user: ExtendedUser = {
-            id: data.data.user.ID,
-            username: data.data.user.username,
-            email: data.data.user.email,
-            PID: data.data.user.PID,
-            accessToken: data.data.tokens.accessToken,
-            refreshToken: data.data.tokens.refreshToken,
+            id: data.data.data.user.ID,
+            username: data.data.data.user.username,
+            email: data.data.data.user.email,
+            PID: data.data.data.user.PID,
+            CID: data.data.data.user.CID,
+            accessToken: data.data.data.tokens.accessToken,
+            refreshToken: data.data.data.tokens.refreshToken,
             accessTokenExpires: Date.now() + 3600 * 1000,
             refreshTokenExpires: Date.now() + 12 * 3600 * 1000,
           };
@@ -60,6 +63,7 @@ export const authOptions: AuthOptions = {
         token.username = extendedUser.username;
         token.email = extendedUser.email;
         token.pid = extendedUser.PID;
+        token.cid = extendedUser.CID;
         token.accessToken = extendedUser.accessToken;
         token.refreshToken = extendedUser.refreshToken;
         token.accessTokenExpires = extendedUser.accessTokenExpires;
@@ -100,6 +104,7 @@ export const authOptions: AuthOptions = {
       session.user.id = token.id as string;
       session.user.username = token.username as string;
       session.user.pid = token.pid as string;
+      session.user.cid = token.cid as string;
       session.user.email = token.email as string;
       session.accessToken = token.accessToken as string;
       return session;

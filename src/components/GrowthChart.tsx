@@ -73,11 +73,11 @@ export default function GrowthChart({
           sex: sex,
           typeGraph: i,
           minFirstGL: 0,
-          maxFirstGL: 0,
-          minSecondGL: 0,
-          maxSecondGL: 999,
-          minThirdGL: 0,
-          maxThirdGL: 0,
+          maxFirstGL: i !== 2 ? 0 : 99,
+          minSecondGL: i !== 2 ? 0 : 100,
+          maxSecondGL: i !== 2 ? 999 : 119,
+          minThirdGL: i !== 2 ? 0 : 120,
+          maxThirdGL: i !== 2 ? 0 : 999,
         });
         results.push(res.data.data?.[0] ?? []);
       }

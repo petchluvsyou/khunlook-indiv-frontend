@@ -118,7 +118,7 @@ export default function page() {
     };
     console.log("Req:", request);
     const req = await DevelopmentServiceClass.saveDevelopment(request);
-   
+
   };
   const deleteDevelopmentCallBack = async (developmentCode: string) => {
     const request: IDeleteDevelopmentRequest = {
@@ -182,26 +182,48 @@ export default function page() {
     };
 
     const summary: DevelopmentSummary = {
-      movement: { score: 0, fullScore: 0 },
-      dexterity: { score: 0, fullScore: 0 },
-      comprehension: { score: 0, fullScore: 0 },
-      "language-use": { score: 0, fullScore: 0 },
-      "self-help": { score: 0, fullScore: 0 },
+      movement: "ไม่มีข้อมูล",
+      dexterity: "ไม่มีข้อมูล",
+      comprehension: "ไม่มีข้อมูล",
+      "language-use": "ไม่มีข้อมูล",
+      "self-help": "ไม่มีข้อมูล",
     };
 
-    // Step 1: Count full skills for each TYPE
-    currentData.forEach((skill) => {
-      const key = typeMapping[skill.TYPE]; // Map "1" -> "movement", etc.
-      if (key) {
-        summary[key].fullScore++;
-      }
-    });
+    let ageMax = 0;
+    let ageMin = 0;
 
-    // Step 2: Count child’s skills for each TYPE
+    if (ageRange.split(" ")[0].split("-").length === 1) {
+      ageMax = parseInt(ageRange.split(" ")[0]);
+      ageMin = parseInt(ageRange.split(" ")[0]);
+    } else {
+      ageMax = parseInt(ageRange.split(" ")[0].split("-")[1]);
+      ageMin = parseInt(ageRange.split(" ")[0].split("-")[0]);
+    }
+
+
     currentSkills.forEach((skill) => {
       const key = typeMapping[skill.TYPE];
+
+      //calculate age [in months] date this skill occured
+      const birthDate = new Date(allChildInfo[childIndex]?.BIRTH);
+      const now = new Date(skill.DATE_OCCURRED);
+
+      const years = now.getFullYear() - birthDate.getFullYear();
+      const months = now.getMonth() - birthDate.getMonth();
+      let totalMonths = years * 12 + months;
+
+      // Adjust if the current day is before the birth day of the month
+      if (now.getDate() < birthDate.getDate()) {
+        totalMonths--;
+      }
+
       if (key) {
-        summary[key].score++;
+        // ageMin <= (skill.DATE_OCCURRED - allChildInfo[childIndex]?.BIRTH) <= ageMax
+        let message = "";
+        if(totalMonths<=ageMin) message = "สมวัย";
+        else if(totalMonths>ageMax) message = `ไม่สมวัย ทำได้เมื่ออายุ ${totalMonths} เดือน`;
+
+        summary[key] = message;
       }
     });
 

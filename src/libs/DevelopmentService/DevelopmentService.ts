@@ -4,6 +4,7 @@ import {
   IGetDevelopmentRequest,
   ISaveDevelopmentRequest,
   IDeleteDevelopmentRequest,
+  IGetDevelopmentChildrenRequest,
 } from "./DevelopmentServiceModel";
 class DevelopmentService extends ApiServiceBase {
   constructor(accessToken: string = "") {
@@ -19,6 +20,9 @@ class DevelopmentService extends ApiServiceBase {
     return this.API.delete(
       `/development/${request.childpid}/${request.devcode}`
     );
+  }
+  getChildren(request: IGetDevelopmentChildrenRequest) {
+    return this.API.post("/development/query-child", request);
   }
 }
 export default DevelopmentService;
