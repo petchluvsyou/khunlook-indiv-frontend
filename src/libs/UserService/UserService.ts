@@ -3,6 +3,7 @@ import {
   IUserRegisterRequest,
   IUserLoginRequest,
   IUserLoginResponse,
+  IGetUser,
 } from "./UserServiceModel";
 
 class UserService extends ApiServiceBase {
@@ -14,6 +15,9 @@ class UserService extends ApiServiceBase {
   }
   userLogin(request: IUserLoginRequest) {
     return this.API.post<IUserLoginResponse>("/auth", request);
+  }
+  userGet(request: IGetUser) {
+    return this.API.get(`/user/${request.userId}`);
   }
 }
 export default UserService;

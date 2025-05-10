@@ -11,6 +11,11 @@ export interface IUserLoginRequest {
   PASSWORD: string;
 }
 
+export interface IGetUser {
+  token: string;
+  userId: string;
+}
+
 export interface User {
   PID: string;
   ID: string;
