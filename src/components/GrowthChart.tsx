@@ -30,7 +30,7 @@ import {
 
 import GrowthService from "@/libs/GrowthService/GrowthService";
 import dayjs, { Dayjs } from "dayjs";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/providers/AuthContext";
 
 interface ChildData {
   birthDate: Dayjs | null;
@@ -48,7 +48,7 @@ export default function GrowthChart({
   gender: string;
   childData: ChildData[];
 }) {
-  const session = useSession();
+  const { user, accessToken } = useAuth();
   const [chartComparison, setChartComparison] = useState("height-age");
   const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>(Array(11).fill([]));
@@ -66,7 +66,7 @@ export default function GrowthChart({
           sex = "1";
           break;
       }
-      const service = new GrowthService(session.data?.accessToken);
+      const service = new GrowthService(accessToken ?? undefined);
       let results: any[] = [];
       for (let i = 1; i <= 4; i++) {
         const res = await service.queryResult({

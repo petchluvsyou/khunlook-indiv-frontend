@@ -2,15 +2,15 @@
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import DropDownList from "./DropDownList";
 import TopMenuItem from "./TopMenuItem";
+import { useAuth } from "@/providers/AuthContext";
 
 export default function TopMenu() {
-  const { data: session, status } = useSession();
+  const { user, logout } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export default function TopMenu() {
         { title: "ช่วงตรวจคัดกรอง", pageRef: "/article/filter" },
       ],
     },
-    ...(session
+    ...(user
       ? [
           { title: "การเจริญเติบโต", pageRef: "/user/growth" },
           { title: "พัฒนาการ", pageRef: "/user/development" },
@@ -61,7 +61,7 @@ export default function TopMenu() {
         {
           title: "7 เคล็ดลับอ่านนิทานให้ลูก",
           pageRef: "/memory/page/7-tips-reading",
-        }, // Dynamic route for scraped content
+        },
         {
           title: "9 เหตุผลที่พ่อแม่ทุกคนควร “อ่านให้ลูกฟัง”",
           pageRef: "/memory/page/9-reasons-reading",
@@ -121,19 +121,14 @@ export default function TopMenu() {
         </div>
       </div>
       <div className="flex items-center gap-4">
-        {session ? (
+        {user ? (
           <div className="flex items-center gap-4">
-            <p>Welcome, {session.user.username}!</p>
-            <button
-              onClick={() => {
-                if (confirm("Are you sure you want to sign out?")) {
-                  signOut({ callbackUrl: "/" });
-                }
-              }}
-              className="flex flex-row gap-3"
-            >
-              <p className="font-bold">ออกจากระบบ</p>
-              <Link href={"/profile"}>
+            <p>Welcome, {user.username}!</p>
+            <button className="flex flex-row gap-3">
+              <p onClick={logout} className="font-bold">
+                ออกจากระบบ
+              </p>
+              <Link href={"/"}>
                 <AccountCircleIcon className="invert-0" />
               </Link>
             </button>

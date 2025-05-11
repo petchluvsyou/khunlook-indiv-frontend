@@ -1,45 +1,50 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+"use client";
+
 import GrowthPanel from "@/components/GrowthPanel";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
-import { getServerSession } from "next-auth";
+import { useAuth } from "@/providers/AuthContext";
+import { useEffect, useState } from "react";
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
-  if (session){
-    const childServiceClass = new ChildService(session?.accessToken)
-    console.log(session.user.pid)
-    const response = await childServiceClass.getChildByID(
-      session.user.pid
-    );
-    console.log(response.data.data)
-    const children = Object.entries(response.data.data).map(([key, child]: [string, IChildData]) => ({
-      ...child,
-      key: parseInt(key, 10), 
-    }));
-    const childDetails = children.map((child) => {
-      return { childpid: child.PID, childname: child.NAME };
-    });
-    console.log(childDetails)
-  
-    return (
-      <div className="bg-Bg">
-        <GrowthPanel
-          token={session?.accessToken || ""}
-          pid={session?.user.pid || ""}
-          childDetails={childDetails}
-        />
-      </div>
-    );
-  }
-  return(
+export default function Page() {
+  const { accessToken, user } = useAuth();
+  const [childDetails, setChildDetails] = useState<
+    { childpid: string; childname: string }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchChildren = async () => {
+      if (user && accessToken) {
+        try {
+          const childService = new ChildService(accessToken);
+          const response = await childService.getChildByID(user?.PID);
+          const children = Object.entries(response.data.data).map(
+            ([key, child]: [string, IChildData]) => ({
+              ...child,
+              key: parseInt(key, 10),
+            })
+          );
+          const details = children.map((child) => ({
+            childpid: child.PID,
+            childname: child.NAME,
+          }));
+          setChildDetails(details);
+        } catch (error) {
+          console.error("Failed to fetch child data:", error);
+        }
+      }
+    };
+
+    fetchChildren();
+  }, [user, accessToken]);
+
+  return (
     <div className="bg-Bg">
       <GrowthPanel
-        token={""}
-        pid={ ""}
-        childDetails={[]}
+        token={accessToken || ""}
+        pid={user?.PID || ""}
+        childDetails={childDetails}
       />
     </div>
   );
-  }
-  
+}
