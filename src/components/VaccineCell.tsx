@@ -2,13 +2,13 @@
 import { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
-import { useSession } from "next-auth/react";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import {
   IGetVaccine,
   VaccineInterval,
   IPostChildVaccineClinicRequest,
 } from "@/libs/VaccineService/VaccineServiceModel";
+import { useAuth } from "@/providers/AuthContext";
 
 interface VaccineCellProps {
   childpid: string;
@@ -21,7 +21,7 @@ export default function VaccineCell({
   vaccine,
   vaccineHistory,
 }: VaccineCellProps) {
-  const session = useSession();
+  const { user, accessToken } = useAuth();
   const prev_chosen = vaccineHistory != null;
   const prev_location = prev_chosen ? vaccineHistory.HOSPITAL : "";
   const prev_reserveDate = prev_chosen ? vaccineHistory.DATE_SERV : new Date();
@@ -53,7 +53,7 @@ export default function VaccineCell({
   }, [prev_chosen, prev_location, prev_reserveDate]);
 
   const handleChange = async (day: Dayjs) => {
-    const vaccineService = new VaccineService(session.data?.accessToken);
+    const vaccineService = new VaccineService(accessToken ?? undefined);
     if (prev_chosen) {
       const res = await vaccineService.updateChildVaccine({
         vaccineplace: location,
@@ -75,17 +75,17 @@ export default function VaccineCell({
   };
 
   const handleClick = () => {
-    if (!session.data) return;
+    if (!user) return;
     if (isClicked) {
       setReserveDate(null);
     }
     setIsClicked(!isClicked);
-    if (session && reserveDate) handleChange(reserveDate);
+    if (user && reserveDate) handleChange(reserveDate);
   };
 
   const handleDateChange = (value: Dayjs) => {
     setReserveDate(value);
-    if (session) handleChange(value);
+    if (user) handleChange(value);
   };
 
   const handleAddHospital = () => {
@@ -101,7 +101,7 @@ export default function VaccineCell({
   return (
     <div
       className={`col-span-1 p-4 border border-Grey text-center rounded-md ${
-        session.data && "cursor-pointer"
+        user && "cursor-pointer"
       } ${isClicked ? `bg-Yellow font-bold` : "bg-Bg hover:bg-gray-100"}`}
       onClick={handleClick}
     >

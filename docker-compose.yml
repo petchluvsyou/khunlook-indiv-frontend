@@ -12,7 +12,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ${CLIENT_SIDE_ENV_FILE:-.env}
+      - .env
     restart: always
     networks:
       - khunlook

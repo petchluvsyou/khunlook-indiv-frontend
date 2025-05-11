@@ -9,7 +9,6 @@ import EditChildPanel from "@/components/EditChildPanel";
 import AddChildPanel from "@/components/AddChildPanel";
 import DevelopmentCheckCell from "@/components/DevelopmentCheckCell";
 import ChildService from "@/libs/ChildService/ChildService";
-import { useSession } from "next-auth/react";
 import DevelopmentService from "@/libs/DevelopmentService/DevelopmentService";
 import {
   IGetDevelopmentRequest,
@@ -22,6 +21,7 @@ import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import dayjs from "dayjs";
 import { DevelopmentSummary } from "@/components/childcard/development/DevelopmentChildCard";
 import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
+import { useAuth } from "@/providers/AuthContext";
 
 export default function page() {
   const [selectedOption, setSelectedOption] = useState<
@@ -35,10 +35,10 @@ export default function page() {
   const [allChildInfo, setAllChildInfo] = useState<IChildData[]>([]);
   const [isAddChildPanelVisible, setAddChildPanelVisible] = useState(false);
   const [isEditChildPanelVisible, setEditChildPanelVisible] = useState(false);
-  const session = useSession();
-  const childServiceClass = new ChildService(session.data?.accessToken);
+  const { user, accessToken } = useAuth();
+  const childServiceClass = new ChildService(accessToken ?? undefined);
   const DevelopmentServiceClass = new DevelopmentService(
-    session.data?.accessToken
+    accessToken ?? undefined
   );
 
   const getMatchingSkills = (code: string): ICurrentSkills | undefined => {
@@ -119,13 +119,12 @@ export default function page() {
     try {
       const res = await DevelopmentServiceClass.saveDevelopment(request);
       console.log("Saved:", res.status, res.data);
-  
+
       // Re-fetch updated development data
       await setDevelopmentInfo();
     } catch (error) {
       console.error("Save error:", error);
     }
-
   };
   const deleteDevelopmentCallBack = async (developmentCode: string) => {
     const request: IDeleteDevelopmentRequest = {
@@ -135,7 +134,7 @@ export default function page() {
     try {
       const res = await DevelopmentServiceClass.deleteDevelopment(request);
       console.log("Deleted:", res.status);
-  
+
       // Refresh development info
       await setDevelopmentInfo();
     } catch (error) {
@@ -164,7 +163,7 @@ export default function page() {
     const getAllChildInfo = async () => {
       try {
         const response = await childServiceClass.getChildByID(
-          session.data?.user.pid ?? "0000"
+          user?.PID ?? "0000"
         );
         const childInfo = response.data.data;
         setAllChildInfo(childInfo);
@@ -173,10 +172,7 @@ export default function page() {
         } else {
           toggleOption("เด็กปฐมวัย");
         }
-      }
-      catch (err) {
-
-      }
+      } catch (err) {}
     };
     getAllChildInfo();
   }, []);
@@ -207,16 +203,16 @@ export default function page() {
     //extract current ageRange: min,max
     let ageMin = 0;
     let ageMax = 0;
-    
-    const agePart = ageRange.split(" ")[0]; 
-    
+
+    const agePart = ageRange.split(" ")[0];
+
     if (agePart.includes("-")) {
       [ageMin, ageMax] = agePart.split("-").map(Number);
     } else {
       ageMin = ageMax = parseInt(agePart);
     }
 
-    if(ageRange=="แรกเกิด") {
+    if (ageRange == "แรกเกิด") {
       ageMin = ageMax = 0;
     }
 
@@ -239,8 +235,9 @@ export default function page() {
       if (key) {
         // ageMin <= (skill.DATE_OCCURRED - allChildInfo[childIndex]?.BIRTH) <= ageMax
         let message = "";
-        if(totalMonths<=ageMin) message = "สมวัย";
-        else if(totalMonths>ageMax) message = `ไม่สมวัย ทำได้เมื่ออายุ ${totalMonths} เดือน`;
+        if (totalMonths <= ageMin) message = "สมวัย";
+        else if (totalMonths > ageMax)
+          message = `ไม่สมวัย ทำได้เมื่ออายุ ${totalMonths} เดือน`;
 
         summary[key] = message;
       }
@@ -248,7 +245,6 @@ export default function page() {
 
     return summary;
   }, [currentData, currentSkills]);
-
 
   function calculateAgeFormatted(birthTime: string) {
     const birthDate = new Date(birthTime);
@@ -318,32 +314,36 @@ export default function page() {
       <div className="flex justify-center mb-6 sm:mb-10">
         <button
           disabled={selectedOption === "เด็กกลุ่มเสี่ยง"}
-          className={`relative px-4 py-2 rounded ${selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
-            }`}
-        // onClick={() => toggleOption("เด็กปฐมวัย")}
+          className={`relative px-4 py-2 rounded ${
+            selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
+          }`}
+          // onClick={() => toggleOption("เด็กปฐมวัย")}
         >
           เด็กปฐมวัย (DSPM)
           <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${selectedOption === "เด็กปฐมวัย"
-              ? "border-black"
-              : "border-gray-400"
-              }`}
+            className={`absolute left-0 right-0 mt-2 border-t-2 ${
+              selectedOption === "เด็กปฐมวัย"
+                ? "border-black"
+                : "border-gray-400"
+            }`}
           />
         </button>
         <button
           disabled={selectedOption === "เด็กปฐมวัย"}
-          className={`relative px-4 py-2 rounded ${selectedOption === "เด็กกลุ่มเสี่ยง"
-            ? "text-black"
-            : "text-gray-400"
-            }`}
-        // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
+          className={`relative px-4 py-2 rounded ${
+            selectedOption === "เด็กกลุ่มเสี่ยง"
+              ? "text-black"
+              : "text-gray-400"
+          }`}
+          // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
         >
           เด็กกลุ่มเสี่ยง (DAIM)
           <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${selectedOption === "เด็กกลุ่มเสี่ยง"
-              ? "border-black"
-              : "border-gray-400"
-              }`}
+            className={`absolute left-0 right-0 mt-2 border-t-2 ${
+              selectedOption === "เด็กกลุ่มเสี่ยง"
+                ? "border-black"
+                : "border-gray-400"
+            }`}
           />
         </button>
       </div>

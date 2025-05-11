@@ -24,10 +24,14 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("Im here");
         if (!credentials) return null;
 
         try {
           const { username, password } = credentials;
+          console.log(credentials);
+          console.log("Im triggered");
+
           const userService = new UserService();
           const data = await userService.userLogin({
             USERNAME: username,
@@ -42,8 +46,8 @@ export const authOptions: AuthOptions = {
             CID: data.data.data.user.CID,
             accessToken: data.data.data.tokens.accessToken,
             refreshToken: data.data.data.tokens.refreshToken,
-            accessTokenExpires: Date.now() + 3600 * 1000,
-            refreshTokenExpires: Date.now() + 12 * 3600 * 1000,
+            accessTokenExpires: Date.now() + 3600 * 1000, // 1 hour expiration
+            refreshTokenExpires: Date.now() + 12 * 3600 * 1000, // 12 hours expiration
           };
 
           return user;
@@ -58,23 +62,21 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const extendedUser = user as ExtendedUser;
-        token.id = extendedUser.id;
-        token.username = extendedUser.username;
-        token.email = extendedUser.email;
-        token.pid = extendedUser.PID;
-        token.cid = extendedUser.CID;
-        token.accessToken = extendedUser.accessToken;
-        token.refreshToken = extendedUser.refreshToken;
-        token.accessTokenExpires = extendedUser.accessTokenExpires;
-        token.refreshTokenExpires = extendedUser.refreshTokenExpires;
+        token = { ...token, ...user };
       }
+
+      const accessTokenExpires = token.accessTokenExpires
+        ? token.accessTokenExpires
+        : 0;
+      const refreshTokenExpires = token.refreshTokenExpires
+        ? token.refreshTokenExpires
+        : 0;
 
       if (
         typeof token.refreshTokenExpires === "number" &&
         Date.now() > token.refreshTokenExpires
       ) {
-        console.log("Refresh token expired. User needs to log in again.");
+        console.log("Refresh token expired, clearing session.");
         return {};
       }
 
@@ -83,17 +85,37 @@ export const authOptions: AuthOptions = {
         Date.now() > token.accessTokenExpires
       ) {
         try {
+          console.log("Access token expired, refreshing...");
+
+          if (!token.refreshToken) {
+            console.error(
+              "No refresh token available. User needs to log in again."
+            );
+            return {};
+          }
+
           const response = await axios.post(
-            `${process.env.API_URL}auth/refresh`,
+            `${process.env.API_URL}/auth/refresh`,
             {
               refreshToken: token.refreshToken,
             }
           );
 
-          token.accessToken = response.data.tokens.accessToken;
-          token.accessTokenExpires = Date.now() + 3600 * 10000000;
+          console.log("Refresh response:", response.data);
+
+          const newAccessToken = response.data.tokens.accessToken;
+          if (newAccessToken) {
+            token.accessToken = newAccessToken;
+            token.accessTokenExpires = Date.now() + 3600 * 1000;
+            console.log("Access token refreshed:", newAccessToken);
+          } else {
+            console.error(
+              "Failed to refresh access token. Response did not include a new token."
+            );
+            return {};
+          }
         } catch (error) {
-          console.error("Token refresh error:", error);
+          console.error("Error refreshing token:", error);
           return {};
         }
       }

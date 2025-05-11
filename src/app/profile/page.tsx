@@ -1,6 +1,6 @@
 "use client";
 import UserService from "@/libs/UserService/UserService";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/providers/AuthContext";
 import { useState, useEffect } from "react";
 
 interface UserProfile {
@@ -41,17 +41,17 @@ interface UserProfile {
 }
 
 export default function page() {
-  const { data: session, status } = useSession();
+  const { user, accessToken } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (session?.accessToken) {
+    if (accessToken) {
       const fetchProfile = async () => {
         try {
           const userService = new UserService();
           const profileData = await userService.userGet({
-            token: session.accessToken,
-            userId: session.user.id,
+            token: accessToken,
+            userId: user?.ID ?? "1",
           });
 
           console.log(profileData);
@@ -63,15 +63,15 @@ export default function page() {
 
       fetchProfile();
     }
-  }, [session?.accessToken]);
+  }, [accessToken]);
 
-  if (status === "loading") {
+  if (!user) {
     return <div>Loading...</div>;
   }
   return (
-    <div className="flex justify-center items-center text-center relative z-10 flex flex-col p-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
+    <div className="justify-center items-center text-center relative z-10 flex flex-col p-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
       <p className="text-4xl">test</p>
-      <p className="text-3xl lg:text-4xl">Hi {session?.user.username}</p>
+      <p className="text-3xl lg:text-4xl">Hi {user.username}</p>
       {profile && (
         <div>
           <p className="text-3xl lg:text-4xl">CID: {profile.CID}</p>

@@ -4,7 +4,6 @@ import VaccineBox from "./VaccineBox";
 import { AgeLabel } from "./VaccineContainer";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import VaccineCell from "../VaccineCell";
-import { useSession } from "next-auth/react";
 import {
   IGetVaccine,
   VaccineInterval,
@@ -12,6 +11,7 @@ import {
   IHospital,
 } from "@/libs/VaccineService/VaccineServiceModel";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import { useAuth } from "@/providers/AuthContext";
 
 interface VaccineGridProps {
   ageLabels: AgeLabel[];
@@ -27,7 +27,7 @@ export default function VaccineGrid({
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
   const [hospital, setHospital] = useState<IHospital[]>([]);
-  const session = useSession();
+  const { user } = useAuth();
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
       string,
@@ -133,11 +133,11 @@ export default function VaccineGrid({
         const response = await vaccineService.getInformation({
           childpid: child?.PID ?? "1",
           isinplan: isInPlan ? "1" : "0", // required is 1, 0, 2 is other
-          loggedin: session ? 1 : 0,
+          loggedin: user ? 1 : 0,
         });
         if (response.data.success) {
           setVaccines(transformVaccineData(response.data.content));
-          if (session.data) setHistory(response.data.history);
+          if (user) setHistory(response.data.history);
         } else {
           console.error("Failed to fetch vaccine information");
         }
@@ -189,7 +189,7 @@ export default function VaccineGrid({
                       {(timeline[2] ?? []).map((t, i) => (
                         <VaccineCell
                           key={index + i}
-                          childpid={session ? child?.PID ?? "1" : "0"}
+                          childpid={user ? child?.PID ?? "1" : "0"}
                           vaccine={t}
                           vaccineHistory={
                             history.filter((h) => h.DESCRIPTION === t.name)[0]
