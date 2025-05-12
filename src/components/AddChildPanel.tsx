@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
-import BasicTimePicker from "./BasicTimePicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ChildService from "@/libs/ChildService/ChildService";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/providers/AuthContext";
+import { Dayjs } from "dayjs";
 
 export default function AddChildPanel({ onClose }: { onClose: () => void }) {
-  const session = useSession();
+  const { accessToken, user } = useAuth();
   const [name, setName] = useState<string>("");
   const [sex, setSex] = useState<string>("M");
   const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
@@ -62,10 +61,10 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    const childService = new ChildService(session.data?.accessToken);
+    const childService = new ChildService(accessToken ?? undefined);
     const response = await childService.addChild({
-      momcid: session.data?.user.pid ?? "1",
-      childcid: Number(session.data?.user.id) ?? 1,
+      momcid: user?.PID ?? "1",
+      childcid: Number(user?.ID) ?? 999,
       childpid: "C200",
       childhospcode: "APDEK",
       childname: name,

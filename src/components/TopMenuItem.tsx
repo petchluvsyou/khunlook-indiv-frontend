@@ -1,12 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
-import { useSession } from "next-auth/react";
 
 export default function TopMenuItem({
   title,

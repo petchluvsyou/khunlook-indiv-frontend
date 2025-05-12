@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import developmentData from "./developmentData";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import EditChildPanel from "@/components/EditChildPanel";
 import AddChildPanel from "@/components/AddChildPanel";
 import DevelopmentCheckCell from "@/components/DevelopmentCheckCell";
 import ChildService from "@/libs/ChildService/ChildService";
-import { useSession } from "next-auth/react";
 import DevelopmentService from "@/libs/DevelopmentService/DevelopmentService";
 import {
   IGetDevelopmentRequest,
@@ -20,6 +19,9 @@ import {
 } from "@/libs/DevelopmentService/DevelopmentServiceModel";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import dayjs from "dayjs";
+import { DevelopmentSummary } from "@/components/childcard/development/DevelopmentChildCard";
+import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
+import { useAuth } from "@/providers/AuthContext";
 
 export default function page() {
   const [selectedOption, setSelectedOption] = useState<
@@ -33,10 +35,10 @@ export default function page() {
   const [allChildInfo, setAllChildInfo] = useState<IChildData[]>([]);
   const [isAddChildPanelVisible, setAddChildPanelVisible] = useState(false);
   const [isEditChildPanelVisible, setEditChildPanelVisible] = useState(false);
-  const session = useSession();
-  const childServiceClass = new ChildService(session.data?.accessToken);
+  const { user, accessToken } = useAuth();
+  const childServiceClass = new ChildService(accessToken ?? undefined);
   const DevelopmentServiceClass = new DevelopmentService(
-    session.data?.accessToken
+    accessToken ?? undefined
   );
 
   const getMatchingSkills = (code: string): ICurrentSkills | undefined => {
@@ -97,6 +99,7 @@ export default function page() {
     let arr2 = response.data.history;
     setCurrentData(arr as ICurrentData[]);
     setCurrentSkills(arr2);
+    console.log("New currentSkills:", arr2);
   };
   const saveDevelopmentCallBack = async (
     daterec: string,
@@ -113,14 +116,30 @@ export default function page() {
       devcode: developmentcode,
       isUpdate: isUpdate,
     };
-    const req = await DevelopmentServiceClass.saveDevelopment(request);
+    try {
+      const res = await DevelopmentServiceClass.saveDevelopment(request);
+      console.log("Saved:", res.status, res.data);
+
+      // Re-fetch updated development data
+      await setDevelopmentInfo();
+    } catch (error) {
+      console.error("Save error:", error);
+    }
   };
   const deleteDevelopmentCallBack = async (developmentCode: string) => {
     const request: IDeleteDevelopmentRequest = {
       childpid: allChildInfo[childIndex].PID,
       devcode: developmentCode,
     };
-    const req = await DevelopmentServiceClass.deleteDevelopment(request);
+    try {
+      const res = await DevelopmentServiceClass.deleteDevelopment(request);
+      console.log("Deleted:", res.status);
+
+      // Refresh development info
+      await setDevelopmentInfo();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
   const getDefaultAgeRange = (
     option: "เด็กปฐมวัย" | "เด็กกลุ่มเสี่ยง"
@@ -142,9 +161,9 @@ export default function page() {
   };
   useEffect(() => {
     const getAllChildInfo = async () => {
-      try{
+      try {
         const response = await childServiceClass.getChildByID(
-          session.data?.user.pid ?? "0000"
+          user?.PID ?? "0000"
         );
         const childInfo = response.data.data;
         setAllChildInfo(childInfo);
@@ -153,10 +172,7 @@ export default function page() {
         } else {
           toggleOption("เด็กปฐมวัย");
         }
-      }
-      catch(err){
-        
-      }
+      } catch (err) {}
     };
     getAllChildInfo();
   }, []);
@@ -166,8 +182,114 @@ export default function page() {
     setDevelopmentInfo();
     console.log(currentData, currentSkills);
   }, [childOption, allChildInfo, ageRange]);
+
+  const summaryData = useMemo(() => {
+    const typeMapping: Record<string, keyof DevelopmentSummary> = {
+      "1": "movement",
+      "2": "dexterity",
+      "3": "comprehension",
+      "4": "language-use",
+      "5": "self-help",
+    };
+
+    const summary: DevelopmentSummary = {
+      movement: "ไม่มีข้อมูล",
+      dexterity: "ไม่มีข้อมูล",
+      comprehension: "ไม่มีข้อมูล",
+      "language-use": "ไม่มีข้อมูล",
+      "self-help": "ไม่มีข้อมูล",
+    };
+
+    //extract current ageRange: min,max
+    let ageMin = 0;
+    let ageMax = 0;
+
+    const agePart = ageRange.split(" ")[0];
+
+    if (agePart.includes("-")) {
+      [ageMin, ageMax] = agePart.split("-").map(Number);
+    } else {
+      ageMin = ageMax = parseInt(agePart);
+    }
+
+    if (ageRange == "แรกเกิด") {
+      ageMin = ageMax = 0;
+    }
+
+    currentSkills.forEach((skill) => {
+      const key = typeMapping[skill.TYPE];
+
+      //calculate age [in months] date this skill occured
+      const birthDate = new Date(allChildInfo[childIndex]?.BIRTH);
+      const now = new Date(skill.DATE_OCCURRED);
+
+      const years = now.getFullYear() - birthDate.getFullYear();
+      const months = now.getMonth() - birthDate.getMonth();
+      let totalMonths = years * 12 + months;
+
+      // Adjust if the current day is before the birth day of the month
+      if (now.getDate() < birthDate.getDate()) {
+        totalMonths--;
+      }
+
+      if (key) {
+        // ageMin <= (skill.DATE_OCCURRED - allChildInfo[childIndex]?.BIRTH) <= ageMax
+        let message = "";
+        if (totalMonths <= ageMin) message = "สมวัย";
+        else if (totalMonths > ageMax)
+          message = `ไม่สมวัย ทำได้เมื่ออายุ ${totalMonths} เดือน`;
+
+        summary[key] = message;
+      }
+    });
+
+    return summary;
+  }, [currentData, currentSkills]);
+
+  function calculateAgeFormatted(birthTime: string) {
+    const birthDate = new Date(birthTime);
+    const now = new Date();
+
+    console.log(now, birthDate);
+
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} ปี ${months} เดือน`;
+  }
+
+  function formatThaiDate(isoDate: string) {
+    const date = new Date(isoDate);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date:", isoDate);
+      return "Invalid date"; // or return an empty string or fallback message
+    }
+
+    return new Intl.DateTimeFormat("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  }
+
   return (
     <div className="justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
+      <div className="fixed top-32 right-4 z-50">
+        <DevelopmentChildCard
+          childName={allChildInfo[childIndex]?.NAME}
+          childAge={calculateAgeFormatted(allChildInfo[childIndex]?.BIRTH)}
+          childBD={formatThaiDate(allChildInfo[childIndex]?.BIRTH)}
+          ageRange={ageRange}
+          summaryData={summaryData}
+        />
+      </div>
       <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">
         พัฒนาการของ
       </h1>
@@ -207,7 +329,7 @@ export default function page() {
           />
         </button>
         <button
-          disabled={selectedOption === "เด็กปฐมวัย" }
+          disabled={selectedOption === "เด็กปฐมวัย"}
           className={`relative px-4 py-2 rounded ${
             selectedOption === "เด็กกลุ่มเสี่ยง"
               ? "text-black"

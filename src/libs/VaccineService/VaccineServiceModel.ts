@@ -22,6 +22,11 @@ export interface IGetChildVaccineRequest {
   previous_chosen?: string;
 }
 
+export interface IPostChildVaccineClinicRequest {
+  momcid: string;
+  clinicname: string;
+}
+
 export interface IGetVaccine {
   AGE: number;
   AGE_MAX: number;

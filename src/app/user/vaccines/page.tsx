@@ -12,17 +12,19 @@ import optionalVaccineData from "./vaccineData/optionalVaccineData";
 import vaccineName from "./vaccineData/vaccineName";
 import AddChildPanel from "@/components/AddChildPanel";
 import EditChildPanel from "@/components/EditChildPanel";
-import { useSession } from "next-auth/react";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 import VaccineContainer from "@/components/vaccine/VaccineContainer";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
+import { useAuth } from "@/providers/AuthContext";
 
 export default function page() {
-  const session = useSession();
+  const { user, accessToken } = useAuth();
   const [children, setChildren] = useState<IChildData[] | null>([]);
   const [child, setChild] = useState<IChildData | undefined>(undefined);
+  const [childBD, setChildBD] = useState<string>("");
   const [vaccines, setVaccines] = useState<IGetVaccine[]>([]);
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
     "required"
@@ -33,6 +35,10 @@ export default function page() {
 
   const [isAddChildPanelVisible, setAddChildPanelVisible] = useState(false);
   const [isEditChildPanelVisible, setEditChildPanelVisible] = useState(false);
+
+  const [hasReceivedAllVaccines, setHasReceivedAllVaccines] =
+    useState<boolean>(false);
+  const [missingVaccines, setMissingVaccines] = useState<string[]>([]);
 
   const handleVaccineOptionChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -70,20 +76,20 @@ export default function page() {
     vaccineOption === "required" ? requiredVaccineData : optionalVaccineData;
   useEffect(() => {
     const getChild = async () => {
-      const childService = new ChildService(session.data?.accessToken);
-      const res = await childService.getChildByID(
-        session.data?.user?.pid ?? ""
-      );
+      const childService = new ChildService(accessToken ?? undefined);
+      const res = await childService.getChildByID(user?.PID ?? "");
       const arr = Object.values(res.data.data);
       setChildren(arr);
       setChild(arr[0]);
+      setChildOption(arr[0].NAME);
+      setChildBD(arr[0].BIRTH);
     };
     getChild();
   }, []);
   useEffect(() => {
     const getVaccines = async () => {
       const child = children?.find((child) => child.NAME === childOption);
-      const vaccineService = new VaccineService(session.data?.accessToken);
+      const vaccineService = new VaccineService(accessToken ?? undefined);
       const res = await vaccineService.getInformation({
         childpid: child?.PID ?? "",
         // isinplan: age === "lt1" ? "1" : "2",
@@ -91,14 +97,74 @@ export default function page() {
         loggedin: 1,
         previous_chosen: "1",
       });
+
       const arr = res.data.history;
       await setVaccines(arr);
+
+      const historyDescriptions = new Set(
+        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
+      );
+
+      const missingVaccineDescriptions: string[] = [];
+      let hasReceivedAllVaccines = true;
+
+      for (const vaccine of res.data.content) {
+        if (!historyDescriptions.has(vaccine.DESCRIPTION)) {
+          missingVaccineDescriptions.push(vaccine.DESCRIPTION);
+          hasReceivedAllVaccines = false;
+        }
+      }
+
+      await setHasReceivedAllVaccines(hasReceivedAllVaccines);
+      await setMissingVaccines(missingVaccineDescriptions);
     };
     getVaccines();
   }, [childOption, age]);
 
+  function calculateAgeFormatted(birthTime: string) {
+    const birthDate = new Date(birthTime);
+    const now = new Date();
+
+    console.log(now, birthDate);
+
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} ปี ${months} เดือน`;
+  }
+
+  function formatThaiDate(isoDate: string) {
+    const date = new Date(isoDate);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date:", isoDate);
+      return "Invalid date"; // or return an empty string or fallback message
+    }
+
+    return new Intl.DateTimeFormat("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  }
+
   return (
     <div className="min-h-screen justify-center items-center text-center relative z-0 flex flex-col p-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
+      <div className="fixed top-32 right-4 z-50">
+        <VaccineChildCard
+          childName={childOption}
+          childAge={calculateAgeFormatted(childBD)}
+          childBD={formatThaiDate(childBD)}
+          hasReceivedAllVaccines={hasReceivedAllVaccines}
+          missingVaccines={missingVaccines}
+        />
+      </div>
       <h1 className="font-bold text-[24px] sm:text-5xl mb-12 mt-5 sm:mb-16">
         ข้อมูลการรับวัคซีน
       </h1>

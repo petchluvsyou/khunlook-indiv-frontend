@@ -3,8 +3,10 @@ import { signIn } from "next-auth/react";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/providers/AuthContext";
 
 export default function Login() {
+  const { login } = useAuth();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -16,14 +18,17 @@ export default function Login() {
     setErrorMessage("");
 
     try {
-      const res = await signIn("credentials", {
-        redirect: false,
-        username,
-        password,
-      });
-
-      if (res?.error) {
-        setErrorMessage(res.error);
+      // const res = await signIn("credentials", {
+      //   redirect: false,
+      //   username,
+      //   password,
+      // });
+      // if (!res) {
+      //   setErrorMessage("There is an error in login!");
+      // }
+      const res = await login(username, password);
+      if (!res) {
+        setErrorMessage("There is an error in login!");
       } else {
         console.log("login successful");
         router.push("/");

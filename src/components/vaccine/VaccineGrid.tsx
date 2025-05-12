@@ -4,7 +4,6 @@ import VaccineBox from "./VaccineBox";
 import { AgeLabel } from "./VaccineContainer";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import VaccineCell from "../VaccineCell";
-import { useSession } from "next-auth/react";
 import {
   IGetVaccine,
   VaccineInterval,
@@ -12,6 +11,7 @@ import {
   IHospital,
 } from "@/libs/VaccineService/VaccineServiceModel";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import { useAuth } from "@/providers/AuthContext";
 
 interface VaccineGridProps {
   ageLabels: AgeLabel[];
@@ -29,6 +29,7 @@ export default function VaccineGrid({
   const [hospital, setHospital] = useState<IHospital[]>([]);
   const [hospitalSearch, setHospitalSearch] = useState<string>("");
   const session = useSession();
+
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
       string,

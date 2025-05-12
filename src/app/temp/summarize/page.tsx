@@ -5,6 +5,7 @@ import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
 
 interface Summary {
   age: string;
