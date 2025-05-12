@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
-import DateReserve from "./DateReserve";
-import BasicTimePicker from "./BasicTimePicker";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dayjs } from "dayjs";
+import { useState } from "react";
+import BasicTimePicker from "./BasicTimePicker";
+import DateReserve from "./DateReserve";
 
 export default function EditChildPanel({ onClose }: { onClose: () => void }) {
   const [isFullView, setIsFullView] = useState(false);

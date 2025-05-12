@@ -1,24 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faArrowLeft,
-  faAngleDown,
-  faAngleUp,
-} from "@fortawesome/free-solid-svg-icons";
-import requiredVaccineData from "./vaccineData/requiredVaccineData";
-import optionalVaccineData from "./vaccineData/optionalVaccineData";
-import vaccineName from "./vaccineData/vaccineName";
 import AddChildPanel from "@/components/AddChildPanel";
+import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
 import EditChildPanel from "@/components/EditChildPanel";
-import VaccineService from "@/libs/VaccineService/VaccineService";
-import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 import VaccineContainer from "@/components/vaccine/VaccineContainer";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
-import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
+import VaccineService from "@/libs/VaccineService/VaccineService";
+import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 import { useAuth } from "@/providers/AuthContext";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import optionalVaccineData from "./vaccineData/optionalVaccineData";
+import requiredVaccineData from "./vaccineData/requiredVaccineData";
+import vaccineName from "./vaccineData/vaccineName";
 
 export default function page() {
   const { user, accessToken } = useAuth();
