@@ -5,6 +5,7 @@ import DateReserve from "./DateReserve";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import {
   IGetVaccine,
+  IHospital,
   VaccineInterval,
   IPostChildVaccineClinicRequest,
 } from "@/libs/VaccineService/VaccineServiceModel";
@@ -14,12 +15,16 @@ interface VaccineCellProps {
   childpid: string;
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
+  setHospitalSearch: (search: string) => void;
+  hospital: IHospital[];
 }
 
 export default function VaccineCell({
   childpid,
   vaccine,
+  hospital,
   vaccineHistory,
+  setHospitalSearch,
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
   const prev_chosen = vaccineHistory != null;
@@ -29,7 +34,7 @@ export default function VaccineCell({
   const [isClicked, setIsClicked] = useState(false);
   const [location, setLocation] = useState("");
   const [reserveDate, setReserveDate] = useState<Dayjs | null>(
-    prev_reserveDate ? dayjs(prev_reserveDate) : null
+    prev_reserveDate ? dayjs(prev_reserveDate) : null,
   );
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -116,64 +121,34 @@ export default function VaccineCell({
               initialDate={dayjs(prev_chosen ? reserveDate : dayjs())}
             />
           </div>
-
-          {/* Hospital Dropdown */}
-          <div className="relative mb-2" onClick={(e) => e.stopPropagation()}>
-            {/* Selected Hospital */}
-            <div
-              onClick={() => setShowDropdown((prev) => !prev)}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50"
-            >
-              {location || "Select a hospital..."}
-            </div>
-
-            {/* Dropdown */}
-            {showDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-md max-h-40 overflow-y-auto">
-                <div className="p-2">
-                  <input
-                    type="text"
-                    placeholder="Search hospital..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-Yellow"
-                  />
-                </div>
-
-                {filteredHospitals.map((hospital) => (
-                  <div
-                    key={hospital}
+          <div
+            className="relative text-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => {
+                setLocation(e.target.value);
+                setHospitalSearch(e.target.value);
+              }}
+              placeholder="Type hospital name"
+              className="w-full border-0 border-b-2 border-gray-300 focus:border-Yellow placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
+            />
+            {location.length >= 3 && (
+              <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-48 overflow-y-auto shadow-md rounded">
+                {hospital.map((h) => (
+                  <li
+                    key={h.id}
+                    className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
                     onClick={() => {
-                      setLocation(hospital);
-                      setShowDropdown(false);
-                      setSearchTerm("");
+                      setLocation(h.text);
                     }}
-                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
-                      location === hospital ? "bg-Yellow font-bold" : ""
-                    }`}
                   >
-                    {hospital}
-                  </div>
+                    {h.text}
+                  </li>
                 ))}
-
-                {filteredHospitals.length === 0 && (
-                  <div className="px-3 py-2 text-sm text-gray-500">
-                    No results found
-                  </div>
-                )}
-
-                {searchTerm && !hospitalList.includes(searchTerm) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddHospital();
-                    }}
-                    className="w-full bg-Yellow text-white py-1 text-sm hover:bg-yellow-500"
-                  >
-                    Add "{searchTerm}"
-                  </button>
-                )}
-              </div>
+              </ul>
             )}
           </div>
         </div>
