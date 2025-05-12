@@ -43,6 +43,7 @@ export default function TopMenu() {
           { title: "การเจริญเติบโต", pageRef: "/user/growth" },
           { title: "พัฒนาการ", pageRef: "/user/development" },
           { title: "วัคซีน", pageRef: "/user/vaccines" },
+          { title: "สรุปข้อมูลลูก", pageRef: "/user/summarize" },
         ]
       : [
           { title: "การเจริญเติบโต", pageRef: "/growth" },
