@@ -22,7 +22,7 @@ export default function VaccineBox({
   const isData = description == "";
   return (
     <div
-      className={`flex flex-col gap-1 items-center justify-center bg-Bg p-2 min-w-48 ${
+      className={`flex flex-col gap-1 items-center justify-center bg-Bg p-2 min-w-48 flex-grow ${
         isVaccined && isData && ""
       } ${!isData && "bg-Bg font-bold"}`}
       style={{ width: `${width}%` }}

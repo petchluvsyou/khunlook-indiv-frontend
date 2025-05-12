@@ -38,7 +38,7 @@ export default function page() {
   const { user, accessToken } = useAuth();
   const childServiceClass = new ChildService(accessToken ?? undefined);
   const DevelopmentServiceClass = new DevelopmentService(
-    accessToken ?? undefined
+    accessToken ?? undefined,
   );
 
   const getMatchingSkills = (code: string): ICurrentSkills | undefined => {
@@ -47,7 +47,7 @@ export default function page() {
   const handleChildOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setChildOption(e.target.value);
     const currentIndex = Object.values(allChildInfo).findIndex(
-      (item) => item.NAME === e.target.value
+      (item) => item.NAME === e.target.value,
     );
     setChildIndex(currentIndex);
 
@@ -69,7 +69,7 @@ export default function page() {
       childpid: allChildInfo[childIndex]?.PID ?? "",
       childbirth: dayjs(allChildInfo[childIndex]?.BIRTH).format("YYYY-MM-DD"),
       childcorrectedbirth: dayjs(allChildInfo[childIndex]?.BIRTH).format(
-        "YYYY-MM-DD"
+        "YYYY-MM-DD",
       ),
       loggedin: 1,
       tableName: "",
@@ -102,14 +102,14 @@ export default function page() {
   const saveDevelopmentCallBack = async (
     daterec: string,
     developmentcode: string,
-    isUpdate: number
+    isUpdate: number,
   ) => {
     const request: ISaveDevelopmentRequest = {
       childpid: allChildInfo[childIndex].PID,
       dateocc: dayjs(daterec).format("YYYY-MM-DD"),
       childbirth: dayjs(allChildInfo[childIndex].BIRTH).format("YYYY-MM-DD"),
       childcorrectedbirth: dayjs(allChildInfo[childIndex].BIRTH).format(
-        "YYYY-MM-DD"
+        "YYYY-MM-DD",
       ),
       devcode: developmentcode,
       isUpdate: isUpdate,
@@ -140,7 +140,7 @@ export default function page() {
     }
   };
   const getDefaultAgeRange = (
-    option: "เด็กปฐมวัย" | "เด็กกลุ่มเสี่ยง"
+    option: "เด็กปฐมวัย" | "เด็กกลุ่มเสี่ยง",
   ): string => {
     return option === "เด็กปฐมวัย" ? "0-1 เดือน" : "แรกเกิด";
   };
@@ -160,7 +160,7 @@ export default function page() {
   const getAllChildInfo = async () => {
     try {
       const response = await childServiceClass.getChildByID(
-        user?.PID ?? "0000"
+        user?.PID ?? "0000",
       );
       const childInfo = response.data.data;
       setAllChildInfo(childInfo);
@@ -253,8 +253,6 @@ export default function page() {
   function calculateAgeFormatted(birthTime: string) {
     const birthDate = new Date(birthTime);
     const now = new Date();
-
-    console.log(now, birthDate);
 
     let years = now.getFullYear() - birthDate.getFullYear();
     let months = now.getMonth() - birthDate.getMonth();
@@ -449,11 +447,11 @@ export default function page() {
                 <DevelopmentCheckCell
                   currentSkills={currentSkills}
                   prev_chosen={currentSkills?.some(
-                    (item) => item.CODE === row.CODE
+                    (item) => item.CODE === row.CODE,
                   )}
                   prev_reserveDate={
                     dayjs(getMatchingSkills(row.CODE)?.DATE_OCCURRED).format(
-                      "YYYY-MM-DD"
+                      "YYYY-MM-DD",
                     ) ?? "0000-00-00"
                   }
                   saveDevelopmentCallBack={saveDevelopmentCallBack}

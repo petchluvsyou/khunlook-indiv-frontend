@@ -107,8 +107,6 @@ export default function Page() {
     const birthDate = new Date(birthTime);
     const now = new Date();
 
-    console.log(now, birthDate);
-
     let years = now.getFullYear() - birthDate.getFullYear();
     let months = now.getMonth() - birthDate.getMonth();
 
@@ -126,7 +124,6 @@ export default function Page() {
         const childService = new ChildService(accessToken);
 
         const childData = await childService.getChildByID(user.PID);
-        console.log(Object.values(childData.data.data));
         setChildren(Object.values(childData.data.data) ?? []);
       }
     }

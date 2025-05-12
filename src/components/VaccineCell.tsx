@@ -7,7 +7,6 @@ import {
   IGetVaccine,
   IHospital,
   VaccineInterval,
-  IPostChildVaccineClinicRequest,
 } from "@/libs/VaccineService/VaccineServiceModel";
 import { useAuth } from "@/providers/AuthContext";
 
@@ -16,76 +15,92 @@ interface VaccineCellProps {
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
   onChange?: () => void;
-  setHospitalSearch: (search: string) => void;
-  hospital: IHospital[];
 }
 
 export default function VaccineCell({
   childpid,
   vaccine,
-  hospital,
   vaccineHistory,
   onChange,
-  setHospitalSearch,
+
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
-  const prev_chosen = vaccineHistory != null;
-  const prev_location = prev_chosen ? vaccineHistory.HOSPITAL : "";
-  const prev_reserveDate = prev_chosen ? vaccineHistory.DATE_SERV : new Date();
-
+  const [prevChosen, setPrevChosen] = useState(false);
+  const [hospitals, setHospitals] = useState<IHospital[]>();
+  const [hospital, setHospital] = useState<IHospital | null>(null);
+  const [isSaved, setIsSaved] = useState(true);
+  const [hospitalSearch, setHospitalSearch] = useState<string>(
+    vaccineHistory?.HOSPITAL ?? "",
+  );
   const [isClicked, setIsClicked] = useState(false);
-  const [location, setLocation] = useState("");
-  const [reserveDate, setReserveDate] = useState<Dayjs | null>(
-    prev_reserveDate ? dayjs(prev_reserveDate) : null
+  const [reserveDate, setReserveDate] = useState<Dayjs>(
+    vaccineHistory ? dayjs(vaccineHistory.DATE_SERV) : dayjs(),
   );
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hospitalList, setHospitalList] = useState([
-    "Dongy Hospital",
-    "Sira medical center",
-    "GearGear WHO cente",
-  ]);
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const filteredHospitals = hospitalList.filter((hospital) =>
-    hospital.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   useEffect(() => {
-    if (prev_chosen) {
+    if (vaccineHistory) {
+      setPrevChosen(true);
       setIsClicked(true);
-      setLocation(prev_location);
-      setReserveDate(prev_reserveDate ? dayjs(prev_reserveDate) : null);
+      setIsSaved(true);
+      setHospital({
+        id: vaccineHistory.HOSPITALCODE,
+        text: vaccineHistory.HOSPITAL,
+      });
+      setHospitalSearch(vaccineHistory.HOSPITAL);
+      setReserveDate(dayjs(vaccineHistory.DATE_SERV));
     }
-  }, [prev_chosen, prev_location, prev_reserveDate]);
+  }, [vaccineHistory]);
 
-  const handleChange = async (day: Dayjs) => {
+  const handleChange = async (day: Dayjs, hosp?: IHospital) => {
     const vaccineService = new VaccineService(accessToken ?? undefined);
-    if (prev_chosen) {
-      const res = await vaccineService.updateChildVaccine({
-        vaccineplace: location,
-        childpid: childpid ?? "",
-        vaccinetype: vaccine.CODE,
-        vaccinated_date: day.format("YYYY-MM-DD"),
-        prev_dateserv: dayjs(prev_reserveDate).format("YYYY-MM-DD"),
-      });
-      console.log(res);
-    } else {
-      const res = await vaccineService.createChildVaccine({
-        vaccineplace: location,
-        childpid: childpid ?? "",
-        vaccinetype: vaccine.CODE,
-        vaccinated_date: day.format("YYYY-MM-DD"),
-      });
-      console.log(res);
+    try {
+      if (prevChosen) {
+        const res = await vaccineService.updateChildVaccine({
+          vaccineplace: hosp?.id ?? "",
+          childpid: childpid ?? "",
+          vaccinetype: vaccine.CODE,
+          vaccinated_date: day.format("YYYY-MM-DD"),
+          prev_dateserv: dayjs(reserveDate).format("YYYY-MM-DD"),
+        });
+        console.log(res);
+      } else {
+        const res = await vaccineService.createChildVaccine({
+          vaccineplace: hosp?.id ?? "",
+          childpid: childpid ?? "",
+          vaccinetype: vaccine.CODE,
+          vaccinated_date: day.format("YYYY-MM-DD"),
+        });
+        setPrevChosen(true);
+        console.log(res);
+      }
+      setIsSaved(true);
+    } catch (error) {
+      console.error("Error saving vaccine data", error);
     }
     if (onChange) onChange();
   };
-
+  useEffect(() => {
+    async function fetchHospital() {
+      try {
+        const vaccineService = new VaccineService(accessToken ?? "");
+        const response = await vaccineService.getHospital({
+          momcid: "",
+          search: hospitalSearch,
+        });
+        if (response.data) {
+          setHospitals(response.data.content);
+        } else {
+          console.error("Failed to fetch vaccine information");
+        }
+      } catch (error) {
+        console.error("Error fetching vaccines:", error);
+      }
+    }
+    fetchHospital();
+  }, [hospitalSearch.length >= 3]);
   const handleClick = () => {
     if (!user) return;
     if (isClicked) {
-      setReserveDate(null);
+      setReserveDate(dayjs());
     }
     setIsClicked(!isClicked);
     if (user && reserveDate) handleChange(reserveDate);
@@ -96,14 +111,9 @@ export default function VaccineCell({
     if (user) handleChange(value);
   };
 
-  const handleAddHospital = () => {
-    if (!searchTerm.trim()) return;
-    if (!hospitalList.includes(searchTerm)) {
-      setHospitalList((prev) => [...prev, searchTerm]);
-      setLocation(searchTerm);
-      setSearchTerm("");
-      setShowDropdown(false);
-    }
+  const handleAddHospital = (hosp: IHospital) => {
+    if (!hospitalSearch.trim()) return;
+    if (user) handleChange(reserveDate, hosp);
   };
 
   return (
@@ -121,7 +131,7 @@ export default function VaccineCell({
           <div className="relative mb-3" onClick={(e) => e.stopPropagation()}>
             <DateReserve
               onDateChange={handleDateChange}
-              initialDate={dayjs(prev_chosen ? reserveDate : dayjs())}
+              initialDate={dayjs(prevChosen ? reserveDate : dayjs())}
             />
           </div>
           <div
@@ -130,27 +140,35 @@ export default function VaccineCell({
           >
             <input
               type="text"
-              value={location}
+              value={hospitalSearch}
               onChange={(e) => {
-                setLocation(e.target.value);
-                setHospitalSearch(e.target.value);
+                const value = e.target.value;
+                setIsSaved(false);
+                setHospitalSearch(value);
               }}
               placeholder="Type hospital name"
-              className="w-full border-0 border-b-2 border-gray-300 focus:border-Yellow placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
+              className="w-full border-0 border-b-2 border-gray-300 focus:border-yellow-400 placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
             />
-            {location.length >= 3 && (
+
+            {hospitalSearch.length >= 3 && !isSaved && (
               <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-48 overflow-y-auto shadow-md rounded">
-                {hospital.map((h) => (
-                  <li
-                    key={h.id}
-                    className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
-                    onClick={() => {
-                      setLocation(h.text);
-                    }}
-                  >
-                    {h.text}
-                  </li>
-                ))}
+                {hospitals
+                  ?.filter((h) =>
+                    h.text.toLowerCase().includes(hospitalSearch.toLowerCase()),
+                  )
+                  .map((h) => (
+                    <li
+                      key={h.id}
+                      className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
+                      onClick={() => {
+                        setHospital(h);
+                        setHospitalSearch(h.text);
+                        handleAddHospital(h);
+                      }}
+                    >
+                      {h.text}
+                    </li>
+                  ))}
               </ul>
             )}
           </div>

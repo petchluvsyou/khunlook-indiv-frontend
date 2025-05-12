@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
         {
           refreshToken,
-        }
+        },
       );
 
       const { accessToken: newAccessToken } = response.data.tokens;
@@ -95,9 +95,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAccessToken(storedAccessToken);
     }
 
-    const interval = setInterval(() => {
-      refreshAccessToken();
-    }, 55 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        refreshAccessToken();
+      },
+      10 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, [refreshAccessToken]);

@@ -37,7 +37,7 @@ export default function VaccineContainer({
 
   function toggleAgeLabels() {
     setAgeLabels(
-      ageLabels.length === 6 ? AGELABELS.slice(6, 12) : AGELABELS.slice(0, 6)
+      ageLabels.length === 6 ? AGELABELS.slice(6, 12) : AGELABELS.slice(0, 6),
     );
   }
 
@@ -49,12 +49,9 @@ export default function VaccineContainer({
       >
         Change Age
       </button>
-      <VaccineGrid
-        child={child}
-        ageLabels={ageLabels}
-        isInPlan={isInPlan}
-        onVaccineChange={onVaccineChange}
-       />
+      <div className="w-full">
+        <VaccineGrid child={child} ageLabels={ageLabels} onVaccineChange={onVaccineChange} isInPlan={isInPlan} />
+      </div>
     </div>
   );
 }

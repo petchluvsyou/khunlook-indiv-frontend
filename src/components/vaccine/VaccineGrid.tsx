@@ -28,9 +28,7 @@ export default function VaccineGrid({
 }: VaccineGridProps) {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
-  const [hospital, setHospital] = useState<IHospital[]>([]);
-  const [hospitalSearch, setHospitalSearch] = useState<string>("");
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
 
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
@@ -64,7 +62,7 @@ export default function VaccineGrid({
       vaccine.intervals.sort((a, b) =>
         a.startAge === b.startAge
           ? a.endAge - b.endAge
-          : a.startAge - b.startAge
+          : a.startAge - b.startAge,
       );
     });
     return Object.values(vaccineMap);
@@ -82,19 +80,19 @@ export default function VaccineGrid({
       const matchingVaccines = intervals.filter(
         (interval: { startAge: number; endAge: number }) =>
           interval.startAge <= ageLabel.months &&
-          interval.endAge >= ageLabel.months
+          interval.endAge >= ageLabel.months,
       );
 
       const isInPlan = matchingVaccines.length > 0;
       const currentVaccine = isInPlan ? matchingVaccines[0] : null;
       const isMatch = previousVaccine?.some(
-        (prev: any) => prev.name === currentVaccine?.name
+        (prev: any) => prev.name === currentVaccine?.name,
       );
 
       if (isInPlan !== previousBoolean || !isMatch) {
         if (count > 0) {
           result.push(
-            previousBoolean ? [true, count, previousVaccine] : [false, count]
+            previousBoolean ? [true, count, previousVaccine] : [false, count],
           );
         }
 
@@ -108,7 +106,7 @@ export default function VaccineGrid({
 
     if (count > 0) {
       result.push(
-        previousBoolean ? [true, count, previousVaccine] : [false, count]
+        previousBoolean ? [true, count, previousVaccine] : [false, count],
       );
     }
     return result;
@@ -117,7 +115,7 @@ export default function VaccineGrid({
   useEffect(() => {
     async function fetchVaccines() {
       try {
-        const vaccineService = new VaccineService();
+        const vaccineService = new VaccineService(accessToken ?? "");
         const response = await vaccineService.getInformation({
           childpid: child?.PID ?? "1",
           isinplan: isInPlan ? "1" : "0", // required is 1, 0, 2 is other
@@ -136,29 +134,10 @@ export default function VaccineGrid({
 
     fetchVaccines();
   }, [isInPlan, child]);
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const vaccineService = new VaccineService();
-        const response = await vaccineService.getHospital({
-          momcid: "",
-          search: hospitalSearch,
-        });
-        if (response.data) {
-          console.log(response.data.data);
-          setHospital(response.data.data);
-        } else {
-          console.error("Failed to fetch vaccine information");
-        }
-      } catch (error) {
-        console.error("Error fetching vaccines:", error);
-      }
-    }
-    fetchHospital();
-  }, []);
+
   return (
     <div className="w-full p-4 gap-1 flex">
-      <div className="flex flex-col gap-2 bg-white border p-16">
+      <div className="flex flex-col justify-start items-start gap-2 bg-white border p-16 w-full overflow-auto">
         <div className="flex flex-row gap-1">
           <VaccineBox
             isVaccined={false}
@@ -195,9 +174,7 @@ export default function VaccineGrid({
                       {(timeline[2] ?? []).map((t, i) => (
                         <VaccineCell
                           key={index + i}
-                          childpid={user ? child?.PID ?? "1" : "0"}
-                          hospital={hospital}
-                          setHospitalSearch={setHospitalSearch}
+                          childpid={user ? (child?.PID ?? "1") : "0"}
                           vaccine={t}
                           vaccineHistory={
                             history.filter((h) => h.DESCRIPTION === t.name)[0]
