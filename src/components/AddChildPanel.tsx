@@ -7,7 +7,13 @@ import ChildService from "@/libs/ChildService/ChildService";
 import { useAuth } from "@/providers/AuthContext";
 import { Dayjs } from "dayjs";
 
-export default function AddChildPanel({ onClose }: { onClose: () => void }) {
+export default function AddChildPanel({
+  onClose,
+  onUpdate,
+}: {
+  onClose: () => void;
+  onUpdate?: () => void;
+}) {
   const { accessToken, user } = useAuth();
   const [name, setName] = useState<string>("");
   const [sex, setSex] = useState<string>("M");
@@ -81,6 +87,7 @@ export default function AddChildPanel({ onClose }: { onClose: () => void }) {
     });
     if (response.data.success) {
       console.log("add child success");
+      if (onUpdate) onUpdate();
     }
     //POST new child
   };

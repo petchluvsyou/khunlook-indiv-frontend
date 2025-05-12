@@ -87,8 +87,6 @@ export default function page() {
         // console.log(request);
       }
     }
-    // request.ageMax = 0;
-    // request.ageMin = 0;
     if (selectedOption === "เด็กกลุ่มเสี่ยง")
       request.tableName = "GL_DEVELOPMENT_DAIM";
     else if (selectedOption === "เด็กปฐมวัย")
@@ -159,30 +157,49 @@ export default function page() {
   const onLoadWindow = async () => {
     setChildOption(allChildInfo[childIndex]?.NAME);
   };
+  const getAllChildInfo = async () => {
+    try {
+      const response = await childServiceClass.getChildByID(
+        user?.PID ?? "0000"
+      );
+      const childInfo = response.data.data;
+      setAllChildInfo(childInfo);
+      if (childInfo[0]?.ASPHYXIA === "1" || childInfo[0]?.BWEIGHT < 2500) {
+        toggleOption("เด็กกลุ่มเสี่ยง");
+      } else {
+        toggleOption("เด็กปฐมวัย");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
-    const getAllChildInfo = async () => {
-      try {
-        const response = await childServiceClass.getChildByID(
-          user?.PID ?? "0000"
-        );
-        const childInfo = response.data.data;
-        setAllChildInfo(childInfo);
-        if (childInfo[0]?.ASPHYXIA === "1" || childInfo[0]?.BWEIGHT < 2500) {
-          toggleOption("เด็กกลุ่มเสี่ยง");
-        } else {
-          toggleOption("เด็กปฐมวัย");
-        }
-      } catch (err) {}
-    };
     getAllChildInfo();
+    console.log("got child info");
   }, []);
-
   useEffect(() => {
     onLoadWindow();
     setDevelopmentInfo();
-    console.log(currentData, currentSkills);
+    // console.log(currentData, currentSkills);
   }, [childOption, allChildInfo, ageRange]);
 
+  const calculateAge = (ageRange: string) => {
+    let ageMin = 0;
+    let ageMax = 0;
+
+    const agePart = ageRange.split(" ")[0];
+
+    if (agePart.includes("-")) {
+      [ageMin, ageMax] = agePart.split("-").map(Number);
+    } else {
+      ageMin = ageMax = parseInt(agePart);
+    }
+
+    if (ageRange == "แรกเกิด") {
+      ageMin = ageMax = 0;
+    }
+    return [ageMin, ageMax];
+  };
   const summaryData = useMemo(() => {
     const typeMapping: Record<string, keyof DevelopmentSummary> = {
       "1": "movement",
@@ -201,20 +218,7 @@ export default function page() {
     };
 
     //extract current ageRange: min,max
-    let ageMin = 0;
-    let ageMax = 0;
-
-    const agePart = ageRange.split(" ")[0];
-
-    if (agePart.includes("-")) {
-      [ageMin, ageMax] = agePart.split("-").map(Number);
-    } else {
-      ageMin = ageMax = parseInt(agePart);
-    }
-
-    if (ageRange == "แรกเกิด") {
-      ageMin = ageMax = 0;
-    }
+    const [ageMin, ageMax] = calculateAge(ageRange);
 
     currentSkills.forEach((skill) => {
       const key = typeMapping[skill.TYPE];
@@ -396,7 +400,14 @@ export default function page() {
             เพิ่มลูก
           </button>
           {isAddChildPanelVisible && (
-            <AddChildPanel onClose={() => setAddChildPanelVisible(false)} />
+            <AddChildPanel
+              onClose={() => {
+                setAddChildPanelVisible(false);
+              }}
+              onUpdate={() => {
+                getAllChildInfo();
+              }}
+            />
           )}
         </div>
         <div className="">
@@ -409,7 +420,11 @@ export default function page() {
             แก้ไขข้อมูลลูก
           </button>
           {isEditChildPanelVisible && (
-            <EditChildPanel onClose={() => setEditChildPanelVisible(false)} />
+            <EditChildPanel
+              onClose={() => {
+                setEditChildPanelVisible(false);
+              }}
+            />
           )}
         </div>
       </div>
@@ -444,6 +459,8 @@ export default function page() {
                   saveDevelopmentCallBack={saveDevelopmentCallBack}
                   devcode={row.CODE}
                   deleteDevelopmentCallBack={deleteDevelopmentCallBack}
+                  childData={allChildInfo[childIndex]}
+                  ageMax={calculateAge(ageRange)[1]}
                 />
                 <div className="relative h-40 w-full bg-gray-100 rounded-md overflow-hidden hidden sm:block">
                   <Image

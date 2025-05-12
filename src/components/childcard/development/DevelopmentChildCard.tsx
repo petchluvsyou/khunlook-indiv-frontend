@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faSyringe } from "@fortawesome/free-solid-svg-icons";
 
@@ -35,11 +34,16 @@ export default function DevelopmentChildCard({
 
       {/* Hover Group */}
       <div className="group flex flex-col items-start space-y-3">
-
         {/* Summary Button */}
         <div className="flex items-center gap-2 p-2 rounded-full transition-all duration-300 w-36 bg-white text-Yellow shadow-md group-hover:bg-Yellow group-hover:text-white cursor-pointer">
-          <FontAwesomeIcon icon={faStar} className="transition-all duration-300 group-hover:text-white" size="lg" />
-          <span className="text-sm font-medium transition-all duration-300">สรุปพัฒนาการ</span>
+          <FontAwesomeIcon
+            icon={faStar}
+            className="transition-all duration-300 group-hover:text-white"
+            size="lg"
+          />
+          <span className="text-sm font-medium transition-all duration-300">
+            สรุปพัฒนาการ
+          </span>
         </div>
 
         {/* Detail Panel */}
@@ -59,7 +63,7 @@ export default function DevelopmentChildCard({
             </p>
             <p className="text-left text-sm font-bold text-black">
               การเคลื่อนไหว:
-              <span className="font-medium"> {summaryData.movement}  </span>
+              <span className="font-medium"> {summaryData.movement} </span>
             </p>
             <p className="text-left text-sm font-bold text-black">
               การใช้กล้ามเนื้อมัดเล็กและสติปัญญา:
@@ -71,7 +75,10 @@ export default function DevelopmentChildCard({
             </p>
             <p className="text-left text-sm font-bold text-black">
               การใช้ภาษา:
-              <span className="font-medium"> {summaryData["language-use"]} </span>
+              <span className="font-medium">
+                {" "}
+                {summaryData["language-use"]}{" "}
+              </span>
             </p>
             <p className="text-left text-sm font-bold text-black">
               การช่วยเหลือตัวเองและสังคม:
@@ -81,11 +88,5 @@ export default function DevelopmentChildCard({
         </div>
       </div>
     </div>
-
   );
 }
-
-
-
-
-
