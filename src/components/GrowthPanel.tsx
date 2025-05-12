@@ -8,6 +8,7 @@ import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
+import GrowthChildCard from "./childcard/growth/GrowthChildCard";
 
 export interface Child {
   momcid: number;
@@ -36,7 +37,11 @@ interface ChildData {
   headCircum: string;
 }
 
-type ChildDetail = { childpid: string; childname: string };
+type ChildDetail = {
+  childpid: string;
+  childname: string;
+  childbirthdate: string;
+};
 
 export default function GrowthPanel({
   token,
@@ -55,6 +60,7 @@ export default function GrowthPanel({
   const [height, setHeight] = useState("");
   const [headCircum, setHeadCircum] = useState("");
   const [child, setChild] = useState("");
+  const [childPid, setChildPid] = useState("");
   const [tempChildData, setTempChildData] = useState<ChildData[]>([]);
 
   const handleSubmit = async () => {
@@ -66,6 +72,9 @@ export default function GrowthPanel({
       height,
       headCircum,
     };
+
+    if (pid != "") newData.birthDate = new Date(selectedChild?.childbirthdate);
+    console.log(newData);
 
     const allFieldsValid = Object.values(newData).every(
       (value) => value !== null && value !== ""
@@ -85,6 +94,7 @@ export default function GrowthPanel({
     } else {
       // Append to tempChildData
       setTempChildData((prevData) => [...prevData, newData]);
+      console.log(tempChildData);
     }
     setBirthDate(null);
     setMeasureDate(null);
@@ -93,8 +103,50 @@ export default function GrowthPanel({
     setHeadCircum("");
   };
 
+  function calculateAgeFormatted(birthTime: string) {
+    const birthDate = new Date(birthTime);
+    const now = new Date();
+
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    return `${years} ปี ${months} เดือน`;
+  }
+
+  function formatThaiDate(isoDate: string) {
+    const date = new Date(isoDate);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date:", isoDate);
+      return "Invalid date"; // or return an empty string or fallback message
+    }
+
+    return new Intl.DateTimeFormat("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  }
+
+  const selectedChild = childDetails.find((c) => c.childpid === childPid);
+
   return (
     <div className="bg-Bg">
+      <div className="fixed top-32 right-4 z-50">
+        {selectedChild && (
+          <GrowthChildCard
+            childName={selectedChild.childname}
+            childAge={calculateAgeFormatted(selectedChild.childbirthdate)}
+            childBD={formatThaiDate(selectedChild.childbirthdate)}
+          />
+        )}
+      </div>
       <div className="flex justify-center items-center text-center relative z-0 flex-col p-12 bg-Bg gap-1 top-16 lg:top-24 w-full">
         <h1 className="font-bold text-3xl lg:text-5xl text-Dark pb-1 mt-5 lg:pb-3">
           การเจริญเติบโตของ
@@ -116,16 +168,22 @@ export default function GrowthPanel({
               <Select
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
-                value={child}
+                value={childPid}
                 label="child"
                 onChange={(e) => {
-                  setChild(e.target.value);
+                  const selected = childDetails.find(
+                    (detail) => detail.childpid === e.target.value
+                  );
+                  if (selected) {
+                    setChildPid(selected.childpid);
+                    setChild(selected.childname);
+                  }
                 }}
-                className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0 "
+                className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0"
               >
                 {childDetails.map((detail) => (
                   <MenuItem key={detail.childpid} value={detail.childpid}>
-                    {detail.childname}{" "}
+                    {detail.childname}
                   </MenuItem>
                 ))}
               </Select>

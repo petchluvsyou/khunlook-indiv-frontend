@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const { accessToken, user } = useAuth();
   const [childDetails, setChildDetails] = useState<
-    { childpid: string; childname: string }[]
+    { childpid: string; childname: string; childbirthdate: string }[]
   >([]);
 
   useEffect(() => {
@@ -27,6 +27,7 @@ export default function Page() {
           const details = children.map((child) => ({
             childpid: child.PID,
             childname: child.NAME,
+            childbirthdate: child.BIRTH,
           }));
           setChildDetails(details);
         } catch (error) {
