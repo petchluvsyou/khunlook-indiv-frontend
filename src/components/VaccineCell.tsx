@@ -15,6 +15,7 @@ interface VaccineCellProps {
   childpid: string;
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
+  onChange?: () => void;
   setHospitalSearch: (search: string) => void;
   hospital: IHospital[];
 }
@@ -24,6 +25,7 @@ export default function VaccineCell({
   vaccine,
   hospital,
   vaccineHistory,
+  onChange,
   setHospitalSearch,
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
@@ -77,6 +79,7 @@ export default function VaccineCell({
       });
       console.log(res);
     }
+    if (onChange) onChange();
   };
 
   const handleClick = () => {

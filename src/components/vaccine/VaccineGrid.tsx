@@ -17,12 +17,14 @@ interface VaccineGridProps {
   ageLabels: AgeLabel[];
   child?: IChildData;
   isInPlan: boolean;
+  onVaccineChange: () => void;
 }
 
 export default function VaccineGrid({
   ageLabels,
   child,
   isInPlan,
+  onVaccineChange
 }: VaccineGridProps) {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
@@ -200,6 +202,7 @@ export default function VaccineGrid({
                           vaccineHistory={
                             history.filter((h) => h.DESCRIPTION === t.name)[0]
                           }
+                          onChange={onVaccineChange}
                         />
                       ))}
                     </>
