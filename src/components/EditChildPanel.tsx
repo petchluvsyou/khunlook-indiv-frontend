@@ -5,8 +5,18 @@ import { Dayjs } from "dayjs";
 import { useState } from "react";
 import BasicTimePicker from "./BasicTimePicker";
 import DateReserve from "./DateReserve";
+import ChildService from "@/libs/ChildService/ChildService";
+import { useAuth } from "@/providers/AuthContext";
 
-export default function EditChildPanel({ onClose }: { onClose: () => void }) {
+export default function EditChildPanel({
+  childPID,
+  onClose,
+  onUpdate,
+}: {
+  childPID: string;
+  onClose: () => void;
+  onUpdate?: () => void;
+}) {
   const [isFullView, setIsFullView] = useState(false);
 
   const [fullName, setFullName] = useState<string>("");
@@ -28,7 +38,7 @@ export default function EditChildPanel({ onClose }: { onClose: () => void }) {
 
   // State for handling server error
   const [serverMessage, setServerMessage] = useState<string>("");
-
+  const { user, accessToken } = useAuth();
   const validateFields = () => {
     let isValid = true;
 
@@ -61,13 +71,51 @@ export default function EditChildPanel({ onClose }: { onClose: () => void }) {
 
     return isValid;
   };
-
+  const mappedBloodType: Record<string, string> = {
+    'A': "0",
+    'B': "1",
+    'AB': "2",
+    'O': "3",
+  };
+  const mappedRH: Record<string, string> = {
+    'ไม่ทราบ': "1",
+    "+": "2",
+    "-": "3",
+  };
+  const mappedAsphyxia: Record<string, string> = {
+    'unknown': "9",
+    'true': "1",
+    'false': "2",
+  };
   const handleSubmit = async () => {
     if (!validateFields) {
       return;
     }
-
-    //POST new child
+    if (user && accessToken) {
+      const childServiceClass = new ChildService(accessToken);
+      const req = {
+        momcid: user?.PID ?? "1",
+        childcid: Number(user?.ID) ?? 999,
+        childpid: childPID,
+        childhospcode: "APDEK",
+        childname: name,
+        datepickerchild: birthDate?.format("YYYY-MM-DD") ?? "0000-00-00",
+        sexchild: sex === "M" ? "1" : "2",
+        gaweek: wg,
+        childfullname: fullName,
+        childbtime: birthDate?.format("HHmmss") ?? "00000000",
+        childabo: bloodType === "-" ? undefined : mappedBloodType[bloodType],
+        childrh: mappedRH[RH],
+        childmemo: "dsajd",
+        lowbtweigth: birthWeight,
+        birthAsphyxia: mappedAsphyxia[asphyxiaStatus],
+      };
+      const response = await childServiceClass.editChild(req);
+      if (response.data.success) {
+        console.log("edit child success");
+        if (onUpdate) onUpdate();
+      }
+    }
   };
 
   const handleReset = () => {

@@ -72,3 +72,21 @@ export interface IChildData {
   BWEIGHT: number; // Birth weight (assumed to be a number)
   ASPHYXIA: string;
 }
+
+export interface IEditChildRequest {
+  momcid: string;
+  childcid: number | undefined;
+  childpid: string;
+  childhospcode: string | undefined;
+  childname: string | undefined;
+  datepickerchild: string | undefined;
+  sexchild: string | undefined;
+  gaweek: number | undefined;
+  childfullname: string | undefined;
+  childbtime: string | undefined;
+  childabo: string | undefined;
+  childrh: string | undefined;
+  childmemo: string | undefined;
+  lowbtweigth: number | undefined;
+  birthAsphyxia: string | undefined;
+}

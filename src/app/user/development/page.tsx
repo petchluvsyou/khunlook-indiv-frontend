@@ -421,8 +421,12 @@ export default function page() {
           </button>
           {isEditChildPanelVisible && (
             <EditChildPanel
+              childPID={allChildInfo[childIndex].PID}
               onClose={() => {
                 setEditChildPanelVisible(false);
+              }}
+              onUpdate={() => {
+                getAllChildInfo();
               }}
             />
           )}

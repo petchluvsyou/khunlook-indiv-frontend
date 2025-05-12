@@ -98,8 +98,6 @@ export default function DevelopmentCheckCell({
     }
     setReserveDate(value);
   };
-  if (childData) console.log("child date", childData.BIRTH);
-  console.log("dev date", ageMax);
   return (
     <div
       className={`h-40 rounded-md px-4 py-12 text-center items-center hidden sm:block ${

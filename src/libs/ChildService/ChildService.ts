@@ -1,6 +1,10 @@
 import axios from "axios";
 import ApiServiceBase from "../ApiServiceBase";
-import { IAddChildRequest, IGetChildResponse } from "./ChildServiceModel";
+import {
+  IAddChildRequest,
+  IEditChildRequest,
+  IGetChildResponse,
+} from "./ChildServiceModel";
 class ChildService extends ApiServiceBase {
   constructor(accessToken: string = "") {
     super(accessToken);
@@ -10,6 +14,9 @@ class ChildService extends ApiServiceBase {
   }
   addChild(request: IAddChildRequest) {
     return this.API.post("/child", request);
+  }
+  editChild(request: IEditChildRequest) {
+    return this.API.post("/child/edit", request);
   }
 }
 export default ChildService;
