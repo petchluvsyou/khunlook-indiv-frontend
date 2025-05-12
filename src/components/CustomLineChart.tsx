@@ -94,7 +94,7 @@ export default function CustomLineChart({
     xlabel === "อายุ (ปี)"
       ? [...transformedDataset, ...transformedChildDataset]
       : [...intDataset, ...childDataset];
-  console.log(combinedDataset);
+  // console.log(combinedDataset);
   return (
     <>
       <LineChart

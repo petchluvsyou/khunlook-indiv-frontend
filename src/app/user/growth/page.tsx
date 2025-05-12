@@ -59,8 +59,6 @@ export default function Page() {
   return (
     <div className="bg-Bg">
       <GrowthPanel
-        token={accessToken || ""}
-        pid={user?.PID || ""}
         childDetails={childDetails}
       />
     </div>

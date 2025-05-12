@@ -6,9 +6,12 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
-import { useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { useEffect, useState } from "react";
 import GrowthChildCard from "./childcard/growth/GrowthChildCard";
+import GrowthService from "@/libs/GrowthService/GrowthService";
+import { useAuth } from "@/providers/AuthContext";
+import { GrowthData } from "@/libs/GrowthService/GrowthServiceModel";
 
 export interface Child {
   momcid: number;
@@ -28,14 +31,7 @@ export interface Child {
   birthAsphyxia: string;
 }
 
-interface ChildData {
-  birthDate: Dayjs | null;
-  gender: string;
-  measureDate: Dayjs | null;
-  weight: string;
-  height: string;
-  headCircum: string;
-}
+
 
 type ChildDetail = {
   childpid: string;
@@ -44,27 +40,44 @@ type ChildDetail = {
 };
 
 export default function GrowthPanel({
-  token,
-  pid,
   childDetails,
 }: {
-  token: string;
-  pid: string;
   childDetails: ChildDetail[];
 }) {
-  const [currentDate, setCurrentDate] = useState<Dayjs | null>(null);
   const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
   const [gender, setGender] = useState("male");
   const [measureDate, setMeasureDate] = useState<Dayjs | null>(null);
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [headCircum, setHeadCircum] = useState("");
-  const [child, setChild] = useState("");
   const [childPid, setChildPid] = useState("");
-  const [tempChildData, setTempChildData] = useState<ChildData[]>([]);
+  const [childGrowthData, setChildGrowthData] = useState<GrowthData[]>([]);
+  const {user, accessToken} = useAuth()
 
+  const getChildGrowth = async()=>{
+    if (accessToken && childPid){
+      const growthService = new GrowthService(accessToken)
+      const response = await growthService.growthInformation({childpid: childPid})
+      const val = response.data.data.map((element: any) => ({
+        weight: element.WEIGHT,
+        height: element.HEIGHT,
+        birthDate: element.BIRTH,
+        headCircum: element.HEADCIRCUM,
+        gender: element.SEX,
+        measureDate: element.DATE_SERV,
+      }));
+      console.log(val)
+
+      // console.log(response)
+      // console.log("res", response.data.data)
+      setChildGrowthData(val)
+    }
+  }
+  useEffect(()=>{
+    getChildGrowth()
+  }, [childPid])
   const handleSubmit = async () => {
-    const newData: ChildData = {
+    const newData: GrowthData = {
       birthDate,
       gender,
       measureDate,
@@ -73,34 +86,43 @@ export default function GrowthPanel({
       headCircum,
     };
 
-    if (pid != "") newData.birthDate = new Date(selectedChild?.childbirthdate);
+    if (user) newData.birthDate = dayjs(selectedChild?.childbirthdate);
     console.log(newData);
 
     const allFieldsValid = Object.values(newData).every(
       (value) => value !== null && value !== ""
     );
-
+    
+    
     if (!allFieldsValid) {
       alert("Please ensure all fields are filled out correctly.");
       return;
     }
-
-    if (token != "" && pid != "") {
+    if (accessToken && user) {
       try {
         // await postGrowthData(newData);
+        const growthService = new GrowthService(accessToken)
+        const response = await growthService.validate({ hcir: parseInt(newData.headCircum), 
+          childPid: selectedChild?.childpid??"0", 
+          date: newData.measureDate?.toISOString().split("T")[0]??dayjs().toISOString().split("T")[0], 
+          height: parseInt(newData.height),
+          weight: parseInt(newData.weight),
+          hospcode: "APDEK"})
+        console.log(response)
+        getChildGrowth()
       } catch (error) {
         alert("Error posting data");
       }
     } else {
-      // Append to tempChildData
-      setTempChildData((prevData) => [...prevData, newData]);
-      console.log(tempChildData);
+      // Append to childGrowthData
+      setChildGrowthData((prevData) => [...prevData, newData]);
+      console.log(childGrowthData);
     }
-    setBirthDate(null);
-    setMeasureDate(null);
-    setWeight("");
-    setHeight("");
-    setHeadCircum("");
+    // setBirthDate(null);
+    // setMeasureDate(null);
+    // setWeight("");
+    // setHeight("");
+    // setHeadCircum("");
   };
 
   function calculateAgeFormatted(birthTime: string) {
@@ -160,7 +182,7 @@ export default function GrowthPanel({
       </div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div className="flex flex-col w-5/6 sm:w-3/5 justify-self-center items-start lg:items-center relative z-0 p-8 gap-6 text-Grey">
-          {pid == "" ? (
+          {!user? (
             <></>
           ) : (
             <div className="flex flex-row justify-center gap-4">
@@ -175,8 +197,7 @@ export default function GrowthPanel({
                     (detail) => detail.childpid === e.target.value
                   );
                   if (selected) {
-                    setChildPid(selected.childpid);
-                    setChild(selected.childname);
+                    setChildPid(e.target.value);
                   }
                 }}
                 className="w-24 bg-transparent shadow-none text-center font-line-seed-sans p-1.5 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-0"
@@ -208,7 +229,7 @@ export default function GrowthPanel({
 							className="hidden lg:block w-32 [&_.MuiOutlinedInput-notchedOutline]:border [&_.MuiOutlinedInput-notchedOutline]:rounded-xl [&_.MuiInputBase-input]:p-1.5 [&_.MuiInputBase-input]:text-center [&_.MuiInputBase-input]:bg-transparent [&_.MuiOutlinedInput-root]:p-0"
 						/> 
 					</div> */}
-          {pid != "" ? (
+          {user ? (
             <></>
           ) : (
             <div className="flex flex-row justify-center gap-4">
@@ -231,7 +252,7 @@ export default function GrowthPanel({
 						/> */}
             </div>
           )}
-          {pid != "" ? (
+          {user ? (
             <></>
           ) : (
             <div className="flex flex-row justify-center gap-4">
@@ -345,7 +366,7 @@ export default function GrowthPanel({
         <p className="text-3xl text-Yellow font-bold mb-6 mt-8">
           กราฟแสดงการเติบโต
         </p>
-        <GrowthChart gender={gender} childData={tempChildData} />
+        <GrowthChart gender={gender} growthData={childGrowthData} />
       </div>
     </div>
   );
