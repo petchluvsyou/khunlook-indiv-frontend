@@ -3,22 +3,9 @@
 import ChildDetails from "@/components/ChildDetails";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import { useAuth } from "@/providers/AuthContext";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import DevelopmentChildCard from "@/components/childcard/development/DevelopmentChildCard";
-
-interface Summary {
-  age: string;
-  movement: number;
-  dexterity: number;
-  comprehension: number;
-  language_use: number;
-  self_help: number;
-  vaccine: {
-    essential: string[];
-    supplement: string[];
-  };
-}
 
 // const summaryData: SummaryList = [
 //   {
@@ -107,7 +94,7 @@ export default function Page() {
   const [selectedPID, setSelectedPID] = useState("");
   const [selectedChild, setSelectedChild] = useState<IChildData | null>(null);
   const [children, setChildren] = useState<IChildData[]>([]);
-  const session = useSession();
+  const { user, accessToken } = useAuth();
   const [age, setAge] = useState("");
 
   useEffect(() => {
@@ -135,18 +122,16 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchChildren() {
-      if (session?.data?.accessToken && session?.data?.user?.pid) {
-        const childService = new ChildService(session.data.accessToken);
+      if (accessToken && user?.PID) {
+        const childService = new ChildService(accessToken);
 
-        const childData = await childService.getChildByID(
-          session.data.user.pid,
-        );
+        const childData = await childService.getChildByID(user.PID);
         console.log(Object.values(childData.data.data));
         setChildren(Object.values(childData.data.data) ?? []);
       }
     }
     fetchChildren();
-  }, [session]);
+  }, [user]);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedName = event.target.value;

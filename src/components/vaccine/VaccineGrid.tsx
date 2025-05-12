@@ -28,7 +28,7 @@ export default function VaccineGrid({
   const [history, setHistory] = useState<IGetVaccine[]>([]);
   const [hospital, setHospital] = useState<IHospital[]>([]);
   const [hospitalSearch, setHospitalSearch] = useState<string>("");
-  const session = useSession();
+  const { user } = useAuth();
 
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
@@ -62,7 +62,7 @@ export default function VaccineGrid({
       vaccine.intervals.sort((a, b) =>
         a.startAge === b.startAge
           ? a.endAge - b.endAge
-          : a.startAge - b.startAge,
+          : a.startAge - b.startAge
       );
     });
     return Object.values(vaccineMap);
@@ -80,19 +80,19 @@ export default function VaccineGrid({
       const matchingVaccines = intervals.filter(
         (interval: { startAge: number; endAge: number }) =>
           interval.startAge <= ageLabel.months &&
-          interval.endAge >= ageLabel.months,
+          interval.endAge >= ageLabel.months
       );
 
       const isInPlan = matchingVaccines.length > 0;
       const currentVaccine = isInPlan ? matchingVaccines[0] : null;
       const isMatch = previousVaccine?.some(
-        (prev: any) => prev.name === currentVaccine?.name,
+        (prev: any) => prev.name === currentVaccine?.name
       );
 
       if (isInPlan !== previousBoolean || !isMatch) {
         if (count > 0) {
           result.push(
-            previousBoolean ? [true, count, previousVaccine] : [false, count],
+            previousBoolean ? [true, count, previousVaccine] : [false, count]
           );
         }
 
@@ -106,7 +106,7 @@ export default function VaccineGrid({
 
     if (count > 0) {
       result.push(
-        previousBoolean ? [true, count, previousVaccine] : [false, count],
+        previousBoolean ? [true, count, previousVaccine] : [false, count]
       );
     }
     return result;
@@ -119,11 +119,11 @@ export default function VaccineGrid({
         const response = await vaccineService.getInformation({
           childpid: child?.PID ?? "1",
           isinplan: isInPlan ? "1" : "0", // required is 1, 0, 2 is other
-          loggedin: session ? 1 : 0,
+          loggedin: user ? 1 : 0,
         });
         if (response.data.success) {
           setVaccines(transformVaccineData(response.data.content));
-          if (session.data) setHistory(response.data.history);
+          if (user) setHistory(response.data.history);
         } else {
           console.error("Failed to fetch vaccine information");
         }
@@ -193,7 +193,7 @@ export default function VaccineGrid({
                       {(timeline[2] ?? []).map((t, i) => (
                         <VaccineCell
                           key={index + i}
-                          childpid={session ? (child?.PID ?? "1") : "0"}
+                          childpid={user ? child?.PID ?? "1" : "0"}
                           hospital={hospital}
                           setHospitalSearch={setHospitalSearch}
                           vaccine={t}

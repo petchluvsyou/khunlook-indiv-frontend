@@ -34,7 +34,7 @@ export default function VaccineCell({
   const [isClicked, setIsClicked] = useState(false);
   const [location, setLocation] = useState("");
   const [reserveDate, setReserveDate] = useState<Dayjs | null>(
-    prev_reserveDate ? dayjs(prev_reserveDate) : null,
+    prev_reserveDate ? dayjs(prev_reserveDate) : null
   );
 
   const [searchTerm, setSearchTerm] = useState("");
