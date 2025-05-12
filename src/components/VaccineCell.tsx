@@ -14,12 +14,15 @@ interface VaccineCellProps {
   childpid: string;
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
+  onChange?: () => void;
 }
 
 export default function VaccineCell({
   childpid,
   vaccine,
   vaccineHistory,
+  onChange,
+
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
   const [prevChosen, setPrevChosen] = useState(false);
@@ -73,6 +76,7 @@ export default function VaccineCell({
     } catch (error) {
       console.error("Error saving vaccine data", error);
     }
+    if (onChange) onChange();
   };
   useEffect(() => {
     async function fetchHospital() {
