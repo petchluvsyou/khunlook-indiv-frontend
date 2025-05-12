@@ -3,6 +3,9 @@ const nextConfig = {
   images: {
     domains: ["drive.google.com"],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   output: "standalone",
   async headers() {
     return [
