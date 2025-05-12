@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface IGrowthInformationRequest {
   childpid: string;
 }
@@ -6,8 +8,16 @@ export interface IGrowthValidateRequest {
   weight: number;
   height: number;
   hcir: number;
-  hopsCode: string;
+  hospcode: string;
   childPid: string;
+}
+export interface GrowthData {
+  birthDate: Dayjs | null;
+  gender: string;
+  measureDate: Dayjs | null;
+  weight: string;
+  height: string;
+  headCircum: string;
 }
 
 export interface IGrowthQueryResultRequest {

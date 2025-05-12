@@ -31,22 +31,15 @@ import {
 import GrowthService from "@/libs/GrowthService/GrowthService";
 import dayjs, { Dayjs } from "dayjs";
 import { useAuth } from "@/providers/AuthContext";
+import { GrowthData } from "@/libs/GrowthService/GrowthServiceModel";
 
-interface ChildData {
-  birthDate: Dayjs | null;
-  gender: string;
-  measureDate: Dayjs | null;
-  weight: string;
-  height: string;
-  headCircum: string;
-}
 
 export default function GrowthChart({
   gender,
-  childData,
+  growthData,
 }: {
   gender: string;
-  childData: ChildData[];
+  growthData: GrowthData[];
 }) {
   const { user, accessToken } = useAuth();
   const [chartComparison, setChartComparison] = useState("height-age");
@@ -91,7 +84,7 @@ export default function GrowthChart({
   useEffect(() => {
     setIsLoading(true);
     fetchGrowthData();
-  }, [gender, childData]);
+  }, [gender, growthData]);
 
   return (
     <>
@@ -172,7 +165,7 @@ export default function GrowthChart({
                     colors={colorsHFAB}
                     ylabel="ส่วนสูง (ซม.)"
                     xlabel="อายุ (ปี)"
-                    childDataset={childData
+                    childDataset={growthData
                       .map(({ height, measureDate, birthDate }) => ({
                         YVALUE: parseFloat(height),
                         XVALUE:
@@ -191,7 +184,7 @@ export default function GrowthChart({
                     colors={colorsWFAG}
                     ylabel="น้ำหนัก (กก.)"
                     xlabel="อายุ (ปี)"
-                    childDataset={childData
+                    childDataset={growthData
                       .map(({ weight, measureDate, birthDate }) => ({
                         YVALUE: parseFloat(weight),
                         XVALUE:
@@ -210,7 +203,7 @@ export default function GrowthChart({
                     colors={colorsWFHB}
                     ylabel="น้ำหนัก (กก.)"
                     xlabel="ส่วนสูง (ซม.)"
-                    childDataset={childData
+                    childDataset={growthData
                       .map(({ height, weight }) => ({
                         YVALUE: parseFloat(weight),
                         XVALUE: parseFloat(height),
@@ -226,7 +219,7 @@ export default function GrowthChart({
                     colors={colorsHCFAB}
                     ylabel="รอบศรีษะ (ซม.)"
                     xlabel="อายุ (ปี)"
-                    childDataset={childData
+                    childDataset={growthData
                       .map(({ headCircum, measureDate, birthDate }) => ({
                         YVALUE: parseFloat(headCircum),
                         XVALUE:

@@ -99,10 +99,6 @@ export default function page() {
     // console.log("history:", res.data.history);
     // console.log("content", res.data.content);
 
-      const historyDescriptions = new Set(
-        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION),
-      );
-
     const birthDate = dayjs(child?.BIRTH); // assuming you have this field
     const today = dayjs();
     const childAgeInMonths = today.diff(birthDate, "month");
