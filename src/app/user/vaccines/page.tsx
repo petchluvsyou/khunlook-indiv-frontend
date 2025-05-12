@@ -22,7 +22,7 @@ export default function page() {
   const [childBD, setChildBD] = useState<string>("");
   const [vaccines, setVaccines] = useState<IGetVaccine[]>([]);
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
-    "required"
+    "required",
   );
   const [age, setAge] = useState<"lt1" | "mt1">("lt1");
   const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
@@ -36,7 +36,7 @@ export default function page() {
   const [missingVaccines, setMissingVaccines] = useState<string[]>([]);
 
   const handleVaccineOptionChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setActiveIndexes([]);
     setVaccineOption(e.target.value as "required" | "optional");
@@ -48,7 +48,7 @@ export default function page() {
 
   const toggleAccordion = (index: number) => {
     setActiveIndexes((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
   // 0 - 6, 7 - 12
@@ -97,7 +97,7 @@ export default function page() {
       await setVaccines(arr);
 
       const historyDescriptions = new Set(
-        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
+        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION),
       );
 
       const missingVaccineDescriptions: string[] = [];
@@ -119,8 +119,6 @@ export default function page() {
   function calculateAgeFormatted(birthTime: string) {
     const birthDate = new Date(birthTime);
     const now = new Date();
-
-    console.log(now, birthDate);
 
     let years = now.getFullYear() - birthDate.getFullYear();
     let months = now.getMonth() - birthDate.getMonth();
@@ -163,7 +161,7 @@ export default function page() {
       <h1 className="font-bold text-[24px] sm:text-5xl mb-12 mt-5 sm:mb-16">
         ข้อมูลการรับวัคซีน
       </h1>
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex items-center flex-col lg:flex-row gap-4">
         <label htmlFor="vaccineOption" className="text-gray-700 mr-2">
           วัคซีน
         </label>
@@ -171,7 +169,7 @@ export default function page() {
           id="vaccineOption"
           value={vaccineOption}
           onChange={handleVaccineOptionChange}
-          className="p-2 border border-gray-300 rounded w-48 mr-2"
+          className="border border-gray-300 rounded mr-2"
         >
           <option key="required" value="required">
             จำเป็น
@@ -180,10 +178,7 @@ export default function page() {
             เสริมหรือทดแทน
           </option>
         </select>
-        <label
-          htmlFor="childOption"
-          className="text-gray-700 mr-2 hidden sm:block"
-        >
+        <label htmlFor="childOption" className="text-gray-700 hidden sm:block">
           ที่ควรได้รับสำหรับ
         </label>
         <select
@@ -228,19 +223,19 @@ export default function page() {
         </div>
       </div>
       {/*md*/}
-      <div className="hidden sm:block">
+      <div className="hidden sm:block w-full">
         <VaccineContainer
           isInPlan={vaccineOption === "required"}
           child={child}
         />
       </div>
       {/*sm*/}
-      <div className="sm:hidden w-full p-4">
+      <div className="sm:hidden p-4 w-full">
         {data.map((item, index) => (
           <div key={index} className="mb-3">
             <div
               onClick={() => toggleAccordion(index)}
-              className={`p-3 col-span-4 flex items-center justify-between text-left h-14 
+              className={`p-3 col-span-4 flex items-center justify-between text-left h-14
                                     bg-Yellow2  mt-2 cursor-pointer hover:bg-Yellow
                                     ${
                                       activeIndexes.includes(index)
@@ -269,7 +264,7 @@ export default function page() {
                         {vaccineName[vaccineKey]}
                       </span>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             )}
