@@ -25,11 +25,13 @@ const AGELABELS = [
 interface VaccineContainerProps {
   isInPlan: boolean;
   child?: IChildData;
+  onVaccineChange: () => void;
 }
 
 export default function VaccineContainer({
   isInPlan,
   child,
+  onVaccineChange
 }: VaccineContainerProps) {
   const [ageLabels, setAgeLabels] = useState(AGELABELS.slice(0, 6));
 
@@ -47,7 +49,12 @@ export default function VaccineContainer({
       >
         Change Age
       </button>
-      <VaccineGrid child={child} ageLabels={ageLabels} isInPlan={isInPlan} />
+      <VaccineGrid
+        child={child}
+        ageLabels={ageLabels}
+        isInPlan={isInPlan}
+        onVaccineChange={onVaccineChange}
+       />
     </div>
   );
 }

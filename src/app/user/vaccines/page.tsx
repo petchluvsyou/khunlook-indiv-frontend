@@ -19,6 +19,7 @@ import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
 import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
 import { useAuth } from "@/providers/AuthContext";
+import dayjs from "dayjs";
 
 export default function page() {
   const { user, accessToken } = useAuth();
@@ -49,6 +50,9 @@ export default function page() {
 
   const handleChildOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setChildOption(e.target.value);
+    const child = children?.find((child) => child.NAME === e.target.value);
+    setChild(child);
+    console.log("curr child", child);
   };
 
   const toggleAccordion = (index: number) => {
@@ -86,40 +90,102 @@ export default function page() {
     };
     getChild();
   }, []);
-  useEffect(() => {
-    const getVaccines = async () => {
-      const child = children?.find((child) => child.NAME === childOption);
-      const vaccineService = new VaccineService(accessToken ?? undefined);
-      const res = await vaccineService.getInformation({
-        childpid: child?.PID ?? "",
-        // isinplan: age === "lt1" ? "1" : "2",
-        isinplan: "1",
-        loggedin: 1,
-        previous_chosen: "1",
-      });
+  // useEffect(() => {
+  //   const getVaccines = async () => {
+  //     const vaccineService = new VaccineService(accessToken ?? undefined);
+  //     const res = await vaccineService.getInformation({
+  //       childpid: child?.PID ?? "",
+  //       // isinplan: age === "lt1" ? "1" : "2",
+  //       isinplan: "1",
+  //       loggedin: 1,
+  //       previous_chosen: "1",
+  //     });
 
-      const arr = res.data.history;
-      await setVaccines(arr);
+  //     // console.log("history:", res.data.history);
+  //     // console.log("content", res.data.content);
 
-      const historyDescriptions = new Set(
-        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
-      );
+  //     const birthDate = dayjs(child?.BIRTH); // assuming you have this field
+  //     const today = dayjs();
+  //     const childAgeInMonths = today.diff(birthDate, "month");
 
-      const missingVaccineDescriptions: string[] = [];
-      let hasReceivedAllVaccines = true;
+  //     const arr = res.data.history;
+  //     await setVaccines(arr);
 
-      for (const vaccine of res.data.content) {
-        if (!historyDescriptions.has(vaccine.DESCRIPTION)) {
-          missingVaccineDescriptions.push(vaccine.DESCRIPTION);
-          hasReceivedAllVaccines = false;
-        }
+  //     const historyDescriptions = new Set(
+  //       res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
+  //     );
+
+  //     const missingVaccineDescriptions: string[] = [];
+  //     let hasReceivedAllVaccines = true;
+
+  //     for (const vaccine of res.data.content) {
+  //       const ageMax = vaccine.AGE_MAX ?? vaccine.AGE ?? 0;
+  //       if (ageMax <= childAgeInMonths && !historyDescriptions.has(vaccine.DESCRIPTION)) {
+  //         missingVaccineDescriptions.push(vaccine.DESCRIPTION);
+  //         hasReceivedAllVaccines = false;
+  //       }
+  //     }
+
+  //     console.log("history:", historyDescriptions);
+  //     console.log("missing", missingVaccineDescriptions);
+
+  //     await setHasReceivedAllVaccines(hasReceivedAllVaccines);
+  //     await setMissingVaccines(missingVaccineDescriptions);
+  //   };
+  //   getVaccines();
+  // }, [child, age]);
+
+  const getVaccines = async () => {
+    const vaccineService = new VaccineService(accessToken ?? undefined);
+    const res = await vaccineService.getInformation({
+      childpid: child?.PID ?? "",
+      // isinplan: age === "lt1" ? "1" : "2",
+      isinplan: "1",
+      loggedin: 1,
+      previous_chosen: "1",
+    });
+
+    // console.log("history:", res.data.history);
+    // console.log("content", res.data.content);
+
+    const birthDate = dayjs(child?.BIRTH); // assuming you have this field
+    const today = dayjs();
+    const childAgeInMonths = today.diff(birthDate, "month");
+
+    const arr = res.data.history;
+    await setVaccines(arr);
+
+    const historyDescriptions = new Set(
+      res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
+    );
+
+    const missingVaccineDescriptions: string[] = [];
+    let hasReceivedAllVaccines = true;
+
+    for (const vaccine of res.data.content) {
+      const ageMax = vaccine.AGE_MAX ?? vaccine.AGE ?? 0;
+      if (ageMax <= childAgeInMonths && !historyDescriptions.has(vaccine.DESCRIPTION)) {
+        missingVaccineDescriptions.push(vaccine.DESCRIPTION);
+        hasReceivedAllVaccines = false;
       }
+    }
 
-      await setHasReceivedAllVaccines(hasReceivedAllVaccines);
-      await setMissingVaccines(missingVaccineDescriptions);
-    };
-    getVaccines();
-  }, [childOption, age]);
+    console.log("history:", historyDescriptions);
+    console.log("missing", missingVaccineDescriptions);
+
+    await setHasReceivedAllVaccines(hasReceivedAllVaccines);
+    await setMissingVaccines(missingVaccineDescriptions);
+  };
+
+  useEffect(() => {
+    if (child) {
+      getVaccines();
+    }
+  }, [child, age]);
+
+  const handleVaccineChange = () => {
+    getVaccines(); 
+  };
 
   function calculateAgeFormatted(birthTime: string) {
     const birthDate = new Date(birthTime);
@@ -158,9 +224,10 @@ export default function page() {
     <div className="min-h-screen justify-center items-center text-center relative z-0 flex flex-col p-12 bg-Bg gap-1 top-[64px] sm:top-[92px] w-full">
       <div className="fixed top-32 right-4 z-50">
         <VaccineChildCard
-          childName={childOption}
-          childAge={calculateAgeFormatted(childBD)}
-          childBD={formatThaiDate(childBD)}
+          key={child?.PID}
+          childName={child?.NAME ?? ""}
+          childAge={calculateAgeFormatted(child?.BIRTH ?? "")}
+          childBD={formatThaiDate(child?.BIRTH ?? "")}
           hasReceivedAllVaccines={hasReceivedAllVaccines}
           missingVaccines={missingVaccines}
         />
@@ -235,8 +302,10 @@ export default function page() {
       {/*md*/}
       <div className="hidden sm:block">
         <VaccineContainer
+          key={child?.PID}
           isInPlan={vaccineOption === "required"}
           child={child}
+          onVaccineChange={handleVaccineChange}
         />
       </div>
       {/*sm*/}
@@ -247,11 +316,10 @@ export default function page() {
               onClick={() => toggleAccordion(index)}
               className={`p-3 col-span-4 flex items-center justify-between text-left h-14 
                                     bg-Yellow2  mt-2 cursor-pointer hover:bg-Yellow
-                                    ${
-                                      activeIndexes.includes(index)
-                                        ? "rounded-t-md"
-                                        : "rounded-md"
-                                    }`}
+                                    ${activeIndexes.includes(index)
+                  ? "rounded-t-md"
+                  : "rounded-md"
+                }`}
             >
               <span className="text-md font-semibold">{item.age}</span>
               <FontAwesomeIcon

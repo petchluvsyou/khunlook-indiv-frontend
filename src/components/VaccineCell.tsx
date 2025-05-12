@@ -14,12 +14,14 @@ interface VaccineCellProps {
   childpid: string;
   vaccine: VaccineInterval;
   vaccineHistory: IGetVaccine;
+  onChange?: () => void;
 }
 
 export default function VaccineCell({
   childpid,
   vaccine,
   vaccineHistory,
+  onChange
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
   const prev_chosen = vaccineHistory != null;
@@ -72,6 +74,7 @@ export default function VaccineCell({
       });
       console.log(res);
     }
+    if (onChange) onChange();
   };
 
   const handleClick = () => {
