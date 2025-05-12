@@ -11,7 +11,6 @@ import {
 import { useAuth } from "@/providers/AuthContext";
 import { useEffect, useState } from "react";
 import developmentData from "../development/developmentData";
-import { PassThrough } from "stream";
 
 const formatThaiDate = (isoDate: string) =>
   new Intl.DateTimeFormat("th-TH", {
@@ -66,7 +65,10 @@ export default function Page() {
     return Math.max(aMin, bMin) <= Math.min(aMax, bMax);
   }
 
-  function mapSummary(response: ISummaryResponse, type: number): Summary[] {
+  function mapSummary(
+    response: ISummaryResponse,
+    type: number
+  ): Map<string, Summary> {
     const tempSummaries: Summary[] = [];
 
     if (type === 1) {
@@ -88,6 +90,7 @@ export default function Page() {
         });
       });
     }
+
     if (
       response.development.content.length > 0 &&
       response.development.history.length > 0
@@ -96,9 +99,7 @@ export default function Page() {
       const description: string[] = [];
       response.development.content.forEach((item) => {
         if (!item.DESCRIPTION || !item.TYPE || !item.CODE) return;
-
         description.push(item.DESCRIPTION);
-
         const t = response.development.history.find(
           (hist) => hist.CODE === item.CODE
         );
@@ -132,7 +133,6 @@ export default function Page() {
 
     for (const summary of tempSummaries) {
       let matchedKey: string | null = null;
-
       for (const key of Array.from(groupedMap.keys())) {
         const [min, max] = key.split("-").map(Number);
         if (rangesOverlap(summary.minAge, summary.maxAge, min, max)) {
@@ -167,19 +167,26 @@ export default function Page() {
       }
     }
 
-    return Array.from(groupedMap.values())
-      .map((entry) => ({
-        ...entry,
-        vaccine: {
-          essential: Array.from(new Set(entry.vaccine.essential)),
-          supplement: Array.from(new Set(entry.vaccine.supplement)),
-        },
-        development: {
-          description: Array.from(new Set(entry.development.description)),
-          value: entry.development.value,
-        },
-      }))
-      .sort((a, b) => a.minAge - b.minAge);
+    const uniqueByAgeRange = new Map<string, Summary>();
+
+    Array.from(groupedMap.values()).forEach((entry) => {
+      const key = `${entry.minAge}-${entry.maxAge}`;
+      if (!uniqueByAgeRange.has(key)) {
+        uniqueByAgeRange.set(key, {
+          ...entry,
+          vaccine: {
+            essential: Array.from(new Set(entry.vaccine.essential)),
+            supplement: Array.from(new Set(entry.vaccine.supplement)),
+          },
+          development: {
+            description: Array.from(new Set(entry.development.description)),
+            value: entry.development.value,
+          },
+        });
+      }
+    });
+
+    return uniqueByAgeRange;
   }
 
   async function fetchSummaryData(pid: string) {
@@ -204,8 +211,8 @@ export default function Page() {
 
     try {
       const request: ISummaryRequest = {
-        ageMin: 3,
-        ageMax: 4,
+        ageMin: 0,
+        ageMax: 0,
         childpid: pid,
         childbirth: new Date().toISOString(),
         childcorrectedbirth: new Date().toISOString(),
@@ -216,9 +223,16 @@ export default function Page() {
       };
 
       const response = await summaryService.getSummaryInfo(request);
-      const initialSummaries = mapSummary(response.data, 1);
+      const initialSummariesMap = mapSummary(response.data, 1);
 
-      const mappedSummaries = await Promise.all(
+      const summaryMap = new Map<string, Summary>();
+
+      for (const entry of initialSummariesMap.values()) {
+        const key = `${entry.minAge}-${entry.maxAge}`;
+        summaryMap.set(key, entry);
+      }
+
+      await Promise.all(
         abnormalChild.map(async (ss) => {
           const req: ISummaryRequest = {
             ageMin: ss.minAge,
@@ -231,13 +245,19 @@ export default function Page() {
             tableName: "GL_DEVELOPMENT_DAIM",
             childlowbtweigth: "no",
           };
+
           const res = await summaryService.getSummaryInfo(req);
-          return mapSummary(res.data, 0);
+          const mapped = mapSummary(res.data, 0);
+          for (const data of mapped.values()) {
+            const key = `${data.minAge}-${data.maxAge}`;
+            summaryMap.set(key, data);
+          }
         })
       );
 
-      const additionalSummaries = mappedSummaries.flat();
-      const allSummaries = [...initialSummaries, ...additionalSummaries];
+      const allSummaries = Array.from(summaryMap.values()).sort(
+        (a, b) => a.minAge - b.minAge
+      );
       setSummary(allSummaries);
     } catch (error) {
       console.error("Failed to fetch summary data:", error);
