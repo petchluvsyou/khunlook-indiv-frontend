@@ -7,7 +7,8 @@ import VaccineService from "@/libs/VaccineService/VaccineService";
 import {
   IGetVaccine,
   VaccineInterval,
-  IPostChildVaccineClinicRequest,
+  IPostHospital,
+  IGetHospital,
 } from "@/libs/VaccineService/VaccineServiceModel";
 
 interface VaccineCellProps {
@@ -33,17 +34,13 @@ export default function VaccineCell({
   );
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [hospitalList, setHospitalList] = useState([
-    "Dongy Hospital",
-    "Sira medical center",
-    "GearGear WHO cente",
-  ]);
+  const [hospitalList, setHospitalList] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const filteredHospitals = hospitalList.filter((hospital) =>
     hospital.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  console.log("Location:", location);
   useEffect(() => {
     if (prev_chosen) {
       setIsClicked(true);
@@ -51,6 +48,30 @@ export default function VaccineCell({
       setReserveDate(prev_reserveDate ? dayjs(prev_reserveDate) : null);
     }
   }, [prev_chosen, prev_location, prev_reserveDate]);
+
+  useEffect(() => {
+    const fetchHospitalList = async () => {
+      const momcid = session.data?.user?.id;
+      if (!session.data?.accessToken || !momcid) return;
+
+      const vaccineService = new VaccineService(session.data.accessToken);
+      console.log(session.data.accessToken);
+      try {
+        const hospitals = await vaccineService.getHospital({
+          momcid: momcid,
+          search: "",
+        });
+        console.log(hospitals);
+
+        const names = Object.values(hospitals.data.content).map((h) => h.text);
+        console.log(names);
+        setHospitalList(names);
+      } catch (error) {
+        console.error("Failed to fetch hospital list:", error);
+      }
+    };
+    fetchHospitalList();
+  }, [session.data?.accessToken, session.data?.user?.id]);
 
   const handleChange = async (day: Dayjs) => {
     const vaccineService = new VaccineService(session.data?.accessToken);
@@ -88,13 +109,41 @@ export default function VaccineCell({
     if (session) handleChange(value);
   };
 
-  const handleAddHospital = () => {
+  const saveClinicToDatabase = async (clinicname: string) => {
+    const momcid = session.data?.user?.id;
+    if (!momcid) {
+      console.warn("momcid is missing from session.");
+      return;
+    }
+
+    const payload: IPostHospital = {
+      momcid,
+      clinicname,
+    };
+
+    const vaccineService = new VaccineService(session.data?.accessToken);
+    try {
+      await vaccineService.postHospital({
+        momcid: session.data?.user.id,
+        clinicname: location,
+      });
+      // Refresh hospital list after adding new one
+      const hospitals: IGetHospital[] = await vaccineService.getHospital();
+      const names = hospitals.map((h) => h.clinicname);
+      setHospitalList(names);
+    } catch (error) {
+      console.error("Failed to save clinic:", error);
+    }
+  };
+
+  const handleAddHospital = async () => {
     if (!searchTerm.trim()) return;
     if (!hospitalList.includes(searchTerm)) {
       setHospitalList((prev) => [...prev, searchTerm]);
       setLocation(searchTerm);
       setSearchTerm("");
       setShowDropdown(false);
+      await saveClinicToDatabase(searchTerm);
     }
   };
 
@@ -119,7 +168,6 @@ export default function VaccineCell({
 
           {/* Hospital Dropdown */}
           <div className="relative mb-2" onClick={(e) => e.stopPropagation()}>
-            {/* Selected Hospital */}
             <div
               onClick={() => setShowDropdown((prev) => !prev)}
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50"
@@ -127,7 +175,6 @@ export default function VaccineCell({
               {location || "Select a hospital..."}
             </div>
 
-            {/* Dropdown */}
             {showDropdown && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-md max-h-40 overflow-y-auto">
                 <div className="p-2">
@@ -143,10 +190,11 @@ export default function VaccineCell({
                 {filteredHospitals.map((hospital) => (
                   <div
                     key={hospital}
-                    onClick={() => {
+                    onClick={async () => {
                       setLocation(hospital);
                       setShowDropdown(false);
                       setSearchTerm("");
+                      await saveClinicToDatabase(hospital);
                     }}
                     className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
                       location === hospital ? "bg-Yellow font-bold" : ""

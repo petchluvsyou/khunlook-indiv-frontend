@@ -4,7 +4,7 @@ import {
   IGetChildVaccineRequest,
   IGetHospital,
   IUpdateVaccineRequest,
-  IPostChildVaccineClinicRequest
+  IPostHospital
 } from "./VaccineServiceModel";
 class VaccineService extends ApiServiceBase {
   constructor(accessToken: string = "") {
@@ -22,7 +22,7 @@ class VaccineService extends ApiServiceBase {
   updateChildVaccine(request: IUpdateVaccineRequest) {
     return this.API.put("/vaccine/", request);
   }
-  postChildVaccineClinic(request: IPostChildVaccineClinicRequest) {
+  postHospital(request: IPostHospital) {
     return this.API.post("/vaccine/clinic-save", request);
   }
 }

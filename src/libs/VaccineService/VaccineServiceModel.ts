@@ -22,7 +22,7 @@ export interface IGetChildVaccineRequest {
   previous_chosen?: string;
 }
 
-export interface IPostChildVaccineClinicRequest {
+export interface IPostHospital {
   momcid: string;
   clinicname: string;
 }
