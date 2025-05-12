@@ -61,6 +61,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    setIsReady(false);
+
+    const protectRoute = async () => {
+      if (path === "/") {
+        setIsReady(true);
+        return;
+      }
+
+      if (path.includes("/user")) {
+        const user = localStorage.getItem("user");
+        const accessToken = localStorage.getItem("accessToken");
+        const isAuthenticated = user && accessToken;
+        if (!isAuthenticated) {
+          router.push("/login");
+          return;
+        }
+      }
+
+      setIsReady(true);
+    };
+
+    protectRoute();
+  }, [path]);
+
+  useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedAccessToken = localStorage.getItem("accessToken");
 
@@ -75,29 +100,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return () => clearInterval(interval);
   }, [refreshAccessToken]);
-
-  useEffect(() => {
-    setIsReady(false);
-
-    const protectRoute = async () => {
-      if (path === "/") {
-        setIsReady(true);
-        return;
-      }
-
-      if (path.includes("/user")) {
-        const isAuthenticated = user || accessToken;
-        if (!isAuthenticated) {
-          router.push("/login");
-          return;
-        }
-      }
-
-      setIsReady(true);
-    };
-
-    protectRoute();
-  }, [path]);
 
   const login = async (username: string, password: string) => {
     try {
