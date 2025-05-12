@@ -23,7 +23,7 @@ export default function page() {
   const [childBD, setChildBD] = useState<string>("");
   const [vaccines, setVaccines] = useState<IGetVaccine[]>([]);
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
-    "required",
+    "required"
   );
   const [age, setAge] = useState<"lt1" | "mt1">("lt1");
   const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
@@ -37,7 +37,7 @@ export default function page() {
   const [missingVaccines, setMissingVaccines] = useState<string[]>([]);
 
   const handleVaccineOptionChange = (
-    e: React.ChangeEvent<HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setActiveIndexes([]);
     setVaccineOption(e.target.value as "required" | "optional");
@@ -52,7 +52,7 @@ export default function page() {
 
   const toggleAccordion = (index: number) => {
     setActiveIndexes((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
   // 0 - 6, 7 - 12
@@ -99,10 +99,6 @@ export default function page() {
     // console.log("history:", res.data.history);
     // console.log("content", res.data.content);
 
-      const historyDescriptions = new Set(
-        res.data.history.map((h: IGetVaccine) => h.DESCRIPTION),
-      );
-
     const birthDate = dayjs(child?.BIRTH); // assuming you have this field
     const today = dayjs();
     const childAgeInMonths = today.diff(birthDate, "month");
@@ -119,7 +115,10 @@ export default function page() {
 
     for (const vaccine of res.data.content) {
       const ageMax = vaccine.AGE_MAX ?? vaccine.AGE ?? 0;
-      if (ageMax <= childAgeInMonths && !historyDescriptions.has(vaccine.DESCRIPTION)) {
+      if (
+        ageMax <= childAgeInMonths &&
+        !historyDescriptions.has(vaccine.DESCRIPTION)
+      ) {
         missingVaccineDescriptions.push(vaccine.DESCRIPTION);
         hasReceivedAllVaccines = false;
       }
@@ -139,7 +138,7 @@ export default function page() {
   }, [child, age]);
 
   const handleVaccineChange = () => {
-    getVaccines(); 
+    getVaccines();
   };
 
   function calculateAgeFormatted(birthTime: string) {
@@ -266,10 +265,11 @@ export default function page() {
               onClick={() => toggleAccordion(index)}
               className={`p-3 col-span-4 flex items-center justify-between text-left h-14
                                     bg-Yellow2  mt-2 cursor-pointer hover:bg-Yellow
-                                    ${activeIndexes.includes(index)
-                  ? "rounded-t-md"
-                  : "rounded-md"
-                }`}
+                                    ${
+                                      activeIndexes.includes(index)
+                                        ? "rounded-t-md"
+                                        : "rounded-md"
+                                    }`}
             >
               <span className="text-md font-semibold">{item.age}</span>
               <FontAwesomeIcon
@@ -292,7 +292,7 @@ export default function page() {
                         {vaccineName[vaccineKey]}
                       </span>
                     </div>
-                  ),
+                  )
                 )}
               </div>
             )}
