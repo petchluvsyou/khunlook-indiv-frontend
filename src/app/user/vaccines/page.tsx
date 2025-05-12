@@ -1,25 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faArrowLeft,
-  faAngleDown,
-  faAngleUp,
-} from "@fortawesome/free-solid-svg-icons";
-import requiredVaccineData from "./vaccineData/requiredVaccineData";
-import optionalVaccineData from "./vaccineData/optionalVaccineData";
-import vaccineName from "./vaccineData/vaccineName";
 import AddChildPanel from "@/components/AddChildPanel";
+import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
 import EditChildPanel from "@/components/EditChildPanel";
-import VaccineService from "@/libs/VaccineService/VaccineService";
-import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 import VaccineContainer from "@/components/vaccine/VaccineContainer";
 import ChildService from "@/libs/ChildService/ChildService";
 import { IChildData } from "@/libs/ChildService/ChildServiceModel";
-import VaccineChildCard from "@/components/childcard/vaccine/VaccineChildCard";
+import VaccineService from "@/libs/VaccineService/VaccineService";
+import { IGetVaccine } from "@/libs/VaccineService/VaccineServiceModel";
 import { useAuth } from "@/providers/AuthContext";
 import dayjs from "dayjs";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import optionalVaccineData from "./vaccineData/optionalVaccineData";
+import requiredVaccineData from "./vaccineData/requiredVaccineData";
+import vaccineName from "./vaccineData/vaccineName";
 
 export default function page() {
   const { user, accessToken } = useAuth();
@@ -90,50 +85,6 @@ export default function page() {
     };
     getChild();
   }, []);
-  // useEffect(() => {
-  //   const getVaccines = async () => {
-  //     const vaccineService = new VaccineService(accessToken ?? undefined);
-  //     const res = await vaccineService.getInformation({
-  //       childpid: child?.PID ?? "",
-  //       // isinplan: age === "lt1" ? "1" : "2",
-  //       isinplan: "1",
-  //       loggedin: 1,
-  //       previous_chosen: "1",
-  //     });
-
-  //     // console.log("history:", res.data.history);
-  //     // console.log("content", res.data.content);
-
-  //     const birthDate = dayjs(child?.BIRTH); // assuming you have this field
-  //     const today = dayjs();
-  //     const childAgeInMonths = today.diff(birthDate, "month");
-
-  //     const arr = res.data.history;
-  //     await setVaccines(arr);
-
-  //     const historyDescriptions = new Set(
-  //       res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
-  //     );
-
-  //     const missingVaccineDescriptions: string[] = [];
-  //     let hasReceivedAllVaccines = true;
-
-  //     for (const vaccine of res.data.content) {
-  //       const ageMax = vaccine.AGE_MAX ?? vaccine.AGE ?? 0;
-  //       if (ageMax <= childAgeInMonths && !historyDescriptions.has(vaccine.DESCRIPTION)) {
-  //         missingVaccineDescriptions.push(vaccine.DESCRIPTION);
-  //         hasReceivedAllVaccines = false;
-  //       }
-  //     }
-
-  //     console.log("history:", historyDescriptions);
-  //     console.log("missing", missingVaccineDescriptions);
-
-  //     await setHasReceivedAllVaccines(hasReceivedAllVaccines);
-  //     await setMissingVaccines(missingVaccineDescriptions);
-  //   };
-  //   getVaccines();
-  // }, [child, age]);
 
   const getVaccines = async () => {
     const vaccineService = new VaccineService(accessToken ?? undefined);

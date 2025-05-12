@@ -4,6 +4,8 @@ import dayjs, { Dayjs } from "dayjs";
 import DateReserve from "./DateReserve";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { IChildData } from "@/libs/ChildService/ChildServiceModel";
+import { Star } from "lucide-react";
 
 interface ICurrentSkills {
   CODE: string;
@@ -26,6 +28,8 @@ interface DevelopmentCheckCellProps {
     isUpdate: number
   ) => Promise<void>;
   deleteDevelopmentCallBack: (devcode: string) => Promise<void>;
+  childData: IChildData;
+  ageMax: number;
 }
 
 export default function DevelopmentCheckCell({
@@ -35,23 +39,37 @@ export default function DevelopmentCheckCell({
   devcode,
   deleteDevelopmentCallBack,
   saveDevelopmentCallBack,
+  childData,
+  ageMax,
 }: DevelopmentCheckCellProps) {
   const [isClicked, setIsClicked] = useState(false);
   const [reserveDate, setReserveDate] = useState<Dayjs | null>(null);
+  const [star, setStar] = useState(0);
   const getMatchingSkills = (code: string): any | undefined => {
     return currentSkills?.find((item: any) => item.CODE === code);
   };
+
+  const calculateStar = (dateDone: Dayjs) => {
+    if (!childData) return;
+    const birthDate = dayjs(childData.BIRTH);
+    const ageInMonths = dateDone.diff(birthDate, "month");
+    if (ageMax > ageInMonths) setStar(5);
+    else setStar(3);
+  };
+
   useEffect(() => {
     const f: boolean = currentSkills?.some(
       (item: any) => item.CODE === devcode
     );
     setIsClicked(f);
     setReserveDate(f ? dayjs(getMatchingSkills(devcode)?.DATE_OCCURRED) : null);
+    calculateStar(dayjs(getMatchingSkills(devcode)?.DATE_OCCURRED));
   }, [currentSkills]);
   useEffect(() => {
     if (prev_chosen) {
       setIsClicked(true);
       setReserveDate(dayjs(prev_reserveDate));
+      calculateStar(dayjs(prev_reserveDate));
     }
   }, [prev_chosen, prev_reserveDate]);
   const handleClick = () => {
@@ -59,16 +77,7 @@ export default function DevelopmentCheckCell({
       setReserveDate(null);
       deleteDevelopmentCallBack(devcode);
     }
-    // else {
-    //   saveDevelopmentCallBack(
-    //     reserveDate?.format("YYYY-MM-DD") ?? "0000-00-00",
-    //     devcode,
-    //     1
-    //   );
-    // }
     setIsClicked(!isClicked);
-
-    // POST development information
   };
 
   const handleDateChange = (value: Dayjs) => {
@@ -89,7 +98,8 @@ export default function DevelopmentCheckCell({
     }
     setReserveDate(value);
   };
-
+  if (childData) console.log("child date", childData.BIRTH);
+  console.log("dev date", ageMax);
   return (
     <div
       className={`h-40 rounded-md px-4 py-12 text-center items-center hidden sm:block ${
@@ -123,6 +133,15 @@ export default function DevelopmentCheckCell({
             onDateChange={handleDateChange}
             initialDate={reserveDate ?? undefined}
           />
+          <div className="flex">
+            {[...Array(5)].map((_, i) =>
+              i < star ? (
+                <Star key={i} className="text-yellow-500 fill-yellow-200" />
+              ) : (
+                <Star key={i} className="text-yellow-500" />
+              )
+            )}
+          </div>
         </div>
       ) : (
         <></>

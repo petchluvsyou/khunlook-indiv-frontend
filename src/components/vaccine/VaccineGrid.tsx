@@ -29,7 +29,9 @@ export default function VaccineGrid({
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
   const [hospital, setHospital] = useState<IHospital[]>([]);
+  const [hospitalSearch, setHospitalSearch] = useState<string>("");
   const { user } = useAuth();
+
   function transformVaccineData(rawData: IGetVaccine[]) {
     const vaccineMap: Record<
       string,
@@ -113,22 +115,6 @@ export default function VaccineGrid({
   }
 
   useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const vaccineService = new VaccineService();
-        const response = await vaccineService.getHospital({
-          momcid: "",
-          search: "",
-        });
-        if (response.data.success) {
-          setHospital(response.data.data);
-        } else {
-          console.error("Failed to fetch vaccine information");
-        }
-      } catch (error) {
-        console.error("Error fetching vaccines:", error);
-      }
-    }
     async function fetchVaccines() {
       try {
         const vaccineService = new VaccineService();
@@ -149,9 +135,27 @@ export default function VaccineGrid({
     }
 
     fetchVaccines();
-    fetchHospital();
   }, [isInPlan, child]);
-  console.log(hospital);
+  useEffect(() => {
+    async function fetchHospital() {
+      try {
+        const vaccineService = new VaccineService();
+        const response = await vaccineService.getHospital({
+          momcid: "",
+          search: hospitalSearch,
+        });
+        if (response.data) {
+          console.log(response.data.data);
+          setHospital(response.data.data);
+        } else {
+          console.error("Failed to fetch vaccine information");
+        }
+      } catch (error) {
+        console.error("Error fetching vaccines:", error);
+      }
+    }
+    fetchHospital();
+  }, []);
   return (
     <div className="w-full p-4 gap-1 flex">
       <div className="flex flex-col gap-2 bg-white border p-16">
@@ -192,6 +196,8 @@ export default function VaccineGrid({
                         <VaccineCell
                           key={index + i}
                           childpid={user ? child?.PID ?? "1" : "0"}
+                          hospital={hospital}
+                          setHospitalSearch={setHospitalSearch}
                           vaccine={t}
                           vaccineHistory={
                             history.filter((h) => h.DESCRIPTION === t.name)[0]

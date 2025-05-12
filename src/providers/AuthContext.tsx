@@ -1,4 +1,3 @@
-// context/AuthContext.tsx
 "use client";
 import React, {
   createContext,
@@ -8,7 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import UserService from "@/libs/UserService/UserService";
 import { User } from "@/libs/UserService/UserServiceModel";
 
@@ -31,6 +30,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState<boolean>(false);
+  const path = usePathname();
   const router = useRouter();
 
   const refreshAccessToken = useCallback(async () => {
@@ -58,6 +59,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       logout();
     }
   }, []);
+
+  useEffect(() => {
+    setIsReady(false);
+
+    const protectRoute = async () => {
+      if (path === "/") {
+        setIsReady(true);
+        return;
+      }
+
+      if (path.includes("/user")) {
+        const user = localStorage.getItem("user");
+        const accessToken = localStorage.getItem("accessToken");
+        const isAuthenticated = user && accessToken;
+
+        if (!isAuthenticated) {
+          router.push("/");
+          return;
+        }
+      }
+
+      setIsReady(true);
+    };
+
+    protectRoute();
+  }, [path]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -109,7 +136,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, accessToken, login, logout }}>
-      {children}
+      {isReady ? (
+        children
+      ) : (
+        <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-900 to-blue-700 text-white font-sans">
+          <div className="w-20 h-20 border-8 border-white border-t-transparent rounded-full animate-spin mb-6"></div>
+          <h2 className="text-2xl font-light">Loading Content...</h2>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };
