@@ -62,7 +62,6 @@ export default function page() {
         request.tableName = "GL_DEVELOPMENT_DSPM";
       const DevelopmentServiceClass = new DevelopmentService();
       let response = await DevelopmentServiceClass.getDevelopment(request);
-      console.log(response);
       let arr = Object.values(response.data.content[0]);
       setCurrentData(arr as ICurrentData[]);
     };

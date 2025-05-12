@@ -74,7 +74,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const accessToken = localStorage.getItem("accessToken");
         const isAuthenticated = user && accessToken;
         if (!isAuthenticated) {
-          router.push("/login");
+          const cleanPath = path.replace(/^\/user/, "");
+          router.push(cleanPath || "/");
           return;
         }
       }
