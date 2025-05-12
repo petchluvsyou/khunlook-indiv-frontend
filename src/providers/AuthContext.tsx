@@ -73,9 +73,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const user = localStorage.getItem("user");
         const accessToken = localStorage.getItem("accessToken");
         const isAuthenticated = user && accessToken;
+
         if (!isAuthenticated) {
-          const cleanPath = path.replace(/^\/user/, "");
-          router.push(cleanPath || "/");
+          router.push("/");
           return;
         }
       }
@@ -136,7 +136,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, accessToken, login, logout }}>
-      {isReady ? children : <p>Loading</p>}
+      {isReady ? (
+        children
+      ) : (
+        <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-900 to-blue-700 text-white font-sans">
+          <div className="w-20 h-20 border-8 border-white border-t-transparent rounded-full animate-spin mb-6"></div>
+          <h2 className="text-2xl font-light">Loading Content...</h2>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };
