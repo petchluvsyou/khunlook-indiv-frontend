@@ -57,7 +57,7 @@ export default function CustomLineChart({
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  console.log("CHILD data", childDataset);
   // Convert Month to Year and Month format
   const intDataset =
     dataset?.map((item) => {
@@ -94,7 +94,7 @@ export default function CustomLineChart({
     xlabel === "อายุ (ปี)"
       ? [...transformedDataset, ...transformedChildDataset]
       : [...intDataset, ...childDataset];
-
+  console.log(combinedDataset);
   return (
     <>
       <LineChart
@@ -144,6 +144,13 @@ export default function CustomLineChart({
             showGrid: true,
             ...stackStrategy,
           })),
+          {
+            dataKey: "YVALUE",
+            label: "เด็กของคุณ", // "Your child"
+            color: "#000000", // or any color that stands out
+            showMark: true,
+            area: false,
+          },
         ]}
         dataset={combinedDataset}
         {...customize}
