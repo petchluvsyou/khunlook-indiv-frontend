@@ -221,13 +221,11 @@ export default function page() {
       "self-help": "ไม่มีข้อมูล",
     };
 
-    //extract current ageRange: min,max
     const [ageMin, ageMax] = calculateAge(ageRange);
 
     currentSkills.forEach((skill) => {
       const key = typeMapping[skill.TYPE];
 
-      //calculate age [in months] date this skill occured
       const birthDate = new Date(allChildInfo[childIndex]?.BIRTH);
       const now = new Date(skill.DATE_OCCURRED);
 
@@ -235,7 +233,6 @@ export default function page() {
       const months = now.getMonth() - birthDate.getMonth();
       let totalMonths = years * 12 + months;
 
-      // Adjust if the current day is before the birth day of the month
       if (now.getDate() < birthDate.getDate()) {
         totalMonths--;
       }
@@ -466,7 +463,7 @@ export default function page() {
                 />
                 <div className="relative h-40 w-full bg-gray-100 rounded-md overflow-hidden hidden sm:block">
                   <Image
-                    src={`/img/developmentres/${selectedOption}/${ageRange}/${index}.png`}
+                    src={`/img/development/${selectedOption}/${ageRange}/${index}.png`}
                     alt="img"
                     layout="fill"
                     objectFit="contain"

@@ -90,7 +90,6 @@ export default function AddChildPanel({
       if (onUpdate) onUpdate();
       onClose();
     }
-    //POST new child
   };
 
   const handleReset = () => {
@@ -194,9 +193,9 @@ export default function AddChildPanel({
               onChange={(e) => {
                 const val = e.target.value;
                 if (val === "") {
-                  setBirthWeight(null); // allow empty input
+                  setBirthWeight(null);
                 } else if (!isNaN(Number(val)) && Number(val) >= 0) {
-                  setBirthWeight(val.toString()); // valid non-negative number
+                  setBirthWeight(val.toString());
                 }
               }}
               className="bg-gray-50 border border-gray-300 text-black lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
