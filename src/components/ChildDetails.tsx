@@ -40,10 +40,7 @@ export default function ChildDetails({
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-12">
           {summary.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center text-white text-sm"
-            >
+            <div key={index} className="flex justify-center text-white text-sm">
               <SummaryCard summary={item} />
             </div>
           ))}
