@@ -53,7 +53,7 @@ export default function DevelopmentCheckCell({
     if (!childData) return;
     const birthDate = dayjs(childData.BIRTH);
     const ageInMonths = dateDone.diff(birthDate, "month");
-    if (ageMax > ageInMonths) setStar(5);
+    if (ageMax >= ageInMonths) setStar(5);
     else setStar(3);
   };
 
