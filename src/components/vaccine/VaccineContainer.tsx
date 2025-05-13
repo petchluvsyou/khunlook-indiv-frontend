@@ -31,13 +31,15 @@ interface VaccineContainerProps {
 export default function VaccineContainer({
   isInPlan,
   child,
-  onVaccineChange
+  onVaccineChange,
 }: VaccineContainerProps) {
   const [ageLabels, setAgeLabels] = useState(AGELABELS.slice(0, 6));
 
   function toggleAgeLabels() {
     setAgeLabels(
-      ageLabels.length === 6 ? AGELABELS.slice(6, 12) : AGELABELS.slice(0, 6),
+      ageLabels[0].label === "แรกเกิด"
+        ? AGELABELS.slice(6, 12)
+        : AGELABELS.slice(0, 6)
     );
   }
 
@@ -50,7 +52,12 @@ export default function VaccineContainer({
         Change Age
       </button>
       <div className="w-full">
-        <VaccineGrid child={child} ageLabels={ageLabels} onVaccineChange={onVaccineChange} isInPlan={isInPlan} />
+        <VaccineGrid
+          child={child}
+          ageLabels={ageLabels}
+          onVaccineChange={onVaccineChange}
+          isInPlan={isInPlan}
+        />
       </div>
     </div>
   );
