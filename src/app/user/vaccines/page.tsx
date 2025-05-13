@@ -73,16 +73,16 @@ export default function page() {
   ];
   const data =
     vaccineOption === "required" ? requiredVaccineData : optionalVaccineData;
+  const getChild = async () => {
+    const childService = new ChildService(accessToken ?? undefined);
+    const res = await childService.getChildByID(user?.PID ?? "");
+    const arr: IChildData[] = Object.values(res.data.data);
+    setChildren(arr);
+    setChild(arr[0]);
+    setChildOption(arr[0].NAME);
+    setChildBD(arr[0].BIRTH);
+  };
   useEffect(() => {
-    const getChild = async () => {
-      const childService = new ChildService(accessToken ?? undefined);
-      const res = await childService.getChildByID(user?.PID ?? "");
-      const arr = Object.values(res.data.data);
-      setChildren(arr);
-      setChild(arr[0]);
-      setChildOption(arr[0].NAME);
-      setChildBD(arr[0].BIRTH);
-    };
     getChild();
   }, []);
 
@@ -231,7 +231,10 @@ export default function page() {
             เพิ่มลูก
           </button>
           {isAddChildPanelVisible && (
-            <AddChildPanel onClose={() => setAddChildPanelVisible(false)} />
+            <AddChildPanel
+              onClose={() => setAddChildPanelVisible(false)}
+              onUpdate={getChild}
+            />
           )}
         </div>
         <div className="">

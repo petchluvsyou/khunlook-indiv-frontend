@@ -7,6 +7,9 @@ export interface IAddChildRequest {
   datepickerchild: string;
   sexchild: string;
   gaweek: number;
+  childabo: string;
+  childrh: string;
+  childmemo: string;
   childfullname: string;
   childbtime: string;
   lowbtweigth: number;

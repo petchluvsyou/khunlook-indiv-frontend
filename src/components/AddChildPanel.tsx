@@ -76,6 +76,9 @@ export default function AddChildPanel({
       sexchild: sex === "M" ? "1" : "2",
       gaweek: wg,
       childfullname: "test",
+      childabo: "1",
+      childmemo: "my memo",
+      childrh: "1",
       childbtime: birthDate?.format("HHmmss") ?? "00000000",
       lowbtweigth: parseInt(birthWeight),
       birthAsphyxia:
