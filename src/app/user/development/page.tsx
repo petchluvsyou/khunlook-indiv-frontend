@@ -314,43 +314,43 @@ export default function page() {
       {/*this part gotta be removed since child type depend on current child option: DAIM or DSPM
                if dong is DAIM --> toggleOption('เด็กกลุ่มเสี่ยง')
                */}
-      <div className="flex justify-center mb-6 sm:mb-10">
-        <button
-          disabled={selectedOption === "เด็กกลุ่มเสี่ยง"}
-          className={`relative px-4 py-2 rounded ${
-            selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
-          }`}
-          // onClick={() => toggleOption("เด็กปฐมวัย")}
-        >
-          เด็กปฐมวัย (DSPM)
-          <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${
-              selectedOption === "เด็กปฐมวัย"
-                ? "border-black"
-                : "border-gray-400"
+      {!user && (
+        <div className="flex justify-center mb-6 sm:mb-10">
+          <button
+            disabled={selectedOption === "เด็กกลุ่มเสี่ยง"}
+            className={`relative px-4 py-2 rounded ${
+              selectedOption === "เด็กปฐมวัย" ? "text-black" : "text-gray-400"
             }`}
-          />
-        </button>
-        <button
-          disabled={selectedOption === "เด็กปฐมวัย"}
-          className={`relative px-4 py-2 rounded ${
-            selectedOption === "เด็กกลุ่มเสี่ยง"
-              ? "text-black"
-              : "text-gray-400"
-          }`}
-          // onClick={() => toggleOption("เด็กกลุ่มเสี่ยง")}
-        >
-          เด็กกลุ่มเสี่ยง (DAIM)
-          <hr
-            className={`absolute left-0 right-0 mt-2 border-t-2 ${
+            // onClick={() => toggleOption("เด็กปฐมวัย")}
+          >
+            เด็กปฐมวัย (DSPM)
+            <hr
+              className={`absolute left-0 right-0 mt-2 border-t-2 ${
+                selectedOption === "เด็กปฐมวัย"
+                  ? "border-black"
+                  : "border-gray-400"
+              }`}
+            />
+          </button>
+          <button
+            disabled={selectedOption === "เด็กปฐมวัย"}
+            className={`relative px-4 py-2 rounded ${
               selectedOption === "เด็กกลุ่มเสี่ยง"
-                ? "border-black"
-                : "border-gray-400"
+                ? "text-black"
+                : "text-gray-400"
             }`}
-          />
-        </button>
-      </div>
-
+          >
+            เด็กกลุ่มเสี่ยง (DAIM)
+            <hr
+              className={`absolute left-0 right-0 mt-2 border-t-2 ${
+                selectedOption === "เด็กกลุ่มเสี่ยง"
+                  ? "border-black"
+                  : "border-gray-400"
+              }`}
+            />
+          </button>
+        </div>
+      )}
       <div className="mb-8 flex items-center">
         <label
           htmlFor="childOption"
