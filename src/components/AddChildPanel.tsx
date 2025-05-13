@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ChildService from "@/libs/ChildService/ChildService";
 import { useAuth } from "@/providers/AuthContext";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function AddChildPanel({
   onClose,
@@ -17,9 +17,9 @@ export default function AddChildPanel({
   const { accessToken, user } = useAuth();
   const [name, setName] = useState<string>("");
   const [sex, setSex] = useState<string>("M");
-  const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
+  const [birthDate, setBirthDate] = useState<Dayjs | null>(dayjs());
   const [wg, setWG] = useState<number>(38); //week of gestation (WG): อายุครรภ์
-  const [birthWeight, setBirthWeight] = useState<number>(0);
+  const [birthWeight, setBirthWeight] = useState<string | null>(null);
   const [asphyxiaStatus, setAsphyxiaStatus] = useState<string>("unknown"); //Asphyxia: ภาวขาดออกซิเจนตอนคลอด
 
   // State for individual field errors
@@ -55,7 +55,7 @@ export default function AddChildPanel({
     }
 
     // BirthWeight validation
-    if (birthWeight < 0) {
+    if (parseInt(birthWeight) < 0) {
       setBirthWeightError("BirthWeight must be positive number");
       isValid = false;
     }
@@ -82,12 +82,13 @@ export default function AddChildPanel({
       childabo: "3",
       childrh: "2",
       childmemo: "dsajd",
-      lowbtweigth: birthWeight,
+      lowbtweigth: parseInt(birthWeight),
       birthAsphyxia: "2",
     });
     if (response.data.success) {
       console.log("add child success");
       if (onUpdate) onUpdate();
+      onClose();
     }
     //POST new child
   };
@@ -97,7 +98,7 @@ export default function AddChildPanel({
     setSex("M");
     setBirthDate(null);
     setWG(38);
-    setBirthWeight(0);
+    setBirthWeight(null);
     setAsphyxiaStatus("unknown");
   };
 
@@ -190,10 +191,14 @@ export default function AddChildPanel({
               type="number"
               name="birthWeight"
               value={birthWeight}
-              onChange={(e) =>
-                setBirthWeight(Math.max(0, Number(e.target.value)))
-              }
-              required
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "") {
+                  setBirthWeight(null); // allow empty input
+                } else if (!isNaN(Number(val)) && Number(val) >= 0) {
+                  setBirthWeight(val.toString()); // valid non-negative number
+                }
+              }}
               className="bg-gray-50 border border-gray-300 text-black lg:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
             {birthWeightError && (
