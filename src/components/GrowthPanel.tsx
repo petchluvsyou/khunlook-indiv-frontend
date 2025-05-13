@@ -39,6 +39,14 @@ type ChildDetail = {
   childbirthdate: string;
 };
 
+type SummaryData = {
+  headCircumLabel?: string;
+  heightLabel?: string;
+  weightLabel?: string;
+  weightHeightLabel?: string;
+  measureAge?: string;
+};
+
 export default function GrowthPanel({
   childDetails,
 }: {
@@ -53,6 +61,11 @@ export default function GrowthPanel({
   const [childPid, setChildPid] = useState("");
   const [childGrowthData, setChildGrowthData] = useState<GrowthData[]>([]);
   const {user, accessToken} = useAuth()
+  const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
+
+  const handleSummaryData = (data: SummaryData) => {
+    setSummaryData(data);
+  };
 
   const getChildGrowth = async()=>{
     if (accessToken && childPid){
@@ -166,6 +179,11 @@ export default function GrowthPanel({
             childName={selectedChild.childname}
             childAge={calculateAgeFormatted(selectedChild.childbirthdate)}
             childBD={formatThaiDate(selectedChild.childbirthdate)}
+            headCircumLabel={summaryData?.headCircumLabel}
+            heightLabel={summaryData?.heightLabel}
+            weightLabel={summaryData?.weightLabel}
+            weightHeightLabel={summaryData?.weightHeightLabel}
+            measureAge={summaryData?.measureAge}
           />
         )}
       </div>
@@ -366,7 +384,7 @@ export default function GrowthPanel({
         <p className="text-3xl text-Yellow font-bold mb-6 mt-8">
           กราฟแสดงการเติบโต
         </p>
-        <GrowthChart gender={gender} growthData={childGrowthData} />
+        <GrowthChart gender={gender} growthData={childGrowthData} onSummary={handleSummaryData} />
       </div>
     </div>
   );
