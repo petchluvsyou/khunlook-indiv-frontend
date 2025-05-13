@@ -1,17 +1,28 @@
 "use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faChild } from "@fortawesome/free-solid-svg-icons";
+import SummaryCard from "@/components/SummaryCard";
 
 type ChildDetailsProps = {
   childName: string;
   childAge: string;
   childBD: string;
+  headCircumLabel: string | undefined;
+  heightLabel: string | undefined;
+  weightLabel: string | undefined;
+  weightHeightLabel: string | undefined;
+  measureAge: string | undefined;
 };
 
 export default function GrowthChildCard({
   childName,
   childAge,
   childBD,
+  headCircumLabel,
+  heightLabel,
+  weightLabel,
+  weightHeightLabel,
+  measureAge
 }: ChildDetailsProps) {
   return (
     <div className="relative flex flex-col p-4">
@@ -38,8 +49,22 @@ export default function GrowthChildCard({
             <p className="text-left text-sm font-bold text-black">
               อายุ: <span className="font-medium">{childAge}</span>
             </p>
+            {measureAge !== "-" && (
+              <p className="text-left text-sm font-bold text-black">
+                อายุที่วัดล่าสุด: <span className="font-medium">{measureAge}</span>
+              </p>
+            )}
             <p className="text-left text-sm font-bold text-black">
-              วันเกิด: <span className="font-medium">{childBD}</span>
+              รูปร่าง: <span className="font-medium">{weightHeightLabel}</span>
+            </p>
+            <p className="text-left text-sm font-bold text-black">
+              น้ำหนัก: <span className="font-medium">{weightLabel}</span>
+            </p>
+            <p className="text-left text-sm font-bold text-black">
+              ส่วนสูง: <span className="font-medium">{heightLabel}</span>
+            </p>
+            <p className="text-left text-sm font-bold text-black">
+              รอบศรีษะ: <span className="font-medium">{headCircumLabel}</span>
             </p>
           </div>
         </div>

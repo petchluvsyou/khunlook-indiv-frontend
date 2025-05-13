@@ -57,6 +57,7 @@ export default function CustomLineChart({
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  // console.log("dataset",dataset);
   console.log("CHILD data", childDataset);
   // Convert Month to Year and Month format
   const intDataset =
