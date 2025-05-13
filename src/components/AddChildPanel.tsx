@@ -16,19 +16,18 @@ export default function AddChildPanel({
 }) {
   const { accessToken, user } = useAuth();
   const [name, setName] = useState<string>("");
-  const [sex, setSex] = useState<string>("M");
+  const [sex, setSex] = useState<string>("M"); //1=male, 2=female
   const [birthDate, setBirthDate] = useState<Dayjs | null>(dayjs());
   const [wg, setWG] = useState<number>(38); //week of gestation (WG): อายุครรภ์
   const [birthWeight, setBirthWeight] = useState<string | null>(null);
-  const [asphyxiaStatus, setAsphyxiaStatus] = useState<string>("unknown"); //Asphyxia: ภาวขาดออกซิเจนตอนคลอด
+  const [asphyxiaStatus, setAsphyxiaStatus] = useState<string>("unknown"); // 1=daim, 2=dspm, 9=unknown
 
   // State for individual field errors
   const [nameError, setNameError] = useState<string>("");
   const [birthDateError, setBirthDateError] = useState<string>("");
   const [birthWeightError, setBirthWeightError] = useState<string>("");
 
-  // State for handling server error
-  const [serverMessage, setServerMessage] = useState<string>("");
+  // State for handling server
 
   const validateFields = () => {
     let isValid = true;
@@ -37,7 +36,6 @@ export default function AddChildPanel({
     setNameError("");
     setBirthDateError("");
     setBirthWeightError("");
-    setServerMessage("");
 
     // Name validation
     if (name.trim().length === 0) {
@@ -75,15 +73,13 @@ export default function AddChildPanel({
       childhospcode: "APDEK",
       childname: name,
       datepickerchild: birthDate?.format("YYYY-MM-DD") ?? "0000-00-00",
-      sexchild: "2",
-      gaweek: 5,
+      sexchild: sex === "M" ? "1" : "2",
+      gaweek: wg,
       childfullname: "test",
       childbtime: birthDate?.format("HHmmss") ?? "00000000",
-      childabo: "3",
-      childrh: "2",
-      childmemo: "dsajd",
       lowbtweigth: parseInt(birthWeight),
-      birthAsphyxia: "2",
+      birthAsphyxia:
+        asphyxiaStatus === "true" ? "1" : asphyxiaStatus == "false" ? "2" : "9",
     });
     if (response.data.success) {
       console.log("add child success");

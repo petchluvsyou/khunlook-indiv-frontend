@@ -9,9 +9,6 @@ export interface IAddChildRequest {
   gaweek: number;
   childfullname: string;
   childbtime: string;
-  childabo: string;
-  childrh: string;
-  childmemo: string;
   lowbtweigth: number;
   birthAsphyxia: string;
 }
