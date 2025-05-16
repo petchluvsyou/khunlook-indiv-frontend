@@ -193,21 +193,43 @@ export default function Page() {
     if (!accessToken) return;
 
     const summaryService = new SummaryService(accessToken);
-    const abnormalChild = developmentData.เด็กกลุ่มเสี่ยง.map((e) => {
-      let minAge = 0;
-      let maxAge = 0;
-      if (e.age === "แรกเกิด") {
-        minAge = 0;
-        maxAge = 0;
-      } else {
-        const match = e.age.match(/(\d+)[^\d]+(\d+)/);
-        if (match) {
-          minAge = parseInt(match[1]);
-          maxAge = parseInt(match[2]);
+    let child;
+    console.log(selectedPID);
+    const isAbNormal =
+      selectedChild.ASPHYXIA === "1" || selectedChild.BWEIGHT < 2500;
+    if (isAbNormal) {
+      child = developmentData.เด็กกลุ่มเสี่ยง.map((e) => {
+        let minAge = 0;
+        let maxAge = 0;
+        if (e.age === "แรกเกิด") {
+          minAge = 0;
+          maxAge = 0;
+        } else {
+          const match = e.age.match(/(\d+)[^\d]+(\d+)/);
+          if (match) {
+            minAge = parseInt(match[1]);
+            maxAge = parseInt(match[2]);
+          }
         }
-      }
-      return { ...e, minAge, maxAge };
-    });
+        return { ...e, minAge, maxAge };
+      });
+    } else {
+      child = developmentData.เด็กปฐมวัย.map((e) => {
+        let minAge = 0;
+        let maxAge = 0;
+        if (e.age === "แรกเกิด") {
+          minAge = 0;
+          maxAge = 0;
+        } else {
+          const match = e.age.match(/(\d+)[^\d]+(\d+)/);
+          if (match) {
+            minAge = parseInt(match[1]);
+            maxAge = parseInt(match[2]);
+          }
+        }
+        return { ...e, minAge, maxAge };
+      });
+    }
 
     try {
       const request: ISummaryRequest = {
@@ -233,7 +255,7 @@ export default function Page() {
       }
 
       await Promise.all(
-        abnormalChild.map(async (ss) => {
+        child.map(async (ss) => {
           const req: ISummaryRequest = {
             ageMin: ss.minAge,
             ageMax: ss.maxAge,
@@ -242,7 +264,9 @@ export default function Page() {
             childcorrectedbirth: new Date().toISOString(),
             loggedin: 1,
             previous_chosen: "0",
-            tableName: "GL_DEVELOPMENT_DAIM",
+            tableName: isAbNormal
+              ? "GL_DEVELOPMENT_DAIM"
+              : "GL_DEVELOPMENT_DSPM",
             childlowbtweigth: "no",
           };
 

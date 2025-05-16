@@ -158,7 +158,7 @@ export default function page() {
             <div className="grid grid-cols-2 gap-1 w-full">
               <div className="relative h-40 w-full bg-gray-100 rounded-md overflow-hidden hidden sm:block">
                 <Image
-                  src={`/img/developmentres/${selectedOption}/${ageRange}/${index}.png`}
+                  src={`/img/development/${selectedOption}/${ageRange}/${index}.png`}
                   alt="img"
                   layout="fill"
                   objectFit="contain"

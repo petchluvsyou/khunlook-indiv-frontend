@@ -35,7 +35,7 @@ export default function DevelopmentDetailPage({
       </p>
       <div className="relative h-48 aspect-square m-10">
         <Image
-          src={`/img/developmentres/${selectedOption}/${ageRange}/${params.index}.png`}
+          src={`/img/development/${selectedOption}/${ageRange}/${params.index}.png`}
           alt="img"
           fill
           className="rounded-md"
