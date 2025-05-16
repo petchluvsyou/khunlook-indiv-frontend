@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import VaccineBox from "./VaccineBox";
+import VaccineCell from "./VaccineCell";
 import { AgeLabel } from "./VaccineContainer";
 import VaccineService from "@/libs/VaccineService/VaccineService";
-import VaccineCell from "../VaccineCell";
 import {
   IGetVaccine,
   VaccineInterval,
@@ -24,7 +24,7 @@ export default function VaccineGrid({
   ageLabels,
   child,
   isInPlan,
-  onVaccineChange
+  onVaccineChange,
 }: VaccineGridProps) {
   const [vaccines, setVaccines] = useState<Vaccine[]>([]);
   const [history, setHistory] = useState<IGetVaccine[]>([]);
