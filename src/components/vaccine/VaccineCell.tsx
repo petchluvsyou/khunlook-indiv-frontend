@@ -1,7 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
-import dayjs, { Dayjs } from "dayjs";
-import DateReserve from "./DateReserve";
 import VaccineService from "@/libs/VaccineService/VaccineService";
 import {
   IGetVaccine,
@@ -9,6 +6,9 @@ import {
   VaccineInterval,
 } from "@/libs/VaccineService/VaccineServiceModel";
 import { useAuth } from "@/providers/AuthContext";
+import dayjs, { Dayjs } from "dayjs";
+import { useEffect, useState } from "react";
+import DateReserve from "../DateReserve";
 
 interface VaccineCellProps {
   childpid: string;
@@ -22,7 +22,6 @@ export default function VaccineCell({
   vaccine,
   vaccineHistory,
   onChange,
-
 }: VaccineCellProps) {
   const { user, accessToken } = useAuth();
   const [prevChosen, setPrevChosen] = useState(false);
@@ -78,25 +77,53 @@ export default function VaccineCell({
     }
     if (onChange) onChange();
   };
-  useEffect(() => {
-    async function fetchHospital() {
-      try {
-        const vaccineService = new VaccineService(accessToken ?? "");
-        const response = await vaccineService.getHospital({
-          momcid: "",
-          search: hospitalSearch,
-        });
-        if (response.data) {
-          setHospitals(response.data.content);
-        } else {
-          console.error("Failed to fetch vaccine information");
-        }
-      } catch (error) {
-        console.error("Error fetching vaccines:", error);
-      }
+
+  const handleCreateHospital = async (
+    name: string,
+  ): Promise<IHospital | null> => {
+    const vaccineService = new VaccineService(accessToken ?? undefined);
+    try {
+      await vaccineService.postChildVaccineClinic({
+        clinicname: name,
+        momcid: user.CID,
+      });
+
+      const response = await vaccineService.getHospital({
+        momcid: user.CID,
+        search: name,
+      });
+
+      const matched = response.data?.content.find(
+        (h) => h.text.toLowerCase() === name.toLowerCase(),
+      );
+
+      return matched ?? null;
+    } catch (error) {
+      console.error("Error creating clinic", error);
+      return null;
     }
+  };
+
+  async function fetchHospital() {
+    try {
+      const vaccineService = new VaccineService(accessToken ?? "");
+      const response = await vaccineService.getHospital({
+        momcid: user.CID,
+        search: hospitalSearch,
+      });
+      if (response.data) {
+        setHospitals(response.data.content);
+      } else {
+        console.error("Failed to fetch vaccine information");
+      }
+    } catch (error) {
+      console.error("Error fetching vaccines:", error);
+    }
+  }
+  useEffect(() => {
+    if (hospitalSearch.length < 3) return;
     fetchHospital();
-  }, [hospitalSearch.length >= 3]);
+  }, [hospitalSearch.length]);
   const handleClick = () => {
     if (!user) return;
     if (isClicked) {
@@ -111,9 +138,20 @@ export default function VaccineCell({
     if (user) handleChange(value);
   };
 
-  const handleAddHospital = (hosp: IHospital) => {
+  const handleAddHospital = async (hosp?: IHospital) => {
     if (!hospitalSearch.trim()) return;
-    if (user) handleChange(reserveDate, hosp);
+
+    if (hosp) {
+      if (user) await handleChange(reserveDate, hosp);
+    } else {
+      // Hospital not found in list, create a new one
+      const newHospital = await handleCreateHospital(hospitalSearch);
+
+      if (newHospital) {
+        setHospital(newHospital);
+        if (user) await handleChange(reserveDate, newHospital);
+      }
+    }
   };
 
   return (
@@ -146,30 +184,44 @@ export default function VaccineCell({
                 setIsSaved(false);
                 setHospitalSearch(value);
               }}
-              placeholder="Type hospital name"
+              placeholder="Type at least 3 characters"
               className="w-full border-0 border-b-2 border-gray-300 focus:border-yellow-400 placeholder:text-sm placeholder-gray-500 focus:ring-0 focus-visible:outline-none"
             />
-
             {hospitalSearch.length >= 3 && !isSaved && (
-              <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-48 overflow-y-auto shadow-md rounded">
-                {hospitals
-                  ?.filter((h) =>
-                    h.text.toLowerCase().includes(hospitalSearch.toLowerCase()),
-                  )
-                  .map((h) => (
-                    <li
-                      key={h.id}
-                      className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
-                      onClick={() => {
-                        setHospital(h);
-                        setHospitalSearch(h.text);
-                        handleAddHospital(h);
-                      }}
-                    >
-                      {h.text}
-                    </li>
-                  ))}
-              </ul>
+              <>
+                <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-48 overflow-y-auto shadow-md rounded">
+                  {hospitals
+                    ?.filter((h) =>
+                      h.text
+                        .toLowerCase()
+                        .includes(hospitalSearch.toLowerCase()),
+                    )
+                    .map((h) => (
+                      <li
+                        key={h.id}
+                        className="px-4 py-2 hover:bg-yellow-100 cursor-pointer text-left"
+                        onClick={() => {
+                          setHospital(h);
+                          setHospitalSearch(h.text);
+                          handleAddHospital(h);
+                        }}
+                      >
+                        {h.text}
+                      </li>
+                    ))}
+                </ul>
+                {hospitals?.length == 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddHospital();
+                    }}
+                    className="mt-2 w-full bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm"
+                  >
+                    Add and Use New Clinic: "{hospitalSearch}"
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>

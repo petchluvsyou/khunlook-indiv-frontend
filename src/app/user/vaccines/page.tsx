@@ -23,7 +23,7 @@ export default function page() {
   const [childBD, setChildBD] = useState<string>("");
   const [vaccines, setVaccines] = useState<IGetVaccine[]>([]);
   const [vaccineOption, setVaccineOption] = useState<"required" | "optional">(
-    "required"
+    "required",
   );
   const [age, setAge] = useState<"lt1" | "mt1">("lt1");
   const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
@@ -37,7 +37,7 @@ export default function page() {
   const [missingVaccines, setMissingVaccines] = useState<string[]>([]);
 
   const handleVaccineOptionChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setActiveIndexes([]);
     setVaccineOption(e.target.value as "required" | "optional");
@@ -52,7 +52,7 @@ export default function page() {
 
   const toggleAccordion = (index: number) => {
     setActiveIndexes((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
   // 0 - 6, 7 - 12
@@ -107,7 +107,7 @@ export default function page() {
     await setVaccines(arr);
 
     const historyDescriptions = new Set(
-      res.data.history.map((h: IGetVaccine) => h.DESCRIPTION)
+      res.data.history.map((h: IGetVaccine) => h.DESCRIPTION),
     );
 
     const missingVaccineDescriptions: string[] = [];
@@ -123,9 +123,6 @@ export default function page() {
         hasReceivedAllVaccines = false;
       }
     }
-
-    console.log("history:", historyDescriptions);
-    console.log("missing", missingVaccineDescriptions);
 
     await setHasReceivedAllVaccines(hasReceivedAllVaccines);
     await setMissingVaccines(missingVaccineDescriptions);
@@ -295,7 +292,7 @@ export default function page() {
                         {vaccineName[vaccineKey]}
                       </span>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             )}
