@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import developmentData from "@/app/development/developmentData";
@@ -26,7 +25,7 @@ export default function DevelopmentDetailPage({
   if (!currentData) return <p>Loading...</p>;
 
   return (
-    <div className="flex justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
+    <div className="justify-center items-center text-center relative z-0 flex flex-col p-12 bg-[#F8F8F8] gap-1 top-[64px] sm:top-[92px] w-full">
       <h1 className="font-bold text-[24px] sm:text-5xl mb-[4px] mt-5 sm:mb-[12px]">
         วิธีส่งเสริมลูก
       </h1>
@@ -35,7 +34,11 @@ export default function DevelopmentDetailPage({
       </p>
       <div className="relative h-48 aspect-square m-10">
         <Image
-          src={`/img/development/${selectedOption}/${ageRange}/${params.index}.png`}
+          src={`/img/development/${encodeURIComponent(
+            selectedOption
+          )}/${encodeURIComponent(ageRange)}/${encodeURIComponent(
+            params.index
+          )}.png`}
           alt="img"
           fill
           className="rounded-md"

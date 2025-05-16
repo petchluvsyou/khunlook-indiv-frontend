@@ -15,13 +15,20 @@ export default function DevelopmentDetailPage({
     | "เด็กปฐมวัย"
     | "เด็กกลุ่มเสี่ยง";
   const ageRange = decodeURIComponent(params.ageRange) as string;
+  const [imagePath, setImagePath] = useState<string>("");
 
   useEffect(() => {
     const data = developmentData[selectedOption]?.find(
       (data) => data.age === ageRange
     );
     if (data) setCurrentData(data.rows[Number(params.index)]);
-  }, [params]);
+
+    setImagePath(
+      `/img/development/${encodeURIComponent(
+        selectedOption
+      )}/${encodeURIComponent(ageRange)}/${params.index}.png`
+    );
+  }, [params, selectedOption, ageRange]);
 
   if (!currentData) return <p>Loading...</p>;
 
@@ -34,12 +41,7 @@ export default function DevelopmentDetailPage({
         {currentData.skill}
       </p>
       <div className="relative h-48 aspect-square m-10">
-        <Image
-          src={`/img/development/${selectedOption}/${ageRange}/${params.index}.png`}
-          alt="img"
-          fill
-          className="rounded-md"
-        />
+        <Image src={imagePath} alt="img" fill className="rounded-md" />
       </div>
       <p className="text-black text-sm sm:text-base w-[70%]">
         {currentData.description}

@@ -463,7 +463,11 @@ export default function page() {
                 />
                 <div className="relative h-40 w-full bg-gray-100 rounded-md overflow-hidden hidden sm:block">
                   <Image
-                    src={`/img/development/${selectedOption}/${ageRange}/${index}.png`}
+                    src={`/img/development/${encodeURIComponent(
+                      selectedOption
+                    )}/${encodeURIComponent(ageRange)}/${encodeURIComponent(
+                      index
+                    )}.png`}
                     alt="img"
                     layout="fill"
                     objectFit="contain"
